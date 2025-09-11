@@ -41,7 +41,7 @@ export default function SignIn() {
                     router.push(callbackUrl);
                 }
             }
-        } catch (error) {
+        } catch {
             setError("An error occurred. Please try again.");
         } finally {
             setIsLoading(false);
@@ -183,7 +183,7 @@ export default function SignIn() {
 
                 <div className="text-center">
                     <p className="text-gray-600">
-                        Don't have an account?{" "}
+                        Don&apos;t have an account?{" "}
                         <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-700 transition-colors">
                             Sign up here
                         </Link>

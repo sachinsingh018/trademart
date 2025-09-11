@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
   return (
@@ -88,7 +87,7 @@ export default function Home() {
               <CardContent>
                 <CardDescription className="text-gray-600 leading-relaxed">
                   Your funds are held securely until delivery is confirmed.
-                  No payment until you're satisfied with your order.
+                  No payment until you&apos;re satisfied with your order.
                 </CardDescription>
               </CardContent>
             </Card>
