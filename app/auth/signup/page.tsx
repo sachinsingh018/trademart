@@ -3,6 +3,7 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -83,8 +84,17 @@ function SignUpForm() {
         <div className="min-h-screen bg-background flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <div className="text-center">
-                    <Link href="/" className="text-2xl font-bold text-primary">
-                        TradeMart
+                    <Link href="/" className="flex items-center justify-center space-x-2 mb-6">
+                        <Image
+                            src="/logofinal.png"
+                            alt="TradeMart Logo"
+                            width={32}
+                            height={32}
+                            className="w-8 h-8"
+                        />
+                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                            TradeMart
+                        </span>
                     </Link>
                     <h2 className="mt-6 text-3xl font-bold text-foreground">
                         Create your account

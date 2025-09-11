@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,9 +64,13 @@ function SignInForm() {
             <div className="max-w-md w-full space-y-8 relative">
                 <div className="text-center">
                     <Link href="/" className="flex items-center justify-center space-x-2 mb-6">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-sm">T</span>
-                        </div>
+                        <Image
+                            src="/logofinal.png"
+                            alt="TradeMart Logo"
+                            width={32}
+                            height={32}
+                            className="w-8 h-8"
+                        />
                         <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
                             TradeMart
                         </span>
