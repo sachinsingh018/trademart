@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions)
@@ -26,9 +26,11 @@ export async function PATCH(
             )
         }
 
+        const { id } = await params
+
         // Get the quote with RFQ details
         const quote = await prisma.quote.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 rfq: true,
                 supplier: true
@@ -52,7 +54,7 @@ export async function PATCH(
 
         // Update quote status
         const updatedQuote = await prisma.quote.update({
-            where: { id: params.id },
+            where: { id },
             data: { status },
             include: {
                 supplier: {
