@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export default function Dashboard() {
@@ -54,7 +54,6 @@ export default function Dashboard() {
     }
 
     const isBuyer = session.user.role === "buyer";
-    const isSupplier = session.user.role === "supplier";
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
@@ -177,7 +176,7 @@ export default function Dashboard() {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                {rfqs.slice(0, 5).map((rfq: any) => (
+                                {rfqs.slice(0, 5).map((rfq: { id: string; title: string; description: string; category: string; status: string; createdAt: string; _count: { quotes: number } }) => (
                                     <div key={rfq.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
                                         <div className="flex justify-between items-start">
                                             <div className="flex-1">
