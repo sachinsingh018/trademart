@@ -53,14 +53,22 @@ export async function POST(request: NextRequest) {
         const passwordHash = await bcrypt.hash(password, 12)
 
         // Create user with enhanced data
+        const userData: {
+            name: string;
+            email: string;
+            phone: string | null;
+            passwordHash: string;
+            role: string;
+        } = {
+            name,
+            email,
+            phone: phone || null,
+            passwordHash,
+            role,
+        };
+
         const user = await prisma.user.create({
-            data: {
-                name,
-                email,
-                phone: phone || null,
-                passwordHash,
-                role,
-            }
+            data: userData
         })
 
         // If user is a supplier, create comprehensive supplier record
