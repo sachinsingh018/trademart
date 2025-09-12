@@ -9,3 +9,8 @@ export const prisma = globalForPrisma.prisma ?? new PrismaClient({
 })
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+// Ensure Prisma client is properly initialized
+if (!prisma) {
+    throw new Error('Prisma client failed to initialize')
+}
