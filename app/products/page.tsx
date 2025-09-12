@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import PageTitle from "@/components/ui/page-title";
 
 interface Product {
@@ -75,7 +74,38 @@ export default function ProductsPage() {
 
                 if (result.success) {
                     // Transform database data to match component interface
-                    const transformedProducts = result.data.products.map((product: any) => ({
+                    const transformedProducts = result.data.products.map((product: {
+                        id: string;
+                        name: string;
+                        description: string;
+                        category: string;
+                        subcategory: string;
+                        price: number;
+                        currency: string;
+                        minOrderQuantity: number;
+                        unit: string;
+                        features: string[];
+                        tags: string[];
+                        images: string[];
+                        specifications: Record<string, unknown>;
+                        inStock: boolean;
+                        stockQuantity: number;
+                        leadTime: string;
+                        views: number;
+                        orders: number;
+                        createdAt: string;
+                        updatedAt: string;
+                        supplier: {
+                            id: string;
+                            companyName: string;
+                            country: string;
+                            verified: boolean;
+                            rating: number;
+                            totalOrders: number;
+                            responseTime: string;
+                            user: { name: string };
+                        };
+                    }) => ({
                         id: product.id,
                         name: product.name,
                         description: product.description,
@@ -188,13 +218,6 @@ export default function ProductsPage() {
         return subcategories[category as keyof typeof subcategories] || [];
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        });
-    };
 
     if (loading) {
         return (

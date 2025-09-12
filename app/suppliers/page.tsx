@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import PageTitle from "@/components/ui/page-title";
 
 interface Supplier {
@@ -61,7 +60,28 @@ export default function SuppliersPage() {
 
                 if (result.success) {
                     // Transform database data to match component interface
-                    const transformedSuppliers = result.data.suppliers.map((supplier: any) => ({
+                    const transformedSuppliers = result.data.suppliers.map((supplier: {
+                        id: string;
+                        companyName: string;
+                        country: string;
+                        industry: string;
+                        specialties: string[];
+                        rating: number;
+                        totalOrders: number;
+                        verified: boolean;
+                        responseTime: string;
+                        minOrderValue: number;
+                        currency: string;
+                        description: string;
+                        certifications: string[];
+                        establishedYear: number;
+                        employees: string;
+                        website: string;
+                        createdAt: string;
+                        updatedAt: string;
+                        lastActive: string;
+                        user: { name: string; email: string };
+                    }) => ({
                         id: supplier.id,
                         name: supplier.user?.name || "N/A",
                         company: supplier.companyName,
@@ -163,13 +183,6 @@ export default function SuppliersPage() {
         return "text-red-600";
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-        });
-    };
 
     if (loading) {
         return (

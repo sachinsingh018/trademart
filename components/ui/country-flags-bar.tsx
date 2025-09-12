@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 const CountryFlagsBar = () => {
     const countries = [
@@ -103,14 +104,19 @@ const CountryFlagsBar = () => {
                         className="flex items-center space-x-3 mx-6 flex-shrink-0 hover:scale-105 transition-transform duration-200"
                     >
                         <div className="relative">
-                            <img
+                            <Image
                                 src={`https://flagcdn.com/24x18/${country.code.toLowerCase()}.png`}
                                 alt={`${country.name} flag`}
+                                width={24}
+                                height={18}
                                 className="w-6 h-4 object-cover rounded-sm shadow-sm"
                                 onError={(e) => {
                                     // Fallback to emoji if image fails to load
                                     e.currentTarget.style.display = 'none';
-                                    e.currentTarget.nextElementSibling.style.display = 'inline';
+                                    const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                                    if (nextElement) {
+                                        nextElement.style.display = 'inline';
+                                    }
                                 }}
                             />
                             <span

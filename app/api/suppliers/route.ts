@@ -16,7 +16,16 @@ export async function GET(request: NextRequest) {
         const skip = (page - 1) * limit;
 
         // Build where clause
-        const where: any = {};
+        const where: {
+            OR?: Array<{
+                companyName?: { contains: string; mode: "insensitive" };
+                industry?: { contains: string; mode: "insensitive" };
+                country?: { contains: string; mode: "insensitive" };
+                specialties?: { has: string };
+            }>;
+            industry?: string;
+            country?: string;
+        } = {};
 
         if (search) {
             where.OR = [
@@ -36,7 +45,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Build orderBy clause
-        let orderBy: any = {};
+        let orderBy: { [key: string]: "asc" | "desc" } = {};
         switch (sortBy) {
             case "rating":
                 orderBy = { rating: "desc" };

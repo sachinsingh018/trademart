@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
         if (data.specifications) {
             try {
                 specifications = JSON.parse(data.specifications);
-            } catch (error) {
+            } catch {
                 return NextResponse.json(
                     { error: "Invalid specifications JSON format" },
                     { status: 400 }

@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -291,7 +291,7 @@ function SignUpForm() {
                     <div className="space-y-6">
                         <div className="text-center mb-6">
                             <h3 className="text-2xl font-bold text-gray-900 mb-2">Basic Information</h3>
-                            <p className="text-gray-600">Let's start with your basic details</p>
+                            <p className="text-gray-600">Let&apos;s start with your basic details</p>
                         </div>
 
                         <div className="space-y-4">
@@ -556,7 +556,7 @@ function SignUpForm() {
                     <div className="space-y-6">
                         <div className="text-center mb-6">
                             <h3 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Contact</h3>
-                            <p className="text-gray-600">We'll send you a verification code</p>
+                            <p className="text-gray-600">We&apos;ll send you a verification code</p>
                         </div>
 
                         <div className="space-y-4">

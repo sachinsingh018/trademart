@@ -6,7 +6,7 @@ import { prisma } from '@/lib/prisma';
 // GET - Get single product
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -14,8 +14,9 @@ export async function GET(
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
+        const { id } = await params;
         const product = await prisma.product.findUnique({
-            where: { id: params.id },
+            where: { id },
             include: {
                 supplier: {
                     include: {
@@ -43,7 +44,7 @@ export async function GET(
 // PUT - Update product
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -51,6 +52,7 @@ export async function PUT(
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
+        const { id } = await params;
         const body = await request.json();
         const {
             name,
@@ -81,7 +83,7 @@ export async function PUT(
 
         // Verify product belongs to this supplier
         const existingProduct = await prisma.product.findUnique({
-            where: { id: params.id }
+            where: { id }
         });
 
         if (!existingProduct || existingProduct.supplierId !== supplier.id) {
@@ -93,13 +95,13 @@ export async function PUT(
         if (specifications) {
             try {
                 parsedSpecifications = JSON.parse(specifications);
-            } catch (e) {
+            } catch {
                 return NextResponse.json({ success: false, error: 'Invalid specifications JSON format' }, { status: 400 });
             }
         }
 
         const updatedProduct = await prisma.product.update({
-            where: { id: params.id },
+            where: { id },
             data: {
                 name,
                 description,
@@ -140,7 +142,7 @@ export async function PUT(
 // DELETE - Delete product
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -148,6 +150,7 @@ export async function DELETE(
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
+        const { id } = await params;
         // Get supplier to verify ownership
         const supplier = await prisma.supplier.findUnique({
             where: { userId: session.user.id }
@@ -159,7 +162,7 @@ export async function DELETE(
 
         // Verify product belongs to this supplier
         const existingProduct = await prisma.product.findUnique({
-            where: { id: params.id }
+            where: { id }
         });
 
         if (!existingProduct || existingProduct.supplierId !== supplier.id) {
@@ -167,7 +170,7 @@ export async function DELETE(
         }
 
         await prisma.product.delete({
-            where: { id: params.id }
+            where: { id }
         });
 
         return NextResponse.json({

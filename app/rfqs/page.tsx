@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 
 interface RFQ {
     id: string;
@@ -65,7 +64,23 @@ export default function RFQsPage() {
 
                 if (result.success) {
                     // Transform database data to match component interface
-                    const transformedRFQs = result.data.rfqs.map((rfq: any) => ({
+                    const transformedRFQs = result.data.rfqs.map((rfq: {
+                        id: string;
+                        title: string;
+                        description: string;
+                        category: string;
+                        quantity: number;
+                        unit: string;
+                        budget: number;
+                        currency: string;
+                        status: string;
+                        requirements: string[];
+                        createdAt: string;
+                        expiresAt: string;
+                        specifications: Record<string, unknown>;
+                        buyer: { name: string; email: string };
+                        quotes: { id: string }[];
+                    }) => ({
                         id: rfq.id,
                         title: rfq.title,
                         description: rfq.description,
@@ -454,7 +469,7 @@ export default function RFQsPage() {
                                     <div className="mt-6 pt-6 border-t border-gray-200 flex justify-between items-center">
                                         <div className="text-sm text-gray-600">
                                             <span className="font-medium">Specifications:</span> {Object.entries(rfq.specifications)
-                                                .filter(([_, value]) => value)
+                                                .filter(([, value]) => value)
                                                 .map(([key, value]) => `${key}: ${value}`)
                                                 .join(", ")}
                                         </div>

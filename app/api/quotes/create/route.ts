@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
             rfqId,
             price,
             currency,
-            quantity,
-            unit,
-            leadTime,
-            validity,
+            leadTimeDays,
             notes,
         } = body;
 
@@ -59,21 +56,14 @@ export async function POST(request: NextRequest) {
                 supplierId: supplier.id,
                 price: parseFloat(price),
                 currency,
-                quantity: parseInt(quantity),
-                unit,
-                leadTime,
-                validity,
+                leadTimeDays: parseInt(leadTimeDays),
                 notes,
                 status: 'pending'
             },
             include: {
                 rfq: {
                     include: {
-                        buyer: {
-                            include: {
-                                user: true
-                            }
-                        }
+                        buyer: true
                     }
                 }
             }

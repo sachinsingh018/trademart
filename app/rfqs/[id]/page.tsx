@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,6 @@ interface Quote {
 
 export default function RFQDetailPage() {
     const params = useParams();
-    const router = useRouter();
     const [rfq, setRfq] = useState<RFQ | null>(null);
     const [quotes, setQuotes] = useState<Quote[]>([]);
     const [loading, setLoading] = useState(true);

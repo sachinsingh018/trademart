@@ -19,7 +19,19 @@ export async function GET(request: NextRequest) {
         const skip = (page - 1) * limit;
 
         // Build where clause
-        const where: any = {};
+        const where: {
+            OR?: Array<{
+                title?: { contains: string; mode: "insensitive" };
+                description?: { contains: string; mode: "insensitive" };
+                category?: { contains: string; mode: "insensitive" };
+                requirements?: { has: string };
+            } | {
+                category?: string;
+                requirements?: { hasSome: string[] };
+            }>;
+            category?: string;
+            status?: string;
+        } = {};
 
         if (search) {
             where.OR = [
@@ -47,16 +59,22 @@ export async function GET(request: NextRequest) {
                 });
 
                 if (supplierProfile) {
-                    where.OR = [
-                        { category: supplierProfile.industry },
-                        { requirements: { hasSome: supplierProfile.specialties } }
-                    ];
+                    const orConditions = [];
+                    if (supplierProfile.industry) {
+                        orConditions.push({ category: supplierProfile.industry });
+                    }
+                    if (supplierProfile.specialties && supplierProfile.specialties.length > 0) {
+                        orConditions.push({ requirements: { hasSome: supplierProfile.specialties } });
+                    }
+                    if (orConditions.length > 0) {
+                        where.OR = orConditions;
+                    }
                 }
             }
         }
 
         // Build orderBy clause
-        let orderBy: any = {};
+        let orderBy: { [key: string]: "asc" | "desc" } | { quotes: { _count: "desc" } } = {};
         switch (sortBy) {
             case "newest":
                 orderBy = { createdAt: "desc" };

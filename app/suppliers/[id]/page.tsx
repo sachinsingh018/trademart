@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 
 interface Supplier {
     id: string;
@@ -67,7 +66,6 @@ interface Product {
 
 export default function SupplierDetailPage() {
     const params = useParams();
-    const router = useRouter();
     const [supplier, setSupplier] = useState<Supplier | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
@@ -502,7 +500,7 @@ export default function SupplierDetailPage() {
                                         </div>
                                     )}
                                     <div className="pt-4 border-t border-gray-200">
-                                        <Button className="w-full mb-2" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                                        <Button className="w-full mb-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
                                             Send Message
                                         </Button>
                                         <Button variant="outline" className="w-full">
