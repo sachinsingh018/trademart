@@ -73,20 +73,34 @@ export async function POST(request: NextRequest) {
 
         // If user is a supplier, create comprehensive supplier record
         if (role === "supplier") {
+            const supplierData: {
+                userId: string;
+                companyName: string;
+                industry: string | null;
+                businessType: string | null;
+                website: string | null;
+                description: string | null;
+                country: string | null;
+                city: string | null;
+                address: string | null;
+                postalCode: string | null;
+                phone: string | null;
+            } = {
+                userId: user.id,
+                companyName: companyName || name,
+                industry: industry || "General",
+                businessType: businessType || null,
+                website: website || null,
+                description: description || null,
+                country: country || null,
+                city: city || null,
+                address: address || null,
+                postalCode: postalCode || null,
+                phone: phone || null,
+            };
+
             await prisma.supplier.create({
-                data: {
-                    userId: user.id,
-                    companyName: companyName || name,
-                    industry: industry || "General",
-                    businessType: businessType || null,
-                    website: website || null,
-                    description: description || null,
-                    country: country || null,
-                    city: city || null,
-                    address: address || null,
-                    postalCode: postalCode || null,
-                    phone: phone || null,
-                }
+                data: supplierData
             })
         }
 
