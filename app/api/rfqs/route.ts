@@ -1,120 +1,152 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+
+const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
     try {
-        const { searchParams } = new URL(request.url)
-        const category = searchParams.get("category")
-        const status = searchParams.get("status")
-        const page = parseInt(searchParams.get("page") || "1")
-        const limit = parseInt(searchParams.get("limit") || "10")
+        const { searchParams } = new URL(request.url);
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "20");
+        const search = searchParams.get("search") || "";
+        const category = searchParams.get("category") || "";
+        const status = searchParams.get("status") || "";
+        const sortBy = searchParams.get("sortBy") || "newest";
+        const supplier = searchParams.get("supplier") === "true";
 
-        const where: Record<string, unknown> = {}
-        if (category) where.category = category
-        if (status) where.status = status
+        const skip = (page - 1) * limit;
 
-        const rfqs = await prisma.rfq.findMany({
-            where,
-            include: {
-                buyer: {
-                    select: {
-                        id: true,
-                        name: true,
-                        role: true
-                    }
-                },
-                quotes: {
-                    include: {
-                        supplier: {
-                            include: {
-                                user: {
-                                    select: {
-                                        name: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                _count: {
-                    select: {
-                        quotes: true
-                    }
+        // Build where clause
+        const where: any = {};
+
+        if (search) {
+            where.OR = [
+                { title: { contains: search, mode: "insensitive" } },
+                { description: { contains: search, mode: "insensitive" } },
+                { category: { contains: search, mode: "insensitive" } },
+                { requirements: { has: search } },
+            ];
+        }
+
+        if (category && category !== "all") {
+            where.category = category;
+        }
+
+        if (status && status !== "all") {
+            where.status = status;
+        }
+
+        // If supplier view, filter by supplier's industry and specialties
+        if (supplier) {
+            const session = await getServerSession(authOptions);
+            if (session?.user?.role === 'supplier') {
+                const supplierProfile = await prisma.supplier.findUnique({
+                    where: { userId: session.user.id }
+                });
+
+                if (supplierProfile) {
+                    where.OR = [
+                        { category: supplierProfile.industry },
+                        { requirements: { hasSome: supplierProfile.specialties } }
+                    ];
                 }
-            },
-            orderBy: {
-                createdAt: "desc"
-            },
-            skip: (page - 1) * limit,
-            take: limit
-        })
+            }
+        }
 
-        const total = await prisma.rfq.count({ where })
+        // Build orderBy clause
+        let orderBy: any = {};
+        switch (sortBy) {
+            case "newest":
+                orderBy = { createdAt: "desc" };
+                break;
+            case "oldest":
+                orderBy = { createdAt: "asc" };
+                break;
+            case "budget-high":
+                orderBy = { budget: "desc" };
+                break;
+            case "budget-low":
+                orderBy = { budget: "asc" };
+                break;
+            case "quotes":
+                orderBy = { quotes: { _count: "desc" } };
+                break;
+            default:
+                orderBy = { createdAt: "desc" };
+        }
+
+        // Get RFQs with pagination
+        const [rfqs, total] = await Promise.all([
+            prisma.rfq.findMany({
+                where,
+                orderBy,
+                skip,
+                take: limit,
+                include: {
+                    buyer: {
+                        select: {
+                            name: true,
+                            email: true,
+                        },
+                    },
+                    quotes: {
+                        select: {
+                            id: true,
+                        },
+                    },
+                },
+            }),
+            prisma.rfq.count({ where }),
+        ]);
+
+        // Calculate statistics
+        const stats = await prisma.rfq.aggregate({
+            _count: { id: true },
+            _sum: { budget: true },
+        });
+
+        const openCount = await prisma.rfq.count({
+            where: { status: "open" },
+        });
+
+        const quotedCount = await prisma.rfq.count({
+            where: { status: "quoted" },
+        });
+
+        const totalQuotes = await prisma.quote.count();
 
         return NextResponse.json({
-            rfqs,
-            pagination: {
-                page,
-                limit,
-                total,
-                pages: Math.ceil(total / limit)
-            }
-        })
-    } catch (error) {
-        console.error("Error fetching RFQs:", error)
-        return NextResponse.json(
-            { error: "Internal server error" },
-            { status: 500 }
-        )
-    }
-}
-
-export async function POST(request: NextRequest) {
-    try {
-        const session = await getServerSession(authOptions)
-
-        if (!session?.user?.id) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            )
-        }
-
-        const { title, description, category } = await request.json()
-
-        if (!title || !description) {
-            return NextResponse.json(
-                { error: "Title and description are required" },
-                { status: 400 }
-            )
-        }
-
-        const rfq = await prisma.rfq.create({
+            success: true,
             data: {
-                title,
-                description,
-                category,
-                buyerId: session.user.id
+                rfqs,
+                pagination: {
+                    page,
+                    limit,
+                    total,
+                    totalPages: Math.ceil(total / limit),
+                },
+                stats: {
+                    totalRfqs: stats._count.id,
+                    totalBudget: stats._sum.budget || 0,
+                    openRfqs: openCount,
+                    quotedRfqs: quotedCount,
+                    totalQuotes,
+                },
             },
-            include: {
-                buyer: {
-                    select: {
-                        id: true,
-                        name: true,
-                        role: true
-                    }
-                }
-            }
-        })
-
-        return NextResponse.json(rfq, { status: 201 })
+        });
     } catch (error) {
-        console.error("Error creating RFQ:", error)
+        console.error("RFQs fetch error:", error);
         return NextResponse.json(
-            { error: "Internal server error" },
+            {
+                success: false,
+                error: "Failed to fetch RFQs",
+                details: error instanceof Error ? error.message : "Unknown error"
+            },
             { status: 500 }
-        )
+        );
+    } finally {
+        await prisma.$disconnect();
     }
 }

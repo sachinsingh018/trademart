@@ -4,11 +4,35 @@ import { prisma } from "@/lib/prisma"
 
 export async function POST(request: NextRequest) {
     try {
-        const { name, email, password, role = "buyer" } = await request.json()
+        const {
+            name,
+            email,
+            phone,
+            password,
+            role = "buyer",
+            companyName,
+            industry,
+            businessType,
+            website,
+            description,
+            country,
+            city,
+            address,
+            postalCode
+        } = await request.json()
 
+        // Basic validation
         if (!name || !email || !password) {
             return NextResponse.json(
                 { error: "Name, email, and password are required" },
+                { status: 400 }
+            )
+        }
+
+        // Enhanced validation for suppliers
+        if (role === "supplier" && !companyName) {
+            return NextResponse.json(
+                { error: "Company name is required for suppliers" },
                 { status: 400 }
             )
         }
@@ -28,29 +52,52 @@ export async function POST(request: NextRequest) {
         // Hash password
         const passwordHash = await bcrypt.hash(password, 12)
 
-        // Create user
+        // Create user with enhanced data
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
+                phone: phone || null,
                 passwordHash,
-                role
+                role,
             }
         })
 
-        // If user is a supplier, create supplier record
+        // If user is a supplier, create comprehensive supplier record
         if (role === "supplier") {
             await prisma.supplier.create({
                 data: {
                     userId: user.id,
-                    companyName: name,
-                    industry: "General"
+                    companyName: companyName || name,
+                    industry: industry || "General",
+                    businessType: businessType || null,
+                    website: website || null,
+                    description: description || null,
+                    country: country || null,
+                    city: city || null,
+                    address: address || null,
+                    postalCode: postalCode || null,
+                    phone: phone || null,
                 }
             })
         }
 
+        // TODO: Send welcome email using AWS SES
+        // await sendWelcomeEmail(email, name, role);
+
         return NextResponse.json(
-            { message: "User created successfully", userId: user.id },
+            {
+                message: "User created successfully",
+                userId: user.id,
+                role: user.role,
+                // Include additional info for frontend
+                ...(role === "supplier" && {
+                    supplierProfile: {
+                        companyName: companyName || name,
+                        industry: industry || "General"
+                    }
+                })
+            },
             { status: 201 }
         )
     } catch (error) {

@@ -48,7 +48,7 @@ DATABASE_URL="postgresql://neondb_owner:npg_Maus8bK6kdvD@ep-cold-forest-a4yns4nq
 
 # NextAuth.js
 NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-here"
+NEXTAUTH_SECRET="4706e1cf36bbcfbdc5d8ad3eb306ee2b"
 
 # Google OAuth (optional)
 GOOGLE_CLIENT_ID=""

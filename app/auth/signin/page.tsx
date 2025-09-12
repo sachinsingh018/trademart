@@ -63,17 +63,14 @@ function SignInForm() {
 
             <div className="max-w-md w-full space-y-8 relative">
                 <div className="text-center">
-                    <Link href="/" className="flex items-center justify-center space-x-2 mb-6">
+                    <Link href="/" className="flex items-center justify-center mb-12">
                         <Image
                             src="/logofinal.png"
                             alt="TradeMart Logo"
-                            width={32}
-                            height={32}
-                            className="w-8 h-8"
+                            width={300}
+                            height={300}
+                            className="w-72 h-72 hover:scale-120 transition-transform duration-300 drop-shadow-2xl"
                         />
-                        <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                            TradeMart
-                        </span>
                     </Link>
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">
                         Welcome back
