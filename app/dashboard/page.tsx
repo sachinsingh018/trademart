@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import NotificationBell from "@/components/notification-bell";
 
 export default function Dashboard() {
     const { data: session, status } = useSession();
@@ -74,6 +75,7 @@ export default function Dashboard() {
                             </Link>
                         </div>
                         <div className="flex items-center space-x-4">
+                            <NotificationBell />
                             <span className="text-sm text-gray-600 font-medium">
                                 Welcome, {session.user.name}
                             </span>
@@ -140,6 +142,31 @@ export default function Dashboard() {
                                 <Link href="/rfq/create">
                                     <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
                                         Create RFQ
+                                    </Button>
+                                </Link>
+                            </div>
+                        </Card>
+                    </div>
+                )}
+
+                {!isBuyer && (
+                    <div className="mb-8">
+                        <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                        <span className="text-white font-bold text-lg">📦</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-semibold text-gray-900">Manage Products</h3>
+                                        <p className="text-gray-600">
+                                            Add, edit, and manage your product catalog
+                                        </p>
+                                    </div>
+                                </div>
+                                <Link href="/products/manage">
+                                    <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                        Manage Products
                                     </Button>
                                 </Link>
                             </div>

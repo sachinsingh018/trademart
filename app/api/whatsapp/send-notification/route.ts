@@ -1,83 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// TODO: Replace with actual WhatsApp Business API integration
-// import { Client } from "whatsapp-web.js";
-// or use WhatsApp Business API via HTTP requests
+import { whatsappService } from "@/lib/whatsapp";
 
 export async function POST(request: NextRequest) {
     try {
-        const { quoteId, supplierPhone, rfqTitle, buyerCompany } = await request.json();
+        const { quoteId, supplierPhone, rfqTitle, buyerCompany, rfqId } = await request.json();
 
-        if (!quoteId || !supplierPhone || !rfqTitle || !buyerCompany) {
+        if (!supplierPhone || !rfqTitle || !buyerCompany) {
             return NextResponse.json(
-                { error: "Missing required fields: quoteId, supplierPhone, rfqTitle, buyerCompany" },
+                { error: "Missing required fields: supplierPhone, rfqTitle, buyerCompany" },
                 { status: 400 }
             );
         }
 
-        // TODO: Replace with actual WhatsApp Business API implementation
-        // Example using WhatsApp Business API:
-        /*
-        const response = await fetch(`https://graph.facebook.com/v18.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            messaging_product: "whatsapp",
-            to: supplierPhone,
-            type: "template",
-            template: {
-              name: "rfq_notification",
-              language: {
-                code: "en"
-              },
-              components: [
-                {
-                  type: "body",
-                  parameters: [
-                    {
-                      type: "text",
-                      text: rfqTitle
-                    },
-                    {
-                      type: "text",
-                      text: buyerCompany
-                    }
-                  ]
-                }
-              ]
-            }
-          })
-        });
-    
-        if (!response.ok) {
-          throw new Error(`WhatsApp API error: ${response.statusText}`);
+        // Validate phone number
+        if (!whatsappService.validatePhoneNumber(supplierPhone)) {
+            return NextResponse.json(
+                { error: "Invalid phone number format" },
+                { status: 400 }
+            );
         }
-    
-        const result = await response.json();
-        */
 
-        // Placeholder implementation for development
-        console.log(`📱 WhatsApp notification sent to ${supplierPhone} for RFQ: ${rfqTitle}`);
-        console.log(`Buyer: ${buyerCompany}`);
-        console.log(`Quote ID: ${quoteId}`);
+        // Format phone number
+        const formattedPhone = whatsappService.formatPhoneNumber(supplierPhone);
 
-        // Mock success response
-        const mockResponse = {
-            success: true,
-            messageId: `msg_${Date.now()}`,
-            recipient: supplierPhone,
-            status: "sent",
-            timestamp: new Date().toISOString(),
-        };
+        // Send WhatsApp notification
+        const result = await whatsappService.sendRFQNotification(
+            formattedPhone,
+            rfqTitle,
+            buyerCompany,
+            rfqId || quoteId
+        );
 
-        return NextResponse.json({
-            success: true,
-            message: "WhatsApp notification sent successfully",
-            data: mockResponse,
-        });
+        if (result.success) {
+            return NextResponse.json({
+                success: true,
+                message: "WhatsApp notification sent successfully",
+                data: {
+                    messageId: result.messageId,
+                    recipient: formattedPhone,
+                    status: result.status,
+                    timestamp: new Date().toISOString(),
+                },
+            });
+        } else {
+            return NextResponse.json(
+                { 
+                    success: false,
+                    error: result.error || "Failed to send WhatsApp notification" 
+                },
+                { status: 500 }
+            );
+        }
     } catch (error) {
         console.error("WhatsApp notification error:", error);
         return NextResponse.json(
@@ -91,9 +64,8 @@ export async function POST(request: NextRequest) {
     }
 }
 
-// TODO: Add WhatsApp webhook handler for message status updates
+// Handle WhatsApp webhook verification
 export async function GET(request: NextRequest) {
-    // Handle WhatsApp webhook verification
     const { searchParams } = new URL(request.url);
     const mode = searchParams.get("hub.mode");
     const token = searchParams.get("hub.verify_token");

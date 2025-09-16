@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { whatsappService } from "@/lib/whatsapp"
+import { notificationService } from "@/lib/notifications"
 
 export async function POST(request: NextRequest) {
     try {
@@ -82,19 +84,64 @@ export async function POST(request: NextRequest) {
                     include: {
                         user: {
                             select: {
-                                name: true
+                                name: true,
+                                phone: true
                             }
                         }
                     }
                 },
                 rfq: {
-                    select: {
-                        title: true,
-                        description: true
+                    include: {
+                        buyer: {
+                            select: {
+                                name: true,
+                                phone: true
+                            }
+                        }
                     }
                 }
             }
         })
+
+        // Send WhatsApp notification to buyer about new quote
+        try {
+            if (quote.rfq.buyer.phone && whatsappService.validatePhoneNumber(quote.rfq.buyer.phone)) {
+                const result = await whatsappService.sendQuoteNotification(
+                    quote.rfq.buyer.phone,
+                    quote.rfq.title,
+                    `$${quote.price}`,
+                    quote.supplier.companyName,
+                    quote.id
+                );
+
+                if (result.success) {
+                    console.log(`✅ WhatsApp quote notification sent to buyer ${quote.rfq.buyer.name}`);
+                } else {
+                    console.log(`❌ Failed to send WhatsApp quote notification: ${result.error}`);
+                }
+            }
+        } catch (error) {
+            console.error('Error sending quote notification:', error);
+            // Don't fail the quote creation if notification fails
+        }
+
+        // Send real-time notification to buyer about new quote
+        try {
+            await notificationService.sendToUser(
+                quote.rfq.buyerId,
+                notificationService.createQuoteNotification(
+                    quote.rfq.title,
+                    quote.supplier.companyName,
+                    quote.price,
+                    quote.currency,
+                    quote.id
+                )
+            );
+            console.log(`✅ Real-time quote notification sent to buyer ${quote.rfq.buyer.name}`);
+        } catch (error) {
+            console.error('Error sending real-time quote notification:', error);
+            // Don't fail the quote creation if notification fails
+        }
 
         return NextResponse.json(quote, { status: 201 })
     } catch (error) {
