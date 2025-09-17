@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: "credentials",
             credentials: {
-                email: { label: "Email", type: "email" },
+                email: { label: "Email or Phone", type: "text" },
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
@@ -25,11 +25,25 @@ export const authOptions: NextAuthOptions = {
                         return null
                     }
 
-                    const user = await prisma.user.findUnique({
-                        where: {
-                            email: credentials.email
-                        }
-                    })
+                    // Check if input is email or phone
+                    const isEmail = credentials.email.includes('@');
+                    
+                    let user;
+                    if (isEmail) {
+                        // Login with email
+                        user = await prisma.user.findUnique({
+                            where: {
+                                email: credentials.email
+                            }
+                        })
+                    } else {
+                        // Login with phone number
+                        user = await prisma.user.findFirst({
+                            where: {
+                                phone: credentials.email // Using email field for phone input
+                            }
+                        })
+                    }
 
                     if (!user || !user.passwordHash) {
                         return null

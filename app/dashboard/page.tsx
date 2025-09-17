@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Package } from "lucide-react";
 
 export default function Dashboard() {
     const { data: session, status } = useSession();
@@ -39,6 +40,7 @@ export default function Dashboard() {
         }
     };
 
+
     if (status === "loading" || loading) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
@@ -59,39 +61,70 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
             {/* Navigation */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
+            <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200/60 shadow-lg shadow-gray-900/5">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
+                    <div className="flex justify-between items-center h-20">
+                        {/* Logo Section */}
                         <div className="flex items-center">
-                            <Link href="/" className="flex items-center">
-                                <Image
-                                    src="/logofinal.png"
-                                    alt="TradeMart Logo"
-                                    width={160}
-                                    height={160}
-                                    className="w-40 h-40 hover:scale-120 transition-transform duration-300 drop-shadow-2xl"
-                                />
+                            <Link href="/" className="flex items-center group">
+                                <div className="relative">
+                                    <Image
+                                        src="/logofinal.png"
+                                        alt="TradeMart Logo"
+                                        width={160}
+                                        height={160}
+                                        className="w-12 h-12 group-hover:scale-105 transition-all duration-300 drop-shadow-sm"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-green-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                </div>
+                                <div className="ml-3 hidden sm:block">
+                                    <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                                        TradeMart
+                                    </h1>
+                                    <p className="text-xs text-gray-500 font-medium">B2B Marketplace</p>
+                                </div>
                             </Link>
                         </div>
-                        <div className="flex items-center space-x-4">
-                            <span className="text-sm text-gray-600 font-medium">
-                                Welcome, {session.user.name}
-                            </span>
-                            <Badge
-                                variant={isBuyer ? "default" : "secondary"}
-                                className={isBuyer ? "bg-blue-100 text-blue-800 border-blue-200" : "bg-green-100 text-green-800 border-green-200"}
-                            >
-                                {session.user.role}
-                            </Badge>
-                            <Button
-                                variant="outline"
-                                className="border-gray-200 hover:border-red-300 hover:text-red-600 transition-colors"
-                                onClick={() => {
-                                    window.location.href = "/api/auth/signout";
-                                }}
-                            >
-                                Sign Out
-                            </Button>
+
+                        {/* User Section */}
+                        <div className="flex items-center space-x-6">
+                            {/* Welcome Message */}
+                            <div className="hidden md:flex items-center space-x-3">
+                                <div className="text-right">
+                                    <p className="text-sm font-semibold text-gray-900">
+                                        Welcome back, {session.user.name?.split(' ')[0]}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                        {isBuyer ? 'Buyer Dashboard' : 'Supplier Dashboard'}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Role Badge */}
+                            <div className="flex items-center space-x-2">
+                                <div className={`w-2 h-2 rounded-full ${isBuyer ? 'bg-blue-500' : 'bg-green-500'} animate-pulse`}></div>
+                                <Badge
+                                    variant="outline"
+                                    className={`px-3 py-1 text-xs font-semibold border-2 ${isBuyer
+                                        ? 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
+                                        : 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+                                        } transition-colors duration-200`}
+                                >
+                                    {isBuyer ? '👤 Buyer' : '🏭 Supplier'}
+                                </Badge>
+                            </div>
+
+                            {/* Sign Out Button */}
+                            <Link href="/auth/signout">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="group border-gray-300 hover:border-red-400 hover:bg-red-50 hover:text-red-600 transition-all duration-200 font-medium"
+                                >
+                                    <span className="group-hover:scale-110 transition-transform duration-200">🚪</span>
+                                    <span className="ml-2 hidden sm:inline">Sign Out</span>
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -137,9 +170,34 @@ export default function Dashboard() {
                                         </p>
                                     </div>
                                 </div>
-                                <Link href="/rfq/create">
+                                <Link href="/rfqs/create">
                                     <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
                                         Create RFQ
+                                    </Button>
+                                </Link>
+                            </div>
+                        </Card>
+                    </div>
+                )}
+
+                {!isBuyer && (
+                    <div className="mb-8">
+                        <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                        <Package className="w-6 h-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-semibold text-gray-900">Create New Product</h3>
+                                        <p className="text-gray-600">
+                                            Add a new product to your catalog and start attracting buyers worldwide
+                                        </p>
+                                    </div>
+                                </div>
+                                <Link href="/products/create">
+                                    <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                        Add Product
                                     </Button>
                                 </Link>
                             </div>

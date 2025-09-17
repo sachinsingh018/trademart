@@ -214,7 +214,7 @@ GET /api/products?search=headphones&category=Electronics&subcategory=Audio&sortB
 ### For Suppliers:
 
 1. **Sign Up** as a supplier role
-2. **Access Dashboard** at `/supplier-dashboard`
+2. **Access Dashboard** at `/dashboard`
 3. **Complete Profile** in the Profile tab
 4. **Add Products** in the Products tab
 5. **Monitor Performance** in the Analytics tab

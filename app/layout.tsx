@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://trademart.com'),
   title: "TradeMart - Global B2B Marketplace",
   description: "Connect buyers and suppliers worldwide. Find products, submit RFQs, and grow your business on TradeMart.",
   keywords: "B2B marketplace, global trade, suppliers, buyers, RFQ, business, commerce, manufacturing, wholesale",

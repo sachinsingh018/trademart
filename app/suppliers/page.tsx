@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
+import { Package } from "lucide-react";
 
 interface Supplier {
     id: string;
@@ -227,9 +228,6 @@ export default function SuppliersPage() {
                                 <Link href="/rfqs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
                                     RFQs
                                 </Link>
-                                <Link href="/pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                    Pricing
-                                </Link>
                             </div>
                             <div className="flex items-center space-x-4">
                                 <Link href="/auth/signin">
@@ -284,6 +282,32 @@ export default function SuppliersPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Product Creation Card - COMMENTED OUT */}
+            {/* <div className="bg-white border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                                    <Package className="w-6 h-6 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-semibold text-gray-900">Create New Product</h3>
+                                    <p className="text-gray-600">
+                                        Add a new product to your catalog and start attracting buyers worldwide
+                                    </p>
+                                </div>
+                            </div>
+                            <Link href="/products/create">
+                                <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                    Add Product
+                                </Button>
+                            </Link>
+                        </div>
+                    </Card>
+                </div>
+            </div> */}
 
             {/* Filters */}
             <div className="bg-white border-b border-gray-200 sticky top-16 z-40">

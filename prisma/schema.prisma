@@ -23,6 +23,7 @@ model User {
   buyerReviews      SupplierReview[] @relation("BuyerReviews")
   supplier          Supplier?
   buyerTransactions Transaction[]    @relation("BuyerTransactions")
+  fileUploads       FileUpload[]
 
   @@map("users")
   @@schema("trademart")
@@ -225,5 +226,22 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+  @@schema("trademart")
+}
+
+model FileUpload {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  originalName String  @map("original_name")
+  fileName    String   @map("file_name")
+  fileKey     String   @unique @map("file_key")
+  fileSize    Int      @map("file_size")
+  contentType String   @map("content_type")
+  bucketName  String   @map("bucket_name")
+  url         String?
+  uploadedAt  DateTime @default(now()) @map("uploaded_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("file_uploads")
   @@schema("trademart")
 }

@@ -1,17 +1,37 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import CountryFlagsBar from "@/components/ui/country-flags-bar";
+import SearchPopup from "@/components/ui/search-popup";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://trademart.com'),
   title: "TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers",
   description: "Join TradeMart, the leading global B2B marketplace. Connect with buyers and suppliers worldwide. Find products, submit RFQs, and grow your business.",
   keywords: "B2B marketplace, global trade, suppliers, buyers, RFQ, business, commerce",
 };
 
 export default function Home() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
+
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      setIsSearchPopupOpen(true);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Navigation */}
@@ -40,9 +60,6 @@ export default function Home() {
                 </Link>
                 <Link href="/rfqs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
                   RFQs
-                </Link>
-                <Link href="/pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                  Pricing
                 </Link>
               </div>
 
@@ -92,9 +109,15 @@ export default function Home() {
               <input
                 type="text"
                 placeholder="Search products, suppliers, or categories..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyPress={handleKeyPress}
                 className="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none shadow-lg"
               />
-              <Button className="absolute right-2 top-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-6 py-2">
+              <Button
+                onClick={handleSearch}
+                className="absolute right-2 top-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-6 py-2"
+              >
                 Search
               </Button>
             </div>
@@ -405,6 +428,13 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Search Popup */}
+      <SearchPopup
+        isOpen={isSearchPopupOpen}
+        onClose={() => setIsSearchPopupOpen(false)}
+        searchTerm={searchTerm}
+      />
     </div>
   );
 }

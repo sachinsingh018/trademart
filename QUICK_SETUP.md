@@ -115,6 +115,6 @@ Once everything is working:
 - ✅ `/suppliers` - Shows real suppliers from database
 - ✅ `/products` - Shows real products from database  
 - ✅ `/rfqs` - Shows real RFQs from database
-- ✅ `/supplier-dashboard` - Manage supplier data
+- ✅ `/dashboard` - Unified dashboard for all users
 
 The error should be gone and you'll see real data! 🎉

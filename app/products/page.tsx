@@ -262,9 +262,6 @@ export default function ProductsPage() {
                                 <Link href="/rfqs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
                                     RFQs
                                 </Link>
-                                <Link href="/pricing" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                    Pricing
-                                </Link>
                             </div>
                             <div className="flex items-center space-x-4">
                                 <Link href="/auth/signin">
@@ -396,7 +393,7 @@ export default function ProductsPage() {
                         </div>
                     ) : (
                         filteredProducts.map((product) => (
-                            <Card key={product.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+                            <Card key={product.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
                                 <CardHeader>
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
@@ -421,8 +418,8 @@ export default function ProductsPage() {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
+                                <CardContent className="flex flex-col flex-grow">
+                                    <div className="space-y-4 flex-grow">
                                         {/* Price and Supplier */}
                                         <div className="flex justify-between items-center">
                                             <div>
@@ -494,22 +491,22 @@ export default function ProductsPage() {
                                                 ))}
                                             </div>
                                         </div>
+                                    </div>
 
-                                        {/* Actions */}
-                                        <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
-                                            <div className="text-sm text-gray-600">
-                                                {product.orders} orders
-                                            </div>
-                                            <div className="flex space-x-2">
-                                                <Link href={`/products/${product.id}`}>
-                                                    <Button variant="outline" size="sm">
-                                                        View Details
-                                                    </Button>
-                                                </Link>
-                                                <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
-                                                    Contact Supplier
+                                    {/* Actions - Always at bottom */}
+                                    <div className="pt-4 border-t border-gray-200 flex justify-between items-center mt-auto">
+                                        <div className="text-sm text-gray-600">
+                                            {product.orders} orders
+                                        </div>
+                                        <div className="flex space-x-2">
+                                            <Link href={`/products/${product.id}`}>
+                                                <Button variant="outline" size="sm">
+                                                    View Details
                                                 </Button>
-                                            </div>
+                                            </Link>
+                                            <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                                                Contact Supplier
+                                            </Button>
                                         </div>
                                     </div>
                                 </CardContent>

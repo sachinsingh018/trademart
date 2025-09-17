@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { validateEmail, validatePhoneNumber } from "@/lib/validation";
+
 
 interface FormData {
     // Basic Info
@@ -52,6 +54,8 @@ function SignUpForm() {
     const [success, setSuccess] = useState("");
     const [otpSent, setOtpSent] = useState(false);
     const [otpVerified, setOtpVerified] = useState(false);
+    const [emailValidation, setEmailValidation] = useState<{ isValid: boolean; message: string } | null>(null);
+    const [phoneValidation, setPhoneValidation] = useState<{ isValid: boolean; message: string; countryCode?: string } | null>(null);
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -96,6 +100,37 @@ function SignUpForm() {
         }));
     };
 
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const email = e.target.value;
+        setFormData(prev => ({ ...prev, email }));
+
+        if (email.trim()) {
+            const validation = validateEmail(email);
+            setEmailValidation({
+                isValid: validation.isValid,
+                message: validation.message
+            });
+        } else {
+            setEmailValidation(null);
+        }
+    };
+
+    const handlePhoneChange = (value: string) => {
+        const phone = value || '';
+        setFormData(prev => ({ ...prev, phone }));
+
+        if (phone.trim()) {
+            const validation = validatePhoneNumber(phone);
+            setPhoneValidation({
+                isValid: validation.isValid,
+                message: validation.message,
+                countryCode: validation.countryCode
+            });
+        } else {
+            setPhoneValidation(null);
+        }
+    };
+
     const validateStep = (step: number): boolean => {
         setError("");
 
@@ -121,6 +156,21 @@ function SignUpForm() {
                     setError("Passwords do not match");
                     return false;
                 }
+
+                // Validate email
+                const emailValidation = validateEmail(formData.email);
+                if (!emailValidation.isValid) {
+                    setError(emailValidation.message);
+                    return false;
+                }
+
+                // Validate phone
+                const phoneValidation = validatePhoneNumber(formData.phone);
+                if (!phoneValidation.isValid) {
+                    setError(phoneValidation.message);
+                    return false;
+                }
+
                 return true;
 
             case 2:
@@ -150,10 +200,8 @@ function SignUpForm() {
                 return true;
 
             case 4:
-                if (!otpVerified) {
-                    setError("Please verify your contact information first");
-                    return false;
-                }
+                // OTP verification is optional for now
+                // Users can skip this step and proceed to account creation
                 return true;
 
             case 5:
@@ -314,10 +362,16 @@ function SignUpForm() {
                                     name="email"
                                     type="email"
                                     value={formData.email}
-                                    onChange={handleInputChange}
+                                    onChange={handleEmailChange}
                                     placeholder="Enter your email"
                                     required
+                                    className={emailValidation && !emailValidation.isValid ? "border-red-500 focus:border-red-500" : ""}
                                 />
+                                {emailValidation && (
+                                    <div className={`text-sm mt-1 ${emailValidation.isValid ? "text-green-600" : "text-red-600"}`}>
+                                        {emailValidation.message}
+                                    </div>
+                                )}
                             </div>
 
                             <div>
@@ -327,10 +381,21 @@ function SignUpForm() {
                                     name="phone"
                                     type="tel"
                                     value={formData.phone}
-                                    onChange={handleInputChange}
-                                    placeholder="Enter your phone number"
+                                    onChange={(e) => handlePhoneChange(e.target.value)}
+                                    placeholder="Enter your phone number with country code (e.g., +1234567890)"
                                     required
+                                    className={phoneValidation && !phoneValidation.isValid ? "border-red-500 focus:border-red-500" : ""}
                                 />
+                                {phoneValidation && (
+                                    <div className={`text-sm mt-1 ${phoneValidation.isValid ? "text-green-600" : "text-red-600"}`}>
+                                        {phoneValidation.message}
+                                        {phoneValidation.countryCode && phoneValidation.isValid && (
+                                            <span className="ml-2 text-gray-500">
+                                                (Country: {phoneValidation.countryCode})
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             <div>
@@ -555,8 +620,8 @@ function SignUpForm() {
                 return (
                     <div className="space-y-6">
                         <div className="text-center mb-6">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Contact</h3>
-                            <p className="text-gray-600">We&apos;ll send you a verification code</p>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Contact (Optional)</h3>
+                            <p className="text-gray-600">You can verify your contact information or skip this step</p>
                         </div>
 
                         <div className="space-y-4">
@@ -642,6 +707,24 @@ function SignUpForm() {
                                     </Button>
                                 </div>
                             )}
+
+                            {/* Skip Verification Option */}
+                            <div className="text-center pt-4 border-t border-gray-200">
+                                <p className="text-sm text-gray-500 mb-3">
+                                    Verification is optional. You can skip this step and complete your account creation.
+                                </p>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setOtpVerified(true);
+                                        setSuccess("Verification skipped. You can verify later in your account settings.");
+                                    }}
+                                    className="w-full"
+                                >
+                                    Skip Verification
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 );
@@ -742,7 +825,7 @@ function SignUpForm() {
                             {currentStep === 1 && "Basic Information"}
                             {currentStep === 2 && "Company Details"}
                             {currentStep === 3 && "Location"}
-                            {currentStep === 4 && "Verification"}
+                            {currentStep === 4 && "Verification (Optional)"}
                             {currentStep === 5 && "Terms & Conditions"}
                         </CardTitle>
                     </CardHeader>
