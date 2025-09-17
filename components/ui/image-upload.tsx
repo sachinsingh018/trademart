@@ -5,7 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Upload, X, Image as ImageIcon, CheckCircle } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import Image from "next/image";
 
 export interface UploadedFile {
@@ -83,7 +83,7 @@ export default function ImageUpload({
                 setUploadProgress(0);
                 setUploading(false);
             }, 1000);
-        } catch (err) {
+        } catch {
             setError("Upload failed. Please try again.");
             setUploading(false);
             setUploadProgress(0);
@@ -119,8 +119,8 @@ export default function ImageUpload({
             <Card
                 {...getRootProps()}
                 className={`border-2 border-dashed transition-colors cursor-pointer ${isDragActive
-                        ? "border-blue-400 bg-blue-50"
-                        : "border-gray-300 hover:border-gray-400"
+                    ? "border-blue-400 bg-blue-50"
+                    : "border-gray-300 hover:border-gray-400"
                     } ${uploading || uploadedFiles.length >= maxFiles ? "opacity-50 cursor-not-allowed" : ""}`}
             >
                 <CardContent className="p-6 text-center">

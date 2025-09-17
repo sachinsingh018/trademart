@@ -9,31 +9,20 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { 
-    TrendingUp, 
-    TrendingDown,
+import {
+    TrendingUp,
     Clock,
     CheckCircle,
-    AlertTriangle,
     DollarSign,
     Package,
-    Users,
     Star,
     Target,
-    Zap,
     BarChart3,
-    FileText,
     Send,
     Eye,
     Edit,
-    Trash2,
-    Filter,
-    Search,
-    Calendar,
-    MapPin,
     Truck,
-    Shield,
-    Award
+    Shield
 } from "lucide-react";
 
 interface RFQ {
@@ -117,7 +106,7 @@ export default function SupplierOS() {
     const fetchData = async () => {
         try {
             setIsLoading(true);
-            
+
             // Fetch RFQs, quotes, orders, and stats in parallel
             const [rfqsRes, quotesRes, ordersRes, statsRes] = await Promise.all([
                 fetch('/api/rfqs?supplier=true'),
@@ -360,24 +349,24 @@ export default function SupplierOS() {
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="h-20 flex flex-col gap-2"
                                     onClick={() => setActiveTab("rfqs")}
                                 >
                                     <Target className="h-6 w-6" />
                                     <span>Browse RFQs</span>
                                 </Button>
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="h-20 flex flex-col gap-2"
                                     onClick={() => setActiveTab("quotes")}
                                 >
                                     <Send className="h-6 w-6" />
                                     <span>Manage Quotes</span>
                                 </Button>
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     className="h-20 flex flex-col gap-2"
                                     onClick={() => setActiveTab("orders")}
                                 >
@@ -408,7 +397,7 @@ export default function SupplierOS() {
                                                 {rfq.status}
                                             </Badge>
                                         </div>
-                                        
+
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                                             <div>
                                                 <p className="text-sm text-gray-600">Quantity</p>
@@ -429,7 +418,7 @@ export default function SupplierOS() {
                                         </div>
 
                                         <div className="flex gap-2">
-                                            <Button 
+                                            <Button
                                                 size="sm"
                                                 onClick={() => setSelectedRFQ(rfq)}
                                             >
@@ -466,7 +455,7 @@ export default function SupplierOS() {
                                                 {quote.status}
                                             </Badge>
                                         </div>
-                                        
+
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                                             <div>
                                                 <p className="text-sm text-gray-600">My Quote</p>
@@ -534,7 +523,7 @@ export default function SupplierOS() {
                                                 </Badge>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                                             <div>
                                                 <p className="text-sm text-gray-600">Amount</p>
@@ -614,15 +603,15 @@ export default function SupplierOS() {
                                 />
                             </div>
                             <div className="flex gap-2">
-                                <Button 
+                                <Button
                                     onClick={() => submitQuote(selectedRFQ.id)}
                                     disabled={!quoteForm.price || !quoteForm.leadTimeDays}
                                     className="flex-1"
                                 >
                                     Submit Quote
                                 </Button>
-                                <Button 
-                                    variant="outline" 
+                                <Button
+                                    variant="outline"
                                     onClick={() => setSelectedRFQ(null)}
                                 >
                                     Cancel
