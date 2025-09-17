@@ -1,37 +1,11 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import CountryFlagsBar from "@/components/ui/country-flags-bar";
-import SearchPopup from "@/components/ui/search-popup";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  metadataBase: new URL('https://trademart.com'),
-  title: "TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers",
-  description: "Join TradeMart, the leading global B2B marketplace. Connect with buyers and suppliers worldwide. Find products, submit RFQs, and grow your business.",
-  keywords: "B2B marketplace, global trade, suppliers, buyers, RFQ, business, commerce",
-};
+import SearchSection from "@/components/ui/search-section";
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
-
-  const handleSearch = () => {
-    if (searchTerm.trim()) {
-      setIsSearchPopupOpen(true);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Navigation */}
@@ -103,48 +77,41 @@ export default function Home() {
             Secure transactions, competitive quotes, and trusted partnerships.
           </p>
 
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-8">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products, suppliers, or categories..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none shadow-lg"
-              />
-              <Button
-                onClick={handleSearch}
-                className="absolute right-2 top-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-6 py-2"
-              >
-                Search
-              </Button>
-            </div>
-          </div>
+          {/* Search Section */}
+          <SearchSection />
 
           {/* Quick Actions */}
           <div className="flex flex-wrap justify-center gap-4 mb-8">
             <Link href="/auth/signup?role=buyer">
               <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300">
-                📝 Post RFQ
-              </Button>
-            </Link>
-            <Link href="/suppliers">
-              <Button variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-6 py-3 transition-all duration-300">
-                🏭 Browse Suppliers
-              </Button>
-            </Link>
-            <Link href="/products">
-              <Button variant="outline" className="border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white px-6 py-3 transition-all duration-300">
-                📦 View Products
+                Start Buying
               </Button>
             </Link>
             <Link href="/auth/signup?role=supplier">
-              <Button variant="outline" className="border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white px-6 py-3 transition-all duration-300">
-                🚀 Join as Supplier
+              <Button variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-6 py-3 font-semibold transition-all duration-300">
+                Start Selling
               </Button>
             </Link>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-2">10K+</div>
+              <div className="text-gray-600">Active Suppliers</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600 mb-2">50K+</div>
+              <div className="text-gray-600">Products Listed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-2">100+</div>
+              <div className="text-gray-600">Countries</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-orange-600 mb-2">99.9%</div>
+              <div className="text-gray-600">Uptime</div>
+            </div>
           </div>
         </div>
       </section>
@@ -153,232 +120,126 @@ export default function Home() {
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Why Choose TradeMart?
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Built for modern B2B commerce with security and trust at its core
+              We provide the tools and security you need to grow your business globally
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-              <CardHeader className="pb-6">
-                <CardTitle className="flex items-center gap-4 text-xl">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">1</div>
-                  Secure Escrow
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 leading-relaxed">
-                  Your funds are held securely until delivery is confirmed.
-                  No payment until you&apos;re satisfied with your order.
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="text-center p-8 hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+              <CardHeader>
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl mb-2">Verified Suppliers</CardTitle>
+                <CardDescription className="text-gray-600">
+                  All suppliers are verified and certified. Trade with confidence knowing you're working with legitimate businesses.
                 </CardDescription>
-              </CardContent>
+              </CardHeader>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-              <CardHeader className="pb-6">
-                <CardTitle className="flex items-center gap-4 text-xl">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">2</div>
-                  Verified Suppliers
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 leading-relaxed">
-                  All suppliers are verified and rated.
-                  See their track record, ratings, and past performance.
+            <Card className="text-center p-8 hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+              <CardHeader>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl mb-2">Secure Payments</CardTitle>
+                <CardDescription className="text-gray-600">
+                  Protected transactions with escrow services. Your money is safe until you receive your goods.
                 </CardDescription>
-              </CardContent>
+              </CardHeader>
             </Card>
 
-            <Card className="p-8 hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-              <CardHeader className="pb-6">
-                <CardTitle className="flex items-center gap-4 text-xl">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">3</div>
-                  Competitive Quotes
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-gray-600 leading-relaxed">
-                  Get multiple quotes from verified suppliers.
-                  Compare prices, lead times, and terms to find the best deal.
+            <Card className="text-center p-8 hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+              <CardHeader>
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl mb-2">Fast Matching</CardTitle>
+                <CardDescription className="text-gray-600">
+                  AI-powered matching connects you with the right suppliers instantly. Save time and find better deals.
                 </CardDescription>
-              </CardContent>
+              </CardHeader>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Categories Section */}
+      {/* How It Works Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              Popular Categories
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              How It Works
             </h2>
-            <p className="text-xl text-gray-600">
-              Find suppliers across various industries
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get started in minutes and begin trading with verified partners worldwide
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { name: "Electronics", icon: "📱", color: "from-blue-500 to-blue-600" },
-              { name: "Textiles", icon: "👕", color: "from-pink-500 to-pink-600" },
-              { name: "Machinery", icon: "⚙️", color: "from-gray-500 to-gray-600" },
-              { name: "Chemicals", icon: "🧪", color: "from-green-500 to-green-600" },
-              { name: "Food & Beverage", icon: "🍎", color: "from-orange-500 to-orange-600" },
-              { name: "Automotive", icon: "🚗", color: "from-red-500 to-red-600" },
-              { name: "Construction", icon: "🏗️", color: "from-yellow-500 to-yellow-600" },
-              { name: "Healthcare", icon: "🏥", color: "from-purple-500 to-purple-600" }
-            ].map((category) => (
-              <Card key={category.name} className="hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer border-0 shadow-md bg-white group">
-                <CardContent className="p-6 text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300`}>
-                    {category.icon}
-                  </div>
-                  <h3 className="font-semibold text-gray-900 text-lg group-hover:text-blue-600 transition-colors">{category.name}</h3>
-                  <p className="text-sm text-gray-500 mt-2">Browse suppliers</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Trending Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
-              🔥 Trending This Week
-            </h2>
-            <p className="text-xl text-gray-600">
-              Popular products and top-rated suppliers
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Trending Products */}
-            <div className="md:col-span-2">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                📈 Hot Products
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { name: "Wireless Bluetooth Headphones", supplier: "TechCorp Ltd", orders: "2.3K", price: "$45" },
-                  { name: "Industrial LED Strip Lights", supplier: "LightPro Inc", orders: "1.8K", price: "$12" },
-                  { name: "Organic Cotton T-Shirts", supplier: "EcoWear Co", orders: "1.5K", price: "$8" },
-                  { name: "Stainless Steel Water Bottles", supplier: "AquaTech", orders: "1.2K", price: "$15" }
-                ].map((product, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer border-0 shadow-sm">
-                    <CardContent className="p-4 flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">{product.name}</h4>
-                          <p className="text-sm text-gray-500">by {product.supplier}</p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-green-600">{product.price}</div>
-                        <div className="text-sm text-gray-500">{product.orders} orders</div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                1
               </div>
+              <h3 className="text-xl font-semibold mb-2">Sign Up</h3>
+              <p className="text-gray-600">Create your account as a buyer or supplier in just a few clicks</p>
             </div>
 
-            {/* Top Suppliers */}
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                ⭐ Top Suppliers
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { name: "GlobalTech Solutions", rating: "4.9", orders: "15.2K", category: "Electronics" },
-                  { name: "Premium Textiles", rating: "4.8", orders: "12.8K", category: "Textiles" },
-                  { name: "Industrial Supply Co", rating: "4.9", orders: "18.5K", category: "Machinery" },
-                  { name: "EcoChem Industries", rating: "4.7", orders: "9.3K", category: "Chemicals" }
-                ].map((supplier, index) => (
-                  <Card key={index} className="hover:shadow-lg transition-all duration-300 cursor-pointer border-0 shadow-sm">
-                    <CardContent className="p-4">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-gray-900">{supplier.name}</h4>
-                          <p className="text-sm text-gray-500">{supplier.category}</p>
-                        </div>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-yellow-500">⭐ {supplier.rating}</span>
-                        <span className="text-gray-500">{supplier.orders} orders</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                2
               </div>
+              <h3 className="text-xl font-semibold mb-2">Browse & Connect</h3>
+              <p className="text-gray-600">Find products or suppliers that match your business needs</p>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-blue-700">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Trusted by Thousands
-            </h2>
-            <p className="text-blue-100 text-lg">
-              Real metrics from our platform
-            </p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <div className="text-4xl font-bold text-white mb-2">99.2%</div>
-              <div className="text-blue-100">On-time Delivery</div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                3
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Negotiate</h3>
+              <p className="text-gray-600">Communicate directly and negotiate terms that work for both parties</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <div className="text-4xl font-bold text-white mb-2">0.8%</div>
-              <div className="text-blue-100">Dispute Rate</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <div className="text-4xl font-bold text-white mb-2">24h</div>
-              <div className="text-blue-100">Avg. Refund Time</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-              <div className="text-4xl font-bold text-white mb-2">10K+</div>
-              <div className="text-blue-100">Verified Suppliers</div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+                4
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Trade Safely</h3>
+              <p className="text-gray-600">Complete secure transactions with our protected payment system</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-blue-800">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            Ready to Transform Your B2B Sourcing?
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Ready to Start Trading?
           </h2>
-          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-            Join thousands of businesses already using TradeMart for secure, efficient sourcing.
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of businesses already growing on TradeMart
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-wrap justify-center gap-4">
             <Link href="/auth/signup?role=buyer">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                Start Your First RFQ
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                Start Buying
               </Button>
             </Link>
             <Link href="/auth/signup?role=supplier">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-8 py-4 text-lg font-semibold transition-all duration-300">
-                Join as Supplier
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold">
+                Start Selling
               </Button>
             </Link>
           </div>
@@ -386,39 +247,49 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">T</span>
-                </div>
-                <h3 className="text-2xl font-bold">TradeMart</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <Image
+                  src="/logofinal.png"
+                  alt="TradeMart Logo"
+                  width={40}
+                  height={40}
+                  className="w-10 h-10"
+                />
+                <span className="ml-2 text-xl font-bold">TradeMart</span>
               </div>
-              <p className="text-gray-400 mb-6 max-w-md">
-                The B2B sourcing marketplace that connects buyers with verified suppliers.
-                Trade safe, grow fast.
+              <p className="text-gray-400 mb-4">
+                The global B2B marketplace connecting buyers and suppliers worldwide.
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Product</h3>
+              <h3 className="text-lg font-semibold mb-4">For Buyers</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/rfqs" className="hover:text-white transition-colors">Browse RFQs</Link></li>
-                <li><Link href="/suppliers" className="hover:text-white transition-colors">Suppliers</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="/features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="/products" className="hover:text-white transition-colors">Browse Products</Link></li>
+                <li><Link href="/suppliers" className="hover:text-white transition-colors">Find Suppliers</Link></li>
+                <li><Link href="/rfqs" className="hover:text-white transition-colors">Submit RFQ</Link></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-4">Company</h3>
+              <h3 className="text-lg font-semibold mb-4">For Suppliers</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about" className="hover:text-white transition-colors">About</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors">Terms</Link></li>
+                <li><Link href="/products/create" className="hover:text-white transition-colors">List Products</Link></li>
+                <li><Link href="/suppliers" className="hover:text-white transition-colors">Supplier Dashboard</Link></li>
+                <li><Link href="/rfqs" className="hover:text-white transition-colors">Respond to RFQs</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="/help" className="hover:text-white transition-colors">Help Center</Link></li>
+                <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
               </ul>
             </div>
           </div>
@@ -429,12 +300,6 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Search Popup */}
-      <SearchPopup
-        isOpen={isSearchPopupOpen}
-        onClose={() => setIsSearchPopupOpen(false)}
-        searchTerm={searchTerm}
-      />
     </div>
   );
 }
