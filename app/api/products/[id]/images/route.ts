@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { deleteFileFromS3 } from "@/lib/aws-s3";
+import { deleteFromS3 } from "@/lib/aws-s3";
 
 export async function POST(
     request: NextRequest,
@@ -91,7 +91,7 @@ export async function DELETE(
 
         // Delete file from S3
         try {
-            await deleteFileFromS3(imageKey);
+            await deleteFromS3(imageKey);
         } catch (s3Error) {
             console.error("Error deleting file from S3:", s3Error);
             // Continue even if S3 deletion fails

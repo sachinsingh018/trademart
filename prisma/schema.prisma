@@ -55,6 +55,7 @@ model Supplier {
   contactEmail         String?          @map("contact_email")
   contactPhone         String?          @map("contact_phone")
   businessInfo         Json?            @map("business_info")
+  companyLogo          String?          @map("company_logo")
   lastActive           DateTime?        @map("last_active")
   createdAt            DateTime         @default(now()) @map("created_at")
   updatedAt            DateTime         @updatedAt @map("updated_at")

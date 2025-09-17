@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { deleteFileFromS3 } from "@/lib/aws-s3";
+import { deleteFromS3 } from "@/lib/aws-s3";
 
 export async function POST(request: NextRequest) {
     try {
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         // Delete old logo if exists
         if (supplier.companyLogo) {
             try {
-                await deleteFileFromS3(supplier.companyLogo);
+                await deleteFromS3(supplier.companyLogo);
             } catch (s3Error) {
                 console.error("Error deleting old logo from S3:", s3Error);
                 // Continue even if S3 deletion fails
@@ -76,7 +76,7 @@ export async function DELETE(request: NextRequest) {
         // Delete logo from S3 if exists
         if (supplier.companyLogo) {
             try {
-                await deleteFileFromS3(supplier.companyLogo);
+                await deleteFromS3(supplier.companyLogo);
             } catch (s3Error) {
                 console.error("Error deleting logo from S3:", s3Error);
                 // Continue even if S3 deletion fails
