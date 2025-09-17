@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import SearchPopup from "@/components/ui/search-popup";
+// import SearchPopup from "@/components/ui/search-popup"; // COMMENTED OUT
 
 export default function SearchSection() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
+    // const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false); // COMMENTED OUT
 
     const handleSearch = () => {
         if (searchTerm.trim()) {
-            setIsSearchPopupOpen(true);
+            // setIsSearchPopupOpen(true); // COMMENTED OUT
+            console.log("Search functionality temporarily disabled");
         }
     };
 
@@ -42,12 +43,12 @@ export default function SearchSection() {
                 </div>
             </div>
 
-            {/* Search Popup */}
-            <SearchPopup
+            {/* Search Popup - COMMENTED OUT */}
+            {/* <SearchPopup
                 isOpen={isSearchPopupOpen}
                 onClose={() => setIsSearchPopupOpen(false)}
                 searchTerm={searchTerm}
-            />
+            /> */}
         </>
     );
 }
