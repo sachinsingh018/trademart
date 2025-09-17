@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
+import { notificationService } from "@/lib/notifications"
+import { whatsappService } from "@/lib/whatsapp"
 
 export async function POST(request: NextRequest) {
     try {
@@ -102,6 +104,31 @@ export async function POST(request: NextRequest) {
             await prisma.supplier.create({
                 data: supplierData
             })
+        }
+
+        // Send welcome notification
+        try {
+            await notificationService.sendToUser(
+                user.id,
+                {
+                    type: 'system',
+                    title: "Welcome to TradeMart!",
+                    message: `Welcome ${name}! Your ${role} account has been created successfully. You can now start using TradeMart to ${role === "buyer" ? "post RFQs and get quotes" : "submit quotes and grow your business"}.`,
+                    read: false,
+                }
+            );
+        } catch (error) {
+            console.error("Error sending welcome notification:", error);
+        }
+
+        // Send WhatsApp welcome message if phone is provided
+        if (phone && whatsappService.validatePhoneNumber(phone)) {
+            try {
+                await whatsappService.sendWelcomeMessage(phone, name, role);
+                console.log(`✅ WhatsApp welcome message sent to ${name}`);
+            } catch (error) {
+                console.error("Error sending WhatsApp welcome message:", error);
+            }
         }
 
         // TODO: Send welcome email using AWS SES

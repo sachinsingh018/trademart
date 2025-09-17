@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { whatsappService } from '@/lib/whatsapp';
+import { notificationService } from '@/lib/notifications';
 
 const prisma = new PrismaClient();
 
@@ -166,5 +168,183 @@ export async function GET(request: NextRequest) {
         );
     } finally {
         await prisma.$disconnect();
+    }
+}
+
+export async function POST(request: NextRequest) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session?.user || session.user.role !== 'buyer') {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const body = await request.json();
+        const {
+            title,
+            description,
+            category,
+            subcategory,
+            quantity,
+            unit,
+            budget,
+            currency = 'USD',
+            requirements = [],
+            specifications = {},
+            attachments = [],
+            additionalInfo,
+            expiresAt
+        } = body;
+
+        // Validate required fields
+        if (!title || !description || !category) {
+            return NextResponse.json({
+                success: false,
+                error: 'Title, description, and category are required'
+            }, { status: 400 });
+        }
+
+        // Create RFQ
+        const rfq = await prisma.rfq.create({
+            data: {
+                buyerId: session.user.id,
+                title,
+                description,
+                category,
+                subcategory,
+                quantity: quantity ? parseInt(quantity) : null,
+                unit,
+                budget: budget ? parseFloat(budget) : null,
+                currency,
+                requirements: Array.isArray(requirements) ? requirements : [],
+                specifications: typeof specifications === 'object' ? specifications : {},
+                attachments: Array.isArray(attachments) ? attachments : [],
+                additionalInfo,
+                expiresAt: expiresAt ? new Date(expiresAt) : null,
+                status: 'open'
+            },
+            include: {
+                buyer: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true
+                    }
+                }
+            }
+        });
+
+        // Send WhatsApp notifications to relevant suppliers
+        try {
+            await sendRFQNotifications(rfq);
+        } catch (error) {
+            console.error('Error sending RFQ notifications:', error);
+            // Don't fail the RFQ creation if notifications fail
+        }
+
+        return NextResponse.json({
+            success: true,
+            data: rfq
+        }, { status: 201 });
+
+    } catch (error) {
+        console.error('RFQ creation error:', error);
+        return NextResponse.json({ 
+            success: false, 
+            error: 'Failed to create RFQ' 
+        }, { status: 500 });
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+// Helper function to send RFQ notifications to relevant suppliers
+async function sendRFQNotifications(rfq: any) {
+    try {
+        // Find suppliers that match the RFQ category or have relevant specialties
+        const relevantSuppliers = await prisma.supplier.findMany({
+            where: {
+                verified: true,
+                OR: [
+                    { industry: rfq.category },
+                    { specialties: { has: rfq.category } },
+                    { specialties: { hasSome: rfq.requirements || [] } }
+                ]
+            },
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        phone: true
+                    }
+                }
+            },
+            take: 10 // Limit to first 10 suppliers to avoid spam
+        });
+
+        console.log(`Found ${relevantSuppliers.length} relevant suppliers for RFQ: ${rfq.title}`);
+
+        // Send WhatsApp notifications to each supplier
+        for (const supplier of relevantSuppliers) {
+            if (supplier.user.phone && whatsappService.validatePhoneNumber(supplier.user.phone)) {
+                try {
+                    const result = await whatsappService.sendRFQNotification(
+                        supplier.user.phone,
+                        rfq.title,
+                        rfq.buyer.name,
+                        rfq.id
+                    );
+
+                    if (result.success) {
+                        console.log(`✅ WhatsApp notification sent to ${supplier.companyName} (${supplier.user.phone})`);
+                        // Send real-time notification to supplier
+                        await notificationService.sendToUser(
+                            supplier.userId,
+                            notificationService.createRFQNotification(
+                                rfq.title,
+                                rfq.buyer.name,
+                                rfq.id
+                            )
+                        );
+                    } else {
+                        console.log(`❌ Failed to send WhatsApp notification to ${supplier.companyName}: ${result.error}`);
+                        // Send real-time notification even if WhatsApp fails
+                        await notificationService.sendToUser(
+                            supplier.userId,
+                            notificationService.createRFQNotification(
+                                rfq.title,
+                                rfq.buyer.name,
+                                rfq.id
+                            )
+                        );
+                    }
+                } catch (error) {
+                    console.error(`Error sending notification to ${supplier.companyName}:`, error);
+                    // Send real-time notification even if WhatsApp fails
+                    await notificationService.sendToUser(
+                        supplier.userId,
+                        notificationService.createRFQNotification(
+                            rfq.title,
+                            rfq.buyer.name,
+                            rfq.id
+                        )
+                    );
+                }
+            } else {
+                console.log(`⚠️ Skipping ${supplier.companyName} - invalid phone number: ${supplier.user.phone}`);
+                // Send real-time notification even if WhatsApp fails
+                await notificationService.sendToUser(
+                    supplier.userId,
+                    notificationService.createRFQNotification(
+                        rfq.title,
+                        rfq.buyer.name,
+                        rfq.id
+                    )
+                );
+            }
+        }
+    } catch (error) {
+        console.error('Error in sendRFQNotifications:', error);
+        throw error;
     }
 }
