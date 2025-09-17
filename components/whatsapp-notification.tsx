@@ -42,7 +42,7 @@ export default function WhatsAppNotification({
 
         try {
             let endpoint = '';
-            let payload: any = {};
+            let payload: Record<string, unknown> = {};
 
             switch (messageType) {
                 case 'rfq':

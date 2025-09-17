@@ -195,7 +195,7 @@ export async function fileExists(key: string): Promise<boolean> {
 
         await s3Client.send(command);
         return true;
-    } catch (error) {
+    } catch {
         return false;
     }
 }

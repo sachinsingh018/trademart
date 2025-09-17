@@ -6,7 +6,7 @@ export interface Notification {
     type: 'rfq_created' | 'quote_received' | 'quote_accepted' | 'quote_rejected' | 'order_placed' | 'order_updated' | 'system' | 'whatsapp_sent';
     title: string;
     message: string;
-    data?: any;
+    data?: Record<string, unknown>;
     read: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -20,7 +20,7 @@ export interface NotificationData {
     buyerId?: string;
     amount?: number;
     currency?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 class NotificationService {
@@ -87,7 +87,7 @@ class NotificationService {
                 };
 
                 const message = `data: ${JSON.stringify(notificationData)}\n\n`;
-                
+
                 // Send to all connected clients for this user
                 for (const client of userClients) {
                     try {
@@ -160,9 +160,9 @@ class NotificationService {
     async markAsRead(notificationId: string, userId: string) {
         try {
             return await prisma.notification.updateMany({
-                where: { 
+                where: {
                     id: notificationId,
-                    userId 
+                    userId
                 },
                 data: { read: true }
             });
@@ -189,9 +189,9 @@ class NotificationService {
     async getUnreadCount(userId: string) {
         try {
             return await prisma.notification.count({
-                where: { 
+                where: {
                     userId,
-                    read: false 
+                    read: false
                 }
             });
         } catch (error) {
@@ -235,15 +235,15 @@ class NotificationService {
         return {
             type: 'whatsapp_sent',
             title: success ? 'WhatsApp Sent' : 'WhatsApp Failed',
-            message: success 
-                ? `WhatsApp notification sent to ${recipient}` 
+            message: success
+                ? `WhatsApp notification sent to ${recipient}`
                 : `Failed to send WhatsApp notification to ${recipient}`,
             data: { recipient, messageType, success },
             read: false,
         };
     }
 
-    createSystemNotification(title: string, message: string, data?: any): Omit<Notification, 'id' | 'userId' | 'createdAt' | 'updatedAt'> {
+    createSystemNotification(title: string, message: string, data?: Record<string, unknown>): Omit<Notification, 'id' | 'userId' | 'createdAt' | 'updatedAt'> {
         return {
             type: 'system',
             title,
