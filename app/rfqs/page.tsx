@@ -24,7 +24,7 @@ interface RFQ {
         company: string;
         country: string;
         verified: boolean;
-    };
+    };//sad
     quotesCount: number;
     createdAt: string;
     expiresAt: string;
