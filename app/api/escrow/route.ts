@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notificationService } from "@/lib/notifications";
-import { whatsappService } from "@/lib/whatsapp";
 
 // Escrow Service for TradeMart
 class EscrowService {
@@ -208,22 +207,7 @@ class EscrowService {
             );
 
             // Send WhatsApp notification to supplier
-            if (order.supplier?.user?.phone) {
-                await whatsappService.sendMessage(
-                    order.supplier.user.phone,
-                    'payment_released',
-                    [
-                        {
-                            type: 'body',
-                            parameters: [
-                                { type: 'text', text: order.id },
-                                { type: 'text', text: `₹${order.totalAmount}` }
-                            ]
-                        }
-                    ],
-                    `Payment of ₹${order.totalAmount} has been released for your order #${order.id}`
-                );
-            }
+            // WhatsApp notification removed - integration simplified
         } catch (error) {
             console.error('Error sending payment release notification:', error);
         }
@@ -271,23 +255,7 @@ class EscrowService {
                 }
             );
 
-            // Send WhatsApp notification to buyer
-            if (order.buyer?.phone) {
-                await whatsappService.sendMessage(
-                    order.buyer.phone,
-                    'refund_processed',
-                    [
-                        {
-                            type: 'body',
-                            parameters: [
-                                { type: 'text', text: order.id },
-                                { type: 'text', text: `₹${order.totalAmount}` }
-                            ]
-                        }
-                    ],
-                    `Refund of ₹${order.totalAmount} has been processed for order #${order.id}`
-                );
-            }
+            // WhatsApp notification removed - integration simplified
         } catch (error) {
             console.error('Error sending refund notification:', error);
         }

@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notificationService } from "@/lib/notifications";
-import { whatsappService } from "@/lib/whatsapp";
 
 export async function POST(request: NextRequest) {
     try {
@@ -15,9 +14,9 @@ export async function POST(request: NextRequest) {
         const { orderId, photos, videos, notes, score, status } = await request.json();
 
         if (!orderId || (!photos?.length && !videos?.length)) {
-            return NextResponse.json({ 
-                success: false, 
-                error: 'Order ID and at least one photo or video are required' 
+            return NextResponse.json({
+                success: false,
+                error: 'Order ID and at least one photo or video are required'
             }, { status: 400 });
         }
 
@@ -101,23 +100,7 @@ export async function POST(request: NextRequest) {
                         }
                     );
 
-                    // Send WhatsApp notification
-                    if (order.supplier.user.phone) {
-                        await whatsappService.sendMessage(
-                            order.supplier.user.phone,
-                            'payment_released',
-                            [
-                                {
-                                    type: 'body',
-                                    parameters: [
-                                        { type: 'text', text: order.orderNumber },
-                                        { type: 'text', text: `₹${order.totalAmount}` }
-                                    ]
-                                }
-                            ],
-                            `Payment of ₹${order.totalAmount} has been released for your order #${order.orderNumber}`
-                        );
-                    }
+                    // WhatsApp notification removed - integration simplified
                 }
             } catch (error) {
                 console.error('Error releasing escrow funds:', error);

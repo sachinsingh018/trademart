@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { whatsappService } from "@/lib/whatsapp"
 import { notificationService } from "@/lib/notifications"
 
 export async function POST(request: NextRequest) {
@@ -103,27 +102,7 @@ export async function POST(request: NextRequest) {
             }
         })
 
-        // Send WhatsApp notification to buyer about new quote
-        try {
-            if (quote.rfq.buyer.phone && whatsappService.validatePhoneNumber(quote.rfq.buyer.phone)) {
-                const result = await whatsappService.sendQuoteNotification(
-                    quote.rfq.buyer.phone,
-                    quote.rfq.title,
-                    `$${quote.price}`,
-                    quote.supplier.companyName,
-                    quote.id
-                );
-
-                if (result.success) {
-                    console.log(`✅ WhatsApp quote notification sent to buyer ${quote.rfq.buyer.name}`);
-                } else {
-                    console.log(`❌ Failed to send WhatsApp quote notification: ${result.error}`);
-                }
-            }
-        } catch (error) {
-            console.error('Error sending quote notification:', error);
-            // Don't fail the quote creation if notification fails
-        }
+        // WhatsApp notification removed - integration simplified
 
         // Send real-time notification to buyer about new quote
         try {

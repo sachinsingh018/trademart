@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notificationService } from "@/lib/notifications";
-import { whatsappService } from "@/lib/whatsapp";
 
 // Verification Service for TradeMart
 class VerificationService {
@@ -17,10 +16,10 @@ class VerificationService {
 
             // Extract PAN from GST
             const pan = gstNumber.substring(2, 12);
-            
+
             // Mock GST API call (replace with actual GST API)
             const gstData = await this.callGSTAPI(gstNumber);
-            
+
             if (gstData.success) {
                 return {
                     success: true,
@@ -48,7 +47,7 @@ class VerificationService {
         try {
             // Mock trade license validation (replace with actual API)
             const licenseData = await this.callTradeLicenseAPI(licenseNumber, state);
-            
+
             if (licenseData.success) {
                 return {
                     success: true,
@@ -109,23 +108,7 @@ class VerificationService {
                 }
             );
 
-            // Send WhatsApp notification
-            if (supplier.user.phone) {
-                await whatsappService.sendMessage(
-                    supplier.user.phone,
-                    'factory_verification_scheduled',
-                    [
-                        {
-                            type: 'body',
-                            parameters: [
-                                { type: 'text', text: verificationData.scheduledDate },
-                                { type: 'text', text: verificationData.type }
-                            ]
-                        }
-                    ],
-                    `Factory verification scheduled for ${verificationData.scheduledDate}`
-                );
-            }
+            // WhatsApp notification removed - integration simplified
 
             return {
                 success: true,

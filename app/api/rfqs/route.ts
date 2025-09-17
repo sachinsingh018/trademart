@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { whatsappService } from '@/lib/whatsapp';
 import { notificationService } from '@/lib/notifications';
 
 const prisma = new PrismaClient();
@@ -249,9 +248,9 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('RFQ creation error:', error);
-        return NextResponse.json({ 
-            success: false, 
-            error: 'Failed to create RFQ' 
+        return NextResponse.json({
+            success: false,
+            error: 'Failed to create RFQ'
         }, { status: 500 });
     } finally {
         await prisma.$disconnect();
@@ -284,55 +283,9 @@ async function sendRFQNotifications(rfq: any) {
 
         console.log(`Found ${relevantSuppliers.length} relevant suppliers for RFQ: ${rfq.title}`);
 
-        // Send WhatsApp notifications to each supplier
+        // Send in-app notifications to each supplier
         for (const supplier of relevantSuppliers) {
-            if (supplier.user.phone && whatsappService.validatePhoneNumber(supplier.user.phone)) {
-                try {
-                    const result = await whatsappService.sendRFQNotification(
-                        supplier.user.phone,
-                        rfq.title,
-                        rfq.buyer.name,
-                        rfq.id
-                    );
-
-                    if (result.success) {
-                        console.log(`✅ WhatsApp notification sent to ${supplier.companyName} (${supplier.user.phone})`);
-                        // Send real-time notification to supplier
-                        await notificationService.sendToUser(
-                            supplier.userId,
-                            notificationService.createRFQNotification(
-                                rfq.title,
-                                rfq.buyer.name,
-                                rfq.id
-                            )
-                        );
-                    } else {
-                        console.log(`❌ Failed to send WhatsApp notification to ${supplier.companyName}: ${result.error}`);
-                        // Send real-time notification even if WhatsApp fails
-                        await notificationService.sendToUser(
-                            supplier.userId,
-                            notificationService.createRFQNotification(
-                                rfq.title,
-                                rfq.buyer.name,
-                                rfq.id
-                            )
-                        );
-                    }
-                } catch (error) {
-                    console.error(`Error sending notification to ${supplier.companyName}:`, error);
-                    // Send real-time notification even if WhatsApp fails
-                    await notificationService.sendToUser(
-                        supplier.userId,
-                        notificationService.createRFQNotification(
-                            rfq.title,
-                            rfq.buyer.name,
-                            rfq.id
-                        )
-                    );
-                }
-            } else {
-                console.log(`⚠️ Skipping ${supplier.companyName} - invalid phone number: ${supplier.user.phone}`);
-                // Send real-time notification even if WhatsApp fails
+            try {
                 await notificationService.sendToUser(
                     supplier.userId,
                     notificationService.createRFQNotification(
@@ -341,6 +294,9 @@ async function sendRFQNotifications(rfq: any) {
                         rfq.id
                     )
                 );
+                console.log(`✅ Notification sent to ${supplier.companyName}`);
+            } catch (error) {
+                console.error(`Error sending notification to ${supplier.companyName}:`, error);
             }
         }
     } catch (error) {

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { notificationService } from "@/lib/notifications"
-import { whatsappService } from "@/lib/whatsapp"
 
 export async function POST(request: NextRequest) {
     try {
@@ -121,15 +120,6 @@ export async function POST(request: NextRequest) {
             console.error("Error sending welcome notification:", error);
         }
 
-        // Send WhatsApp welcome message if phone is provided
-        if (phone && whatsappService.validatePhoneNumber(phone)) {
-            try {
-                await whatsappService.sendWelcomeMessage(phone, name, role);
-                console.log(`✅ WhatsApp welcome message sent to ${name}`);
-            } catch (error) {
-                console.error("Error sending WhatsApp welcome message:", error);
-            }
-        }
 
         // TODO: Send welcome email using AWS SES
         // await sendWelcomeEmail(email, name, role);
