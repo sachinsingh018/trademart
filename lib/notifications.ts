@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 export interface Notification {
     id: string;
     userId: string;
-    type: 'rfq_created' | 'quote_received' | 'quote_accepted' | 'quote_rejected' | 'order_placed' | 'order_updated' | 'system' | 'whatsapp_sent';
+    type: 'rfq_created' | 'quote_received' | 'quote_accepted' | 'quote_rejected' | 'order_placed' | 'order_updated' | 'system';
     title: string;
     message: string;
     data?: Record<string, unknown>;
@@ -231,17 +231,6 @@ class NotificationService {
         };
     }
 
-    createWhatsAppNotification(recipient: string, messageType: string, success: boolean): Omit<Notification, 'id' | 'userId' | 'createdAt' | 'updatedAt'> {
-        return {
-            type: 'whatsapp_sent',
-            title: success ? 'WhatsApp Sent' : 'WhatsApp Failed',
-            message: success
-                ? `WhatsApp notification sent to ${recipient}`
-                : `Failed to send WhatsApp notification to ${recipient}`,
-            data: { recipient, messageType, success },
-            read: false,
-        };
-    }
 
     createSystemNotification(title: string, message: string, data?: Record<string, unknown>): Omit<Notification, 'id' | 'userId' | 'createdAt' | 'updatedAt'> {
         return {

@@ -16,14 +16,14 @@ import { useNotifications } from '@/hooks/useNotifications';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function NotificationBell() {
-    const { 
-        notifications, 
-        unreadCount, 
-        isConnected, 
-        isLoading, 
+    const {
+        notifications,
+        unreadCount,
+        isConnected,
+        isLoading,
         error,
         markAsRead,
-        markAllAsRead 
+        markAllAsRead
     } = useNotifications();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -42,8 +42,6 @@ export default function NotificationBell() {
                 return '📦';
             case 'order_updated':
                 return '🔄';
-            case 'whatsapp_sent':
-                return '📱';
             case 'system':
                 return '🔔';
             default:
@@ -65,8 +63,6 @@ export default function NotificationBell() {
                 return 'text-purple-600';
             case 'order_updated':
                 return 'text-orange-600';
-            case 'whatsapp_sent':
-                return 'text-green-600';
             case 'system':
                 return 'text-gray-600';
             default:
@@ -87,8 +83,8 @@ export default function NotificationBell() {
                 <Button variant="ghost" size="sm" className="relative">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
-                        <Badge 
-                            variant="destructive" 
+                        <Badge
+                            variant="destructive"
                             className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
                         >
                             {unreadCount > 99 ? '99+' : unreadCount}
@@ -146,9 +142,8 @@ export default function NotificationBell() {
                                     {notifications.map((notification, index) => (
                                         <div key={notification.id}>
                                             <div
-                                                className={`p-3 hover:bg-gray-50 cursor-pointer transition-colors ${
-                                                    !notification.read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                                                }`}
+                                                className={`p-3 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                                    }`}
                                                 onClick={() => handleNotificationClick(notification)}
                                             >
                                                 <div className="flex items-start gap-3">
