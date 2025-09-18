@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { 
-    Users, 
-    Building2, 
-    Package, 
-    FileText, 
-    CheckCircle, 
+import {
+    Users,
+    Building2,
+    Package,
+    FileText,
+    CheckCircle,
     XCircle,
     Eye,
     MoreHorizontal
@@ -189,12 +189,12 @@ export default function AdminDashboard() {
                                                         <Users className="h-4 w-4 text-blue-600" />
                                                     </div>
                                                     <div>
-                                                        <p className="font-medium">{user.name}</p>
-                                                        <p className="text-sm text-gray-500">{user.email}</p>
+                                                        <p className="font-medium">{String(user.name || 'Unknown')}</p>
+                                                        <p className="text-sm text-gray-500">{String(user.email || 'No email')}</p>
                                                     </div>
                                                 </div>
-                                                <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                                                    {user.role}
+                                                <Badge variant={String(user.role || 'user') === "admin" ? "default" : "secondary"}>
+                                                    {String(user.role || 'user')}
                                                 </Badge>
                                             </div>
                                         ))}
@@ -210,19 +210,19 @@ export default function AdminDashboard() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-4">
-                                        {stats?.recentRfqs?.map((rfq) => (
-                                            <div key={rfq.id} className="flex items-center justify-between">
+                                        {stats?.recentRfqs?.map((rfq, index) => (
+                                            <div key={rfq.id as string || index} className="flex items-center justify-between">
                                                 <div>
-                                                    <p className="font-medium">{rfq.title}</p>
+                                                    <p className="font-medium">{String(rfq.title || 'Untitled')}</p>
                                                     <p className="text-sm text-gray-500">
-                                                        {rfq.buyer?.name} • {rfq.category}
+                                                        {String((rfq.buyer as Record<string, unknown>)?.name || 'Unknown Buyer')} • {String(rfq.category || 'Uncategorized')}
                                                     </p>
                                                 </div>
                                                 <Badge variant={
-                                                    rfq.status === "open" ? "default" : 
-                                                    rfq.status === "quoted" ? "secondary" : "outline"
+                                                    String(rfq.status || 'unknown') === "open" ? "default" :
+                                                        String(rfq.status || 'unknown') === "quoted" ? "secondary" : "outline"
                                                 }>
-                                                    {rfq.status}
+                                                    {String(rfq.status || 'unknown')}
                                                 </Badge>
                                             </div>
                                         ))}
@@ -250,12 +250,12 @@ export default function AdminDashboard() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {stats?.topSuppliers?.map((supplier) => (
-                                            <TableRow key={supplier.id}>
+                                        {stats?.topSuppliers?.map((supplier, index) => (
+                                            <TableRow key={supplier.id as string || index}>
                                                 <TableCell className="font-medium">
-                                                    {supplier.companyName}
+                                                    {supplier.companyName as string}
                                                 </TableCell>
-                                                <TableCell>{supplier.industry}</TableCell>
+                                                <TableCell>{supplier.industry as string}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center">
                                                         <span className="text-yellow-500">★</span>
@@ -316,11 +316,11 @@ export default function AdminDashboard() {
                                     <TableBody>
                                         {stats?.recentUsers?.map((user) => (
                                             <TableRow key={user.id}>
-                                                <TableCell className="font-medium">{user.name}</TableCell>
-                                                <TableCell>{user.email}</TableCell>
+                                                <TableCell className="font-medium">{String(user.name || 'Unknown')}</TableCell>
+                                                <TableCell>{String(user.email || 'No email')}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                                                        {user.role}
+                                                    <Badge variant={String(user.role || 'user') === "admin" ? "default" : "secondary"}>
+                                                        {String(user.role || 'user')}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
@@ -427,18 +427,18 @@ export default function AdminDashboard() {
                                     <TableBody>
                                         {stats?.recentRfqs?.map((rfq) => (
                                             <TableRow key={rfq.id}>
-                                                <TableCell className="font-medium">{rfq.title}</TableCell>
-                                                <TableCell>{rfq.buyer?.name}</TableCell>
-                                                <TableCell>{rfq.category}</TableCell>
+                                                <TableCell className="font-medium">{String(rfq.title || 'Untitled')}</TableCell>
+                                                <TableCell>{String((rfq.buyer as Record<string, unknown>)?.name || 'Unknown Buyer')}</TableCell>
+                                                <TableCell>{String(rfq.category || 'Uncategorized')}</TableCell>
                                                 <TableCell>
                                                     {rfq.budget ? `$${rfq.budget}` : "Not specified"}
                                                 </TableCell>
                                                 <TableCell>
                                                     <Badge variant={
-                                                        rfq.status === "open" ? "default" : 
-                                                        rfq.status === "quoted" ? "secondary" : "outline"
+                                                        String(rfq.status || 'unknown') === "open" ? "default" :
+                                                            String(rfq.status || 'unknown') === "quoted" ? "secondary" : "outline"
                                                     }>
-                                                        {rfq.status}
+                                                        {String(rfq.status || 'unknown')}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
