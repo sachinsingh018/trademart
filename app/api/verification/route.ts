@@ -20,17 +20,17 @@ class VerificationService {
             // Mock GST API call (replace with actual GST API)
             const gstData = await this.callGSTAPI(gstNumber);
 
-            if (gstData.success) {
+            if (gstData && typeof gstData === 'object' && 'success' in gstData && gstData.success) {
                 return {
                     success: true,
                     data: {
                         gstNumber,
                         pan,
-                        businessName: gstData.data.businessName,
-                        address: gstData.data.address,
-                        status: gstData.data.status,
-                        registrationDate: gstData.data.registrationDate,
-                        lastUpdated: gstData.data.lastUpdated
+                        businessName: (gstData as any).data?.businessName || 'Unknown',
+                        address: (gstData as any).data?.address || 'Unknown',
+                        status: (gstData as any).data?.status || 'Unknown',
+                        registrationDate: (gstData as any).data?.registrationDate || 'Unknown',
+                        lastUpdated: (gstData as any).data?.lastUpdated || 'Unknown'
                     }
                 };
             } else {
