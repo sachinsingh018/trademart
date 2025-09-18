@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
                     ...notificationService.createQuoteNotification(
                         quote.rfq.title,
                         quote.supplier.companyName,
-                        quote.price,
+                        Number(quote.price),
                         quote.currency,
                         quote.id
                     )

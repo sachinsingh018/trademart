@@ -265,9 +265,9 @@ async function sendRFQNotifications(rfq: Record<string, unknown>) {
             where: {
                 verified: true,
                 OR: [
-                    { industry: rfq.category },
-                    { specialties: { has: rfq.category } },
-                    { specialties: { hasSome: rfq.requirements || [] } }
+                    { industry: String(rfq.category || '') },
+                    { specialties: { has: String(rfq.category || '') } },
+                    { specialties: { hasSome: Array.isArray(rfq.requirements) ? rfq.requirements.map(r => String(r)) : [] } }
                 ]
             },
             include: {
@@ -288,11 +288,14 @@ async function sendRFQNotifications(rfq: Record<string, unknown>) {
             try {
                 await notificationService.sendToUser(
                     supplier.userId,
-                    notificationService.createRFQNotification(
-                        rfq.title,
-                        rfq.buyer.name,
-                        rfq.id
-                    )
+                    {
+                        userId: supplier.userId,
+                        ...notificationService.createRFQNotification(
+                            String(rfq.title || ''),
+                            String((rfq.buyer as Record<string, unknown>)?.name || ''),
+                            String(rfq.id || '')
+                        )
+                    }
                 );
                 console.log(`✅ Notification sent to ${supplier.companyName}`);
             } catch (error) {
