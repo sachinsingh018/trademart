@@ -324,7 +324,7 @@ export default function AdminDashboard() {
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
-                                                    {new Date(user.createdAt).toLocaleDateString()}
+                                                    {new Date(user.createdAt as string).toLocaleDateString()}
                                                 </TableCell>
                                                 <TableCell>
                                                     <Badge variant="default">Active</Badge>
@@ -442,7 +442,7 @@ export default function AdminDashboard() {
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
-                                                    {new Date(rfq.createdAt).toLocaleDateString()}
+                                                    {new Date(rfq.createdAt as string).toLocaleDateString()}
                                                 </TableCell>
                                                 <TableCell>
                                                     <Button size="sm" variant="outline">

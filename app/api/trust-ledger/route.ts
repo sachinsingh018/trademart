@@ -85,7 +85,7 @@ class TrustLedgerService {
     async getPublicTrustLedger(page: number = 1, limit: number = 20, filters: Record<string, unknown> = {}) {
         try {
             const skip = (page - 1) * limit;
-            
+
             const whereClause: Record<string, unknown> = {
                 verified: true,
                 totalOrders: { gt: 0 } // Only show suppliers with orders
@@ -217,7 +217,7 @@ class TrustLedgerService {
             }
 
             const trustMetrics = await this.calculateTrustScore(supplierId);
-            
+
             // Get recent orders for timeline
             const recentOrders = supplier.orders
                 .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -323,7 +323,7 @@ class TrustLedgerService {
     }
 }
 
-export const trustLedgerService = new TrustLedgerService();
+const trustLedgerService = new TrustLedgerService();
 
 // API Routes for Trust Ledger
 export async function GET(request: NextRequest) {
@@ -332,7 +332,7 @@ export async function GET(request: NextRequest) {
         const page = parseInt(searchParams.get('page') || '1');
         const limit = parseInt(searchParams.get('limit') || '20');
         const supplierId = searchParams.get('supplierId');
-        
+
         const filters = {
             industry: searchParams.get('industry'),
             minRating: searchParams.get('minRating'),

@@ -262,7 +262,7 @@ class EscrowService {
     }
 }
 
-export const escrowService = new EscrowService();
+const escrowService = new EscrowService();
 
 // API Routes for Escrow
 export async function POST(request: NextRequest) {

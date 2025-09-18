@@ -110,6 +110,7 @@ export async function POST(request: NextRequest) {
             await notificationService.sendToUser(
                 user.id,
                 {
+                    userId: user.id,
                     type: 'system',
                     title: "Welcome to TradeMart!",
                     message: `Welcome ${name}! Your ${role} account has been created successfully. You can now start using TradeMart to ${role === "buyer" ? "post RFQs and get quotes" : "submit quotes and grow your business"}.`,

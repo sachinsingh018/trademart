@@ -270,7 +270,7 @@ class VerificationService {
     }
 }
 
-export const verificationService = new VerificationService();
+const verificationService = new VerificationService();
 
 // API Routes for Verification
 export async function POST(request: NextRequest) {
