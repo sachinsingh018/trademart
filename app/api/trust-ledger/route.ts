@@ -176,9 +176,9 @@ class TrustLedgerService {
                             email: true
                         }
                     },
-                    orders: {
+                    supplierTransactions: {
                         where: {
-                            status: { in: ['completed', 'cancelled', 'disputed'] }
+                            status: { in: ['released', 'refunded', 'disputed'] }
                         },
                         include: {
                             buyer: {
@@ -211,14 +211,16 @@ class TrustLedgerService {
 
             const trustMetrics = await this.calculateTrustScore(supplierId);
 
-            // Mock recent orders for timeline since Order model doesn't exist
-            const mockTotalOrders = supplier.totalOrders || 0;
-            const recentOrders = Array.from({ length: Math.min(10, mockTotalOrders) }, (_, i) => ({
-                id: `order_${i + 1}`,
-                status: i < 8 ? 'completed' : i < 9 ? 'cancelled' : 'disputed',
-                createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000),
-                amount: Math.floor(Math.random() * 10000) + 1000
-            }));
+            // Use actual transaction data instead of mock orders
+            const recentTransactions = supplier.supplierTransactions
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                .slice(0, 10)
+                .map(transaction => ({
+                    id: transaction.id,
+                    status: transaction.status,
+                    createdAt: transaction.createdAt,
+                    amount: transaction.amount
+                }));
 
             // Get recent reviews
             const recentReviews = supplier.reviews
@@ -242,7 +244,7 @@ class TrustLedgerService {
                         website: supplier.website
                     },
                     trustMetrics: trustMetrics.success ? trustMetrics.metrics : null,
-                    recentOrders,
+                    recentTransactions,
                     recentReviews,
                     trustScore: trustMetrics.success ? trustMetrics.trustScore : 0
                 }
