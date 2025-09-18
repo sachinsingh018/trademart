@@ -253,19 +253,19 @@ export default function AdminDashboard() {
                                         {stats?.topSuppliers?.map((supplier, index) => (
                                             <TableRow key={supplier.id as string || index}>
                                                 <TableCell className="font-medium">
-                                                    {supplier.companyName as string}
+                                                    {String(supplier.companyName || 'Unknown Company')}
                                                 </TableCell>
-                                                <TableCell>{supplier.industry as string}</TableCell>
+                                                <TableCell>{String(supplier.industry || 'Unknown Industry')}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center">
                                                         <span className="text-yellow-500">★</span>
-                                                        <span className="ml-1">{supplier.rating}</span>
+                                                        <span className="ml-1">{Number(supplier.rating || 0).toFixed(1)}</span>
                                                     </div>
                                                 </TableCell>
-                                                <TableCell>{supplier.totalOrders}</TableCell>
+                                                <TableCell>{Number(supplier.totalOrders || 0)}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={supplier.verified ? "default" : "secondary"}>
-                                                        {supplier.verified ? "Verified" : "Pending"}
+                                                    <Badge variant={Boolean(supplier.verified) ? "default" : "secondary"}>
+                                                        {Boolean(supplier.verified) ? "Verified" : "Pending"}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
@@ -378,8 +378,8 @@ export default function AdminDashboard() {
                                                     {supplier.city}, {supplier.country}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge variant={supplier.verified ? "default" : "secondary"}>
-                                                        {supplier.verified ? "Verified" : "Pending"}
+                                                    <Badge variant={(supplier.verified as boolean) ? "default" : "secondary"}>
+                                                        {(supplier.verified as boolean) ? "Verified" : "Pending"}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
