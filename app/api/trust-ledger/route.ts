@@ -1,3 +1,5 @@
+// COMMENTED OUT - Trust Ledger Service for TradeMart
+/*
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -373,3 +375,4 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
     }
 }
+*/
