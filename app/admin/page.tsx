@@ -314,8 +314,8 @@ export default function AdminDashboard() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {stats?.recentUsers?.map((user) => (
-                                            <TableRow key={user.id}>
+                                        {stats?.recentUsers?.map((user, index) => (
+                                            <TableRow key={String(user.id || index)}>
                                                 <TableCell className="font-medium">{String(user.name || 'Unknown')}</TableCell>
                                                 <TableCell>{String(user.email || 'No email')}</TableCell>
                                                 <TableCell>
@@ -426,7 +426,7 @@ export default function AdminDashboard() {
                                     </TableHeader>
                                     <TableBody>
                                         {stats?.recentRfqs?.map((rfq) => (
-                                            <TableRow key={rfq.id}>
+                                            <TableRow key={String(rfq.id || '')}>
                                                 <TableCell className="font-medium">{String(rfq.title || 'Untitled')}</TableCell>
                                                 <TableCell>{String((rfq.buyer as Record<string, unknown>)?.name || 'Unknown Buyer')}</TableCell>
                                                 <TableCell>{String(rfq.category || 'Uncategorized')}</TableCell>
