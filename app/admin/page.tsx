@@ -183,7 +183,7 @@ export default function AdminDashboard() {
                                 <CardContent>
                                     <div className="space-y-4">
                                         {stats?.recentUsers?.map((user, index) => (
-                                            <div key={user.id as string || index} className="flex items-center justify-between">
+                                            <div key={String(user.id || index)} className="flex items-center justify-between">
                                                 <div className="flex items-center space-x-3">
                                                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                                                         <Users className="h-4 w-4 text-blue-600" />
@@ -211,7 +211,7 @@ export default function AdminDashboard() {
                                 <CardContent>
                                     <div className="space-y-4">
                                         {stats?.recentRfqs?.map((rfq, index) => (
-                                            <div key={rfq.id as string || index} className="flex items-center justify-between">
+                                            <div key={String(rfq.id || index)} className="flex items-center justify-between">
                                                 <div>
                                                     <p className="font-medium">{String(rfq.title || 'Untitled')}</p>
                                                     <p className="text-sm text-gray-500">
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
                                     </TableHeader>
                                     <TableBody>
                                         {stats?.topSuppliers?.map((supplier, index) => (
-                                            <TableRow key={supplier.id as string || index}>
+                                            <TableRow key={String(supplier.id || index)}>
                                                 <TableCell className="font-medium">
                                                     {String(supplier.companyName || 'Unknown Company')}
                                                 </TableCell>
@@ -273,9 +273,9 @@ export default function AdminDashboard() {
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            onClick={() => handleVerifySupplier(supplier.id, !supplier.verified)}
+                                                            onClick={() => handleVerifySupplier(String(supplier.id || ''), !Boolean(supplier.verified))}
                                                         >
-                                                            {supplier.verified ? (
+                                                            {(supplier.verified as boolean) ? (
                                                                 <XCircle className="h-4 w-4" />
                                                             ) : (
                                                                 <CheckCircle className="h-4 w-4" />
@@ -363,33 +363,33 @@ export default function AdminDashboard() {
                                     </TableHeader>
                                     <TableBody>
                                         {stats?.topSuppliers?.map((supplier) => (
-                                            <TableRow key={supplier.id}>
+                                            <TableRow key={String(supplier.id || '')}>
                                                 <TableCell className="font-medium">
-                                                    {supplier.companyName}
+                                                    {String(supplier.companyName || 'Unknown Company')}
                                                 </TableCell>
                                                 <TableCell>
                                                     <div>
-                                                        <p className="text-sm">{supplier.contactEmail}</p>
-                                                        <p className="text-xs text-gray-500">{supplier.contactPhone}</p>
+                                                        <p className="text-sm">{String(supplier.contactEmail || 'No email')}</p>
+                                                        <p className="text-xs text-gray-500">{String(supplier.contactPhone || 'No phone')}</p>
                                                     </div>
                                                 </TableCell>
-                                                <TableCell>{supplier.industry}</TableCell>
+                                                <TableCell>{String(supplier.industry || 'Unknown Industry')}</TableCell>
                                                 <TableCell>
-                                                    {supplier.city}, {supplier.country}
+                                                    {String(supplier.city || 'Unknown City')}, {String(supplier.country || 'Unknown Country')}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge variant={(supplier.verified as boolean) ? "default" : "secondary"}>
-                                                        {(supplier.verified as boolean) ? "Verified" : "Pending"}
+                                                    <Badge variant={Boolean(supplier.verified) ? "default" : "secondary"}>
+                                                        {Boolean(supplier.verified) ? "Verified" : "Pending"}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-2">
                                                         <Button
                                                             size="sm"
-                                                            variant={supplier.verified ? "outline" : "default"}
-                                                            onClick={() => handleVerifySupplier(supplier.id, !supplier.verified)}
+                                                            variant={Boolean(supplier.verified) ? "outline" : "default"}
+                                                            onClick={() => handleVerifySupplier(String(supplier.id || ''), !Boolean(supplier.verified))}
                                                         >
-                                                            {supplier.verified ? "Unverify" : "Verify"}
+                                                            {Boolean(supplier.verified) ? "Unverify" : "Verify"}
                                                         </Button>
                                                         <Button size="sm" variant="outline">
                                                             <Eye className="h-4 w-4" />
