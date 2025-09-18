@@ -1,5 +1,13 @@
 // COMMENTED OUT - Trust Ledger Service for TradeMart
-export const trustLedgerDisabled = true;
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+    return NextResponse.json({ error: 'Trust Ledger service is disabled' }, { status: 503 });
+}
+
+export async function POST(request: NextRequest) {
+    return NextResponse.json({ error: 'Trust Ledger service is disabled' }, { status: 503 });
+}
 
 /*
 import { NextRequest, NextResponse } from "next/server";
