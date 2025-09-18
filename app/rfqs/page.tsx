@@ -53,7 +53,7 @@ export default function RFQsPage() {
                 const params = new URLSearchParams({
                     page: "1",
                     limit: "50",
-                    ...(searchTerm && { search: searchTerm }),//asa
+                    ...(searchTerm && { search: searchTerm }),//asaasasds
                     ...(selectedCategory !== "all" && { category: selectedCategory }),
                     ...(selectedStatus !== "all" && { status: selectedStatus }),
                     sortBy,
