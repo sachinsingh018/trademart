@@ -1,3 +1,5 @@
+// COMMENTED OUT - UPI Escrow Component
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -442,80 +444,90 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
                 </Card>
             </div>
 
-            {/* Escrow Information */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Shield className="h-5 w-5" />
-                        How Escrow Protection Works
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <DollarSign className="h-8 w-8 text-blue-600" />
-                            </div>
-                            <h3 className="font-semibold text-gray-900 mb-2">1. Secure Payment</h3>
-                            <p className="text-sm text-gray-600">
-                                Your payment is held securely in our escrow account until delivery confirmation
-                            </p>
-                        </div>
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <CheckCircle className="h-8 w-8 text-green-600" />
-                            </div>
-                            <h3 className="font-semibold text-gray-900 mb-2">2. Quality Check</h3>
-                            <p className="text-sm text-gray-600">
-                                Products undergo quality inspection before funds are released to supplier
-                            </p>
-                        </div>
-                        <div className="text-center">
-                            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Shield className="h-8 w-8 text-purple-600" />
-                            </div>
-                            <h3 className="font-semibold text-gray-900 mb-2">3. Safe Release</h3>
-                            <p className="text-sm text-gray-600">
-                                Funds are only released after successful delivery and quality confirmation
-                            </p>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+{/* Escrow Information */ }
+<Card>
+    <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            How Escrow Protection Works
+        </CardTitle>
+    </CardHeader>
+    <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <DollarSign className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">1. Secure Payment</h3>
+                <p className="text-sm text-gray-600">
+                    Your payment is held securely in our escrow account until delivery confirmation
+                </p>
+            </div>
+            <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">2. Quality Check</h3>
+                <p className="text-sm text-gray-600">
+                    Products undergo quality inspection before funds are released to supplier
+                </p>
+            </div>
+            <div className="text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="h-8 w-8 text-purple-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">3. Safe Release</h3>
+                <p className="text-sm text-gray-600">
+                    Funds are only released after successful delivery and quality confirmation
+                </p>
+            </div>
+        </div>
+    </CardContent>
+</Card>
 
-            {/* Payment Methods Info */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Supported Payment Methods</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {paymentMethods.map((method) => (
-                            <div key={method.id} className="border rounded-lg p-4">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="p-2 bg-gray-100 rounded-full">
-                                        {getPaymentIcon(method.icon)}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold">{method.name}</h3>
-                                        <p className="text-sm text-gray-600">{method.description}</p>
-                                    </div>
-                                </div>
-                                <div className="space-y-1 text-sm text-gray-600">
-                                    <p>Processing Fee: {method.processingFee}%</p>
-                                    <p>Settlement: {method.settlementTime}</p>
-                                    {method.supportedBanks && (
-                                        <p>Banks: {method.supportedBanks.length}+ supported</p>
-                                    )}
-                                    {method.upiApps && (
-                                        <p>Apps: {method.upiApps.length} supported</p>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+{/* Payment Methods Info */ }
+<Card>
+    <CardHeader>
+        <CardTitle>Supported Payment Methods</CardTitle>
+    </CardHeader>
+    <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {paymentMethods.map((method) => (
+                <div key={method.id} className="border rounded-lg p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2 bg-gray-100 rounded-full">
+                            {getPaymentIcon(method.icon)}
+                        </div>
+                        <div>
+                            <h3 className="font-semibold">{method.name}</h3>
+                            <p className="text-sm text-gray-600">{method.description}</p>
+                        </div>
                     </div>
-                </CardContent>
-            </Card>
+                    <div className="space-y-1 text-sm text-gray-600">
+                        <p>Processing Fee: {method.processingFee}%</p>
+                        <p>Settlement: {method.settlementTime}</p>
+                        {method.supportedBanks && (
+                            <p>Banks: {method.supportedBanks.length}+ supported</p>
+                        )}
+                        {method.upiApps && (
+                            <p>Apps: {method.upiApps.length} supported</p>
+                        )}
+                    </div>
+                </div>
+            ))}
+        </div>
+    </CardContent>
+</Card>
+        </div >
+    );
+}
+*/
+
+export default function UPIEscrow() {
+    return (
+        <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">UPI Escrow</h2>
+            <p className="text-gray-600">This component is currently disabled</p>
         </div>
     );
 }

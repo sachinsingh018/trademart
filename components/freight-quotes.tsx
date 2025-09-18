@@ -1,3 +1,5 @@
+// COMMENTED OUT - Freight Quotes Component
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -560,36 +562,46 @@ export default function FreightQuotes({ onQuoteSelect }: FreightQuotesProps) {
                 </Card>
             </div>
 
-            {/* Provider Information */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Integrated Logistics Providers</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="text-center p-4 border rounded-lg">
-                            <Ship className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-                            <h3 className="font-semibold">DP World CARGOES</h3>
-                            <p className="text-sm text-gray-600">Global sea freight</p>
-                        </div>
-                        <div className="text-center p-4 border rounded-lg">
-                            <Plane className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-                            <h3 className="font-semibold">Shiprocket</h3>
-                            <p className="text-sm text-gray-600">Air express delivery</p>
-                        </div>
-                        <div className="text-center p-4 border rounded-lg">
-                            <Truck className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                            <h3 className="font-semibold">Blue Dart</h3>
-                            <p className="text-sm text-gray-600">Road transport</p>
-                        </div>
-                        <div className="text-center p-4 border rounded-lg">
-                            <Train className="h-8 w-8 text-orange-500 mx-auto mb-2" />
-                            <h3 className="font-semibold">Indian Railways</h3>
-                            <p className="text-sm text-gray-600">Rail freight</p>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+{/* Provider Information */ }
+<Card>
+    <CardHeader>
+        <CardTitle>Integrated Logistics Providers</CardTitle>
+    </CardHeader>
+    <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="text-center p-4 border rounded-lg">
+                <Ship className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                <h3 className="font-semibold">DP World CARGOES</h3>
+                <p className="text-sm text-gray-600">Global sea freight</p>
+            </div>
+            <div className="text-center p-4 border rounded-lg">
+                <Plane className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                <h3 className="font-semibold">Shiprocket</h3>
+                <p className="text-sm text-gray-600">Air express delivery</p>
+            </div>
+            <div className="text-center p-4 border rounded-lg">
+                <Truck className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                <h3 className="font-semibold">Blue Dart</h3>
+                <p className="text-sm text-gray-600">Road transport</p>
+            </div>
+            <div className="text-center p-4 border rounded-lg">
+                <Train className="h-8 w-8 text-orange-500 mx-auto mb-2" />
+                <h3 className="font-semibold">Indian Railways</h3>
+                <p className="text-sm text-gray-600">Rail freight</p>
+            </div>
+        </div>
+    </CardContent>
+</Card>
+        </div >
+    );
+}
+*/
+
+export default function FreightQuotes() {
+    return (
+        <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">Freight Quotes</h2>
+            <p className="text-gray-600">This component is currently disabled</p>
         </div>
     );
 }

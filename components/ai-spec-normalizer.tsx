@@ -1,3 +1,5 @@
+// COMMENTED OUT - AI Spec Normalizer Component
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -350,177 +352,187 @@ export default function AISpecNormalizer({ onNormalizedRFQ }: AISpecNormalizerPr
             {normalizedRFQ && (
                 <div className="space-y-6">
                     {/* Normalized RFQ Summary */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <CheckCircle className="h-5 w-5 text-green-500" />
-                                Normalized RFQ
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Title</label>
-                                    <p className="text-lg font-semibold">{normalizedRFQ.title}</p>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Category</label>
-                                    <Badge variant="outline">{normalizedRFQ.category}</Badge>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Quantity</label>
-                                    <p className="text-lg">{normalizedRFQ.quantity.toLocaleString()} {normalizedRFQ.unit}</p>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Budget</label>
-                                    <p className="text-lg font-semibold text-green-600">₹{normalizedRFQ.budget.toLocaleString()}</p>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">MOQ</label>
-                                    <p className="text-lg">{normalizedRFQ.moq.toLocaleString()} {normalizedRFQ.unit}</p>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">HS Code</label>
-                                    <p className="text-lg font-mono">{normalizedRFQ.hsCode}</p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+<Card>
+    <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <CheckCircle className="h-5 w-5 text-green-500" />
+            Normalized RFQ
+        </CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label className="text-sm font-medium text-gray-600">Title</label>
+                <p className="text-lg font-semibold">{normalizedRFQ.title}</p>
+            </div>
+            <div>
+                <label className="text-sm font-medium text-gray-600">Category</label>
+                <Badge variant="outline">{normalizedRFQ.category}</Badge>
+            </div>
+            <div>
+                <label className="text-sm font-medium text-gray-600">Quantity</label>
+                <p className="text-lg">{normalizedRFQ.quantity.toLocaleString()} {normalizedRFQ.unit}</p>
+            </div>
+            <div>
+                <label className="text-sm font-medium text-gray-600">Budget</label>
+                <p className="text-lg font-semibold text-green-600">₹{normalizedRFQ.budget.toLocaleString()}</p>
+            </div>
+            <div>
+                <label className="text-sm font-medium text-gray-600">MOQ</label>
+                <p className="text-lg">{normalizedRFQ.moq.toLocaleString()} {normalizedRFQ.unit}</p>
+            </div>
+            <div>
+                <label className="text-sm font-medium text-gray-600">HS Code</label>
+                <p className="text-lg font-mono">{normalizedRFQ.hsCode}</p>
+            </div>
+        </div>
+    </CardContent>
+</Card>
 
-                    {/* Specifications */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Package className="h-5 w-5" />
-                                Product Specifications
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {Object.entries(normalizedRFQ.specifications).map(([key, value]) => (
-                                    <div key={key}>
-                                        <label className="text-sm font-medium text-gray-600 capitalize">
-                                            {key.replace(/([A-Z])/g, ' $1').trim()}
-                                        </label>
-                                        <p className="text-lg">{value}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Trade Terms */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Globe className="h-5 w-5" />
-                                Trade Terms & Compliance
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Incoterms</label>
-                                    <p className="text-lg font-semibold">{normalizedRFQ.incoterms}</p>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Payment Terms</label>
-                                    <p className="text-lg">{normalizedRFQ.paymentTerms}</p>
-                                </div>
-                                <div>
-                                    <label className="text-sm font-medium text-gray-600">Delivery Terms</label>
-                                    <p className="text-lg">{normalizedRFQ.deliveryTerms}</p>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-gray-600">Quality Standards</label>
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                    {normalizedRFQ.qualityStandards.map((standard, index) => (
-                                        <Badge key={index} variant="secondary">{standard}</Badge>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-gray-600">Certifications Required</label>
-                                <div className="flex flex-wrap gap-2 mt-2">
-                                    {normalizedRFQ.certifications.map((cert, index) => (
-                                        <Badge key={index} variant="outline">{cert}</Badge>
-                                    ))}
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Risk Assessment */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Shield className="h-5 w-5" />
-                                Risk Assessment
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-600">Risk Score</p>
-                                    <p className={`text-2xl font-bold ${getRiskColor(normalizedRFQ.riskScore)}`}>
-                                        {normalizedRFQ.riskScore}/100
-                                    </p>
-                                    <p className="text-sm text-gray-600">Risk Level: {getRiskLevel(normalizedRFQ.riskScore)}</p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-600">Landed Cost</p>
-                                    <p className="text-2xl font-bold text-blue-600">
-                                        ₹{normalizedRFQ.landedCost.toLocaleString()}
-                                    </p>
-                                    <p className="text-sm text-gray-600">Including shipping & duties</p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* AI Suggestions */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Lightbulb className="h-5 w-5" />
-                                AI Suggestions
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-2">
-                                {normalizedRFQ.suggestions.map((suggestion, index) => (
-                                    <div key={index} className="flex items-start gap-2">
-                                        <AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-                                        <p className="text-sm text-gray-700">{suggestion}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-4">
-                        <Button
-                            onClick={() => onNormalizedRFQ(normalizedRFQ)}
-                            className="flex-1"
-                        >
-                            Use This Normalized RFQ
-                        </Button>
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                                setNormalizedRFQ(null);
-                                setRawRFQ("");
-                            }}
-                        >
-                            Start Over
-                        </Button>
-                    </div>
+{/* Specifications */ }
+<Card>
+    <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5" />
+            Product Specifications
+        </CardTitle>
+    </CardHeader>
+    <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.entries(normalizedRFQ.specifications).map(([key, value]) => (
+                <div key={key}>
+                    <label className="text-sm font-medium text-gray-600 capitalize">
+                        {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </label>
+                    <p className="text-lg">{value}</p>
                 </div>
+            ))}
+        </div>
+    </CardContent>
+</Card>
+
+{/* Trade Terms */ }
+<Card>
+    <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Trade Terms & Compliance
+        </CardTitle>
+    </CardHeader>
+    <CardContent className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label className="text-sm font-medium text-gray-600">Incoterms</label>
+                <p className="text-lg font-semibold">{normalizedRFQ.incoterms}</p>
+            </div>
+            <div>
+                <label className="text-sm font-medium text-gray-600">Payment Terms</label>
+                <p className="text-lg">{normalizedRFQ.paymentTerms}</p>
+            </div>
+            <div>
+                <label className="text-sm font-medium text-gray-600">Delivery Terms</label>
+                <p className="text-lg">{normalizedRFQ.deliveryTerms}</p>
+            </div>
+        </div>
+
+        <div>
+            <label className="text-sm font-medium text-gray-600">Quality Standards</label>
+            <div className="flex flex-wrap gap-2 mt-2">
+                {normalizedRFQ.qualityStandards.map((standard, index) => (
+                    <Badge key={index} variant="secondary">{standard}</Badge>
+                ))}
+            </div>
+        </div>
+
+        <div>
+            <label className="text-sm font-medium text-gray-600">Certifications Required</label>
+            <div className="flex flex-wrap gap-2 mt-2">
+                {normalizedRFQ.certifications.map((cert, index) => (
+                    <Badge key={index} variant="outline">{cert}</Badge>
+                ))}
+            </div>
+        </div>
+    </CardContent>
+</Card>
+
+{/* Risk Assessment */ }
+<Card>
+    <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Risk Assessment
+        </CardTitle>
+    </CardHeader>
+    <CardContent>
+        <div className="flex items-center justify-between">
+            <div>
+                <p className="text-sm text-gray-600">Risk Score</p>
+                <p className={`text-2xl font-bold ${getRiskColor(normalizedRFQ.riskScore)}`}>
+                    {normalizedRFQ.riskScore}/100
+                </p>
+                <p className="text-sm text-gray-600">Risk Level: {getRiskLevel(normalizedRFQ.riskScore)}</p>
+            </div>
+            <div>
+                <p className="text-sm text-gray-600">Landed Cost</p>
+                <p className="text-2xl font-bold text-blue-600">
+                    ₹{normalizedRFQ.landedCost.toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-600">Including shipping & duties</p>
+            </div>
+        </div>
+    </CardContent>
+</Card>
+
+{/* AI Suggestions */ }
+<Card>
+    <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <Lightbulb className="h-5 w-5" />
+            AI Suggestions
+        </CardTitle>
+    </CardHeader>
+    <CardContent>
+        <div className="space-y-2">
+            {normalizedRFQ.suggestions.map((suggestion, index) => (
+                <div key={index} className="flex items-start gap-2">
+                    <AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-gray-700">{suggestion}</p>
+                </div>
+            ))}
+        </div>
+    </CardContent>
+</Card>
+
+{/* Action Buttons */ }
+<div className="flex gap-4">
+    <Button
+        onClick={() => onNormalizedRFQ(normalizedRFQ)}
+        className="flex-1"
+    >
+        Use This Normalized RFQ
+    </Button>
+    <Button
+        variant="outline"
+        onClick={() => {
+            setNormalizedRFQ(null);
+            setRawRFQ("");
+        }}
+    >
+        Start Over
+    </Button>
+</div>
+                </div >
             )}
+        </div >
+    );
+}
+*/
+
+export default function AISpecNormalizer() {
+    return (
+        <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">AI Spec Normalizer</h2>
+            <p className="text-gray-600">This component is currently disabled</p>
         </div>
     );
 }

@@ -1,3 +1,5 @@
+// COMMENTED OUT - Duty Calculator Component
+/*
 "use client";
 
 import { useState, useEffect } from "react";
@@ -532,33 +534,43 @@ export default function DutyCalculator({ onCalculationComplete }: DutyCalculator
                 </Card>
             </div>
 
-            {/* Country Information */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Globe className="h-5 w-5" />
-                        Country Duty Information
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {countries.map((country) => (
-                            <div key={country.code} className="border rounded-lg p-4">
-                                <div className="flex justify-between items-start mb-2">
-                                    <h3 className="font-semibold">{country.name}</h3>
-                                    <Badge variant="outline">{country.code}</Badge>
-                                </div>
-                                <div className="space-y-1 text-sm text-gray-600">
-                                    <p>Currency: {country.currency}</p>
-                                    <p>Avg Duty Rate: {country.dutyRate}%</p>
-                                    <p>VAT/GST: {country.vatRate}%</p>
-                                    <p>Additional Fees: {country.additionalFees}%</p>
-                                </div>
-                            </div>
-                        ))}
+{/* Country Information */ }
+<Card>
+    <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Country Duty Information
+        </CardTitle>
+    </CardHeader>
+    <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {countries.map((country) => (
+                <div key={country.code} className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-semibold">{country.name}</h3>
+                        <Badge variant="outline">{country.code}</Badge>
                     </div>
-                </CardContent>
-            </Card>
+                    <div className="space-y-1 text-sm text-gray-600">
+                        <p>Currency: {country.currency}</p>
+                        <p>Avg Duty Rate: {country.dutyRate}%</p>
+                        <p>VAT/GST: {country.vatRate}%</p>
+                        <p>Additional Fees: {country.additionalFees}%</p>
+                    </div>
+                </div>
+            ))}
+        </div>
+    </CardContent>
+</Card>
+        </div >
+    );
+}
+*/
+
+export default function DutyCalculator() {
+    return (
+        <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">Duty Calculator</h2>
+            <p className="text-gray-600">This component is currently disabled</p>
         </div>
     );
 }

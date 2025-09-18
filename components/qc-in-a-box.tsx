@@ -1,3 +1,5 @@
+// COMMENTED OUT - QC in a Box Component
+/*
 "use client";
 
 import { useState, useRef } from "react";
@@ -214,168 +216,170 @@ export default function QCInABox({ orderId, onQCComplete }: QCInABoxProps) {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     {/* Photo Upload */}
-                    <div>
-                        <h3 className="font-medium text-gray-900 mb-3">Photos</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {previewImages.map((preview, index) => (
-                                <div key={index} className="relative group">
-                                    <img
-                                        src={preview}
-                                        alt={`QC Photo ${index + 1}`}
-                                        className="w-full h-24 object-cover rounded-lg border"
-                                    />
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => removePhoto(index)}
-                                    >
-                                        <XCircle className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-                            <div
-                                className="w-full h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
-                                onClick={() => photoInputRef.current?.click()}
-                            >
-                                <div className="text-center">
-                                    <Camera className="h-6 w-6 text-gray-400 mx-auto mb-1" />
-                                    <span className="text-xs text-gray-500">Add Photo</span>
-                                </div>
-                            </div>
-                        </div>
-                        <input
-                            ref={photoInputRef}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handlePhotoUpload}
-                            className="hidden"
-                        />
-                    </div>
+<div>
+    <h3 className="font-medium text-gray-900 mb-3">Photos</h3>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {previewImages.map((preview, index) => (
+            <div key={index} className="relative group">
+                <img
+                    src={preview}
+                    alt={`QC Photo ${index + 1}`}
+                    className="w-full h-24 object-cover rounded-lg border"
+                />
+                <Button
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => removePhoto(index)}
+                >
+                    <XCircle className="h-4 w-4" />
+                </Button>
+            </div>
+        ))}
+        <div
+            className="w-full h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+            onClick={() => photoInputRef.current?.click()}
+        >
+            <div className="text-center">
+                <Camera className="h-6 w-6 text-gray-400 mx-auto mb-1" />
+                <span className="text-xs text-gray-500">Add Photo</span>
+            </div>
+        </div>
+    </div>
+    <input
+        ref={photoInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={handlePhotoUpload}
+        className="hidden"
+    />
+</div>
 
-                    {/* Video Upload */}
-                    <div>
-                        <h3 className="font-medium text-gray-900 mb-3">Videos</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {previewVideos.map((preview, index) => (
-                                <div key={index} className="relative group">
-                                    <video
-                                        src={preview}
-                                        className="w-full h-32 object-cover rounded-lg border"
-                                        controls
-                                    />
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                        onClick={() => removeVideo(index)}
-                                    >
-                                        <XCircle className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            ))}
-                            <div
-                                className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
-                                onClick={() => videoInputRef.current?.click()}
-                            >
-                                <div className="text-center">
-                                    <Video className="h-6 w-6 text-gray-400 mx-auto mb-1" />
-                                    <span className="text-xs text-gray-500">Add Video</span>
-                                </div>
-                            </div>
-                        </div>
-                        <input
-                            ref={videoInputRef}
-                            type="file"
-                            accept="video/*"
-                            multiple
-                            onChange={handleVideoUpload}
-                            className="hidden"
-                        />
-                    </div>
+{/* Video Upload */ }
+<div>
+    <h3 className="font-medium text-gray-900 mb-3">Videos</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {previewVideos.map((preview, index) => (
+            <div key={index} className="relative group">
+                <video
+                    src={preview}
+                    className="w-full h-32 object-cover rounded-lg border"
+                    controls
+                />
+                <Button
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => removeVideo(index)}
+                >
+                    <XCircle className="h-4 w-4" />
+                </Button>
+            </div>
+        ))}
+        <div
+            className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+            onClick={() => videoInputRef.current?.click()}
+        >
+            <div className="text-center">
+                <Video className="h-6 w-6 text-gray-400 mx-auto mb-1" />
+                <span className="text-xs text-gray-500">Add Video</span>
+            </div>
+        </div>
+    </div>
+    <input
+        ref={videoInputRef}
+        type="file"
+        accept="video/*"
+        multiple
+        onChange={handleVideoUpload}
+        className="hidden"
+    />
+</div>
 
-                    {/* QC Score */}
-                    <div>
-                        <h3 className="font-medium text-gray-900 mb-3">Quality Score</h3>
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-3">
-                                <span className="text-sm text-gray-600">Score:</span>
-                                <div className="flex items-center gap-2">
-                                    {getScoreIcon(score)}
-                                    <span className={`font-medium ${getScoreColor(score)}`}>
-                                        {score}/100
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Progress value={score} className="h-2" />
-                                <div className="flex justify-between text-xs text-gray-500">
-                                    <span>Poor (0-59)</span>
-                                    <span>Fair (60-79)</span>
-                                    <span>Good (80-100)</span>
-                                </div>
-                            </div>
-                            <div className="flex gap-2">
-                                {[20, 40, 60, 80, 100].map((value) => (
-                                    <Button
-                                        key={value}
-                                        variant={score === value ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => setScore(value)}
-                                    >
-                                        {value}
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+{/* QC Score */ }
+<div>
+    <h3 className="font-medium text-gray-900 mb-3">Quality Score</h3>
+    <div className="space-y-3">
+        <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-600">Score:</span>
+            <div className="flex items-center gap-2">
+                {getScoreIcon(score)}
+                <span className={`font-medium ${getScoreColor(score)}`}>
+                    {score}/100
+                </span>
+            </div>
+        </div>
+        <div className="space-y-2">
+            <Progress value={score} className="h-2" />
+            <div className="flex justify-between text-xs text-gray-500">
+                <span>Poor (0-59)</span>
+                <span>Fair (60-79)</span>
+                <span>Good (80-100)</span>
+            </div>
+        </div>
+        <div className="flex gap-2">
+            {[20, 40, 60, 80, 100].map((value) => (
+                <Button
+                    key={value}
+                    variant={score === value ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setScore(value)}
+                >
+                    {value}
+                </Button>
+            ))}
+        </div>
+    </div>
+</div>
 
-                    {/* Notes */}
-                    <div>
-                        <h3 className="font-medium text-gray-900 mb-3">QC Notes</h3>
-                        <Textarea
-                            value={notes}
-                            onChange={(e) => setNotes(e.target.value)}
-                            placeholder="Describe any quality issues, defects, or observations..."
-                            rows={4}
-                        />
-                    </div>
+{/* Notes */ }
+<div>
+    <h3 className="font-medium text-gray-900 mb-3">QC Notes</h3>
+    <Textarea
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder="Describe any quality issues, defects, or observations..."
+        rows={4}
+    />
+</div>
 
-                    {/* Upload Progress */}
-                    {isUploading && (
-                        <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                                <Upload className="h-4 w-4 text-blue-500" />
-                                <span className="text-sm text-gray-600">Uploading QC report...</span>
-                            </div>
-                            <Progress value={uploadProgress} className="h-2" />
-                        </div>
-                    )}
+{/* Upload Progress */ }
+{
+    isUploading && (
+        <div className="space-y-2">
+            <div className="flex items-center gap-2">
+                <Upload className="h-4 w-4 text-blue-500" />
+                <span className="text-sm text-gray-600">Uploading QC report...</span>
+            </div>
+            <Progress value={uploadProgress} className="h-2" />
+        </div>
+    )
+}
 
-                    {/* Submit Button */}
-                    <Button
-                        onClick={submitQCReport}
-                        disabled={isUploading || (photos.length === 0 && videos.length === 0)}
-                        className="w-full"
-                    >
-                        {isUploading ? (
-                            <>
-                                <Upload className="h-4 w-4 mr-2 animate-spin" />
-                                Submitting QC Report...
-                            </>
-                        ) : (
-                            <>
-                                <CheckCircle className="h-4 w-4 mr-2" />
-                                Submit QC Report
-                            </>
-                        )}
-                    </Button>
-                </CardContent>
-            </Card>
+{/* Submit Button */ }
+<Button
+    onClick={submitQCReport}
+    disabled={isUploading || (photos.length === 0 && videos.length === 0)}
+    className="w-full"
+>
+    {isUploading ? (
+        <>
+            <Upload className="h-4 w-4 mr-2 animate-spin" />
+            Submitting QC Report...
+        </>
+    ) : (
+        <>
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Submit QC Report
+        </>
+    )}
+</Button>
+                </CardContent >
+            </Card >
 
-            {/* QC Guidelines */}
-            <Card>
+    {/* QC Guidelines */ }
+    < Card >
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <FileText className="h-5 w-5" />
@@ -412,7 +416,17 @@ export default function QCInABox({ orderId, onQCComplete }: QCInABoxProps) {
                         </div>
                     </div>
                 </CardContent>
-            </Card>
+            </Card >
+        </div >
+    );
+}
+*/
+
+export default function QCInABox() {
+    return (
+        <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">QC in a Box</h2>
+            <p className="text-gray-600">This component is currently disabled</p>
         </div>
     );
 }

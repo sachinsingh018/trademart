@@ -1,3 +1,5 @@
+// COMMENTED OUT - Vyapar Guru AI Advisor Component
+/*
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -263,116 +265,125 @@ export default function VyaparGuru({ userRole, onClose }: VyaparGuruProps) {
 
             <CardContent className="flex-1 flex flex-col p-0">
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {messages.map((message) => (
-                        <div
-                            key={message.id}
-                            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                            <div
-                                className={`max-w-[80%] rounded-lg p-3 ${
-                                    message.type === 'user'
-                                        ? 'bg-blue-500 text-white'
-                                        : 'bg-gray-100 text-gray-900'
-                                }`}
-                            >
-                                <div className="whitespace-pre-wrap">{message.message}</div>
-                                
-                                {/* Suggestions */}
-                                {message.suggestions && (
-                                    <div className="mt-3 space-y-2">
-                                        {message.suggestions.map((suggestion, index) => (
-                                            <Button
-                                                key={index}
-                                                variant="outline"
-                                                size="sm"
-                                                className="mr-2 mb-2 text-xs"
-                                                onClick={() => handleSuggestionClick(suggestion)}
-                                            >
-                                                {suggestion}
-                                            </Button>
-                                        ))}
-                                    </div>
-                                )}
+<div className="flex-1 overflow-y-auto p-4 space-y-4">
+    {messages.map((message) => (
+        <div
+            key={message.id}
+            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+        >
+            <div
+                className={`max-w-[80%] rounded-lg p-3 ${message.type === 'user'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-100 text-gray-900'
+                    }`}
+            >
+                <div className="whitespace-pre-wrap">{message.message}</div>
 
-                                {/* Resources */}
-                                {message.resources && (
-                                    <div className="mt-3 space-y-2">
-                                        <p className="text-sm font-medium">Helpful Resources:</p>
-                                        {message.resources.map((resource, index) => (
-                                            <div key={index} className="text-sm">
-                                                <a
-                                                    href={resource.url}
-                                                    className="text-blue-600 hover:underline"
-                                                >
-                                                    {resource.title}
-                                                </a>
-                                                <p className="text-xs text-gray-500">{resource.description}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                <div className="text-xs opacity-70 mt-2">
-                                    {message.timestamp.toLocaleTimeString()}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    {isTyping && (
-                        <div className="flex justify-start">
-                            <div className="bg-gray-100 rounded-lg p-3">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex space-x-1">
-                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                                    </div>
-                                    <span className="text-sm text-gray-600">Vyapar Guru is typing...</span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    <div ref={messagesEndRef} />
-                </div>
-
-                {/* Quick Actions */}
-                <div className="border-t p-4">
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                        {quickActions.map((action, index) => (
+                {/* Suggestions */}
+                {message.suggestions && (
+                    <div className="mt-3 space-y-2">
+                        {message.suggestions.map((suggestion, index) => (
                             <Button
                                 key={index}
                                 variant="outline"
                                 size="sm"
-                                className="h-auto p-3 flex flex-col items-center gap-2"
-                                onClick={() => handleSuggestionClick(action.title)}
+                                className="mr-2 mb-2 text-xs"
+                                onClick={() => handleSuggestionClick(suggestion)}
                             >
-                                {action.icon}
-                                <div className="text-center">
-                                    <div className="text-xs font-medium">{action.title}</div>
-                                    <div className="text-xs text-gray-500">{action.description}</div>
-                                </div>
+                                {suggestion}
                             </Button>
                         ))}
                     </div>
+                )}
 
-                    {/* Input */}
-                    <div className="flex gap-2">
-                        <Input
-                            value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
-                            placeholder="Ask Vyapar Guru anything about trade..."
-                            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                            className="flex-1"
-                        />
-                        <Button onClick={handleSendMessage} disabled={!inputMessage.trim()}>
-                            <Send className="h-4 w-4" />
-                        </Button>
+                {/* Resources */}
+                {message.resources && (
+                    <div className="mt-3 space-y-2">
+                        <p className="text-sm font-medium">Helpful Resources:</p>
+                        {message.resources.map((resource, index) => (
+                            <div key={index} className="text-sm">
+                                <a
+                                    href={resource.url}
+                                    className="text-blue-600 hover:underline"
+                                >
+                                    {resource.title}
+                                </a>
+                                <p className="text-xs text-gray-500">{resource.description}</p>
+                            </div>
+                        ))}
                     </div>
+                )}
+
+                <div className="text-xs opacity-70 mt-2">
+                    {message.timestamp.toLocaleTimeString()}
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
+    ))}
+
+    {isTyping && (
+        <div className="flex justify-start">
+            <div className="bg-gray-100 rounded-lg p-3">
+                <div className="flex items-center gap-2">
+                    <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                    <span className="text-sm text-gray-600">Vyapar Guru is typing...</span>
+                </div>
+            </div>
+        </div>
+    )}
+
+    <div ref={messagesEndRef} />
+</div>
+
+{/* Quick Actions */ }
+<div className="border-t p-4">
+    <div className="grid grid-cols-2 gap-2 mb-4">
+        {quickActions.map((action, index) => (
+            <Button
+                key={index}
+                variant="outline"
+                size="sm"
+                className="h-auto p-3 flex flex-col items-center gap-2"
+                onClick={() => handleSuggestionClick(action.title)}
+            >
+                {action.icon}
+                <div className="text-center">
+                    <div className="text-xs font-medium">{action.title}</div>
+                    <div className="text-xs text-gray-500">{action.description}</div>
+                </div>
+            </Button>
+        ))}
+    </div>
+
+    {/* Input */}
+    <div className="flex gap-2">
+        <Input
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder="Ask Vyapar Guru anything about trade..."
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            className="flex-1"
+        />
+        <Button onClick={handleSendMessage} disabled={!inputMessage.trim()}>
+            <Send className="h-4 w-4" />
+        </Button>
+    </div>
+</div>
+            </CardContent >
+        </Card >
+    );
+}
+*/
+
+export default function VyaparGuru() {
+    return (
+        <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">Vyapar Guru AI Advisor</h2>
+            <p className="text-gray-600">This component is currently disabled</p>
+        </div>
     );
 }
