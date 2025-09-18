@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+// import { prisma } from "@/lib/prisma"; // COMMENTED OUT - not used
 
 // Mock OTP storage (in production, use Redis or database)
 const otpStorage = new Map<string, { code: string; expires: number }>();

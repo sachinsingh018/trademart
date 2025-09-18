@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
                             console.error('Error writing to SSE stream:', error);
                         }
                     },
-                    on: (event: string, callback: () => void) => {
+                    on: (event: string, _callback: () => void) => {
                         // Handle connection close
                         if (event === 'close') {
                             // Clean up when connection closes
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
                             }, 100);
                         }
                     }
-                } as any;
+                } as Record<string, unknown>;
 
                 // Add client to notification service
                 notificationService.addClient(session.user.id, mockResponse);

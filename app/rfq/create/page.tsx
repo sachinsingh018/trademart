@@ -17,9 +17,6 @@ import {
     Plus, 
     X, 
     FileText, 
-    Calendar,
-    DollarSign,
-    Package,
     CheckCircle
 } from "lucide-react";
 
@@ -185,7 +182,7 @@ export default function CreateRFQ() {
             } else {
                 setError(data.error || "Failed to create RFQ");
             }
-        } catch (error) {
+        } catch {
             setError("An error occurred. Please try again.");
         } finally {
             setIsSubmitting(false);

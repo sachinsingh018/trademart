@@ -291,7 +291,7 @@ class BadgesLeaderboardsService {
     }
 
     // Calculate badge progress
-    private calculateBadgeProgress(badge: any, supplier: any): number {
+    private calculateBadgeProgress(badge: Record<string, unknown>, supplier: Record<string, unknown>): number {
         switch (badge.requirements.type) {
             case 'orders':
                 return Math.min(100, (supplier.totalOrders / badge.requirements.value) * 100);
@@ -319,7 +319,7 @@ class BadgesLeaderboardsService {
     }
 
     // Calculate supplier points
-    private calculateSupplierPoints(supplier: any): number {
+    private calculateSupplierPoints(supplier: Record<string, unknown>): number {
         let points = 0;
         
         // Base points from orders
@@ -355,7 +355,7 @@ class BadgesLeaderboardsService {
     }
 
     // Get unlocked badges count
-    private getUnlockedBadgesCount(supplier: any): number {
+    private getUnlockedBadgesCount(supplier: Record<string, unknown>): number {
         const badges = this.getAllBadges();
         return badges.filter(badge => 
             this.calculateBadgeProgress(badge, supplier) >= 100

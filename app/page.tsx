@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import CountryFlagsBar from "@/components/ui/country-flags-bar";
 import SearchSection from "@/components/ui/search-section";
 
@@ -138,7 +138,7 @@ export default function Home() {
                 </div>
                 <CardTitle className="text-xl mb-2">Verified Suppliers</CardTitle>
                 <CardDescription className="text-gray-600">
-                  All suppliers are verified and certified. Trade with confidence knowing you're working with legitimate businesses.
+                  All suppliers are verified and certified. Trade with confidence knowing you&apos;re working with legitimate businesses.
                 </CardDescription>
               </CardHeader>
             </Card>

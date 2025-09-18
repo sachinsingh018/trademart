@@ -30,7 +30,7 @@ interface NormalizedRFQ {
     budget: number;
     currency: string;
     requirements: string[];
-    specifications: Record<string, any>;
+    specifications: Record<string, unknown>;
     incoterms: string;
     paymentTerms: string;
     deliveryTerms: string;

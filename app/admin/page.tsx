@@ -13,9 +13,6 @@ import {
     Building2, 
     Package, 
     FileText, 
-    DollarSign, 
-    TrendingUp, 
-    Shield, 
     CheckCircle, 
     XCircle,
     Eye,
@@ -30,9 +27,9 @@ interface DashboardStats {
     totalQuotes: number;
     totalTransactions: number;
     pendingVerifications: number;
-    recentUsers: any[];
-    recentRfqs: any[];
-    topSuppliers: any[];
+    recentUsers: Record<string, unknown>[];
+    recentRfqs: Record<string, unknown>[];
+    topSuppliers: Record<string, unknown>[];
 }
 
 export default function AdminDashboard() {

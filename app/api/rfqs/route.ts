@@ -258,7 +258,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Helper function to send RFQ notifications to relevant suppliers
-async function sendRFQNotifications(rfq: any) {
+async function sendRFQNotifications(rfq: Record<string, unknown>) {
     try {
         // Find suppliers that match the RFQ category or have relevant specialties
         const relevantSuppliers = await prisma.supplier.findMany({

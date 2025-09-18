@@ -58,7 +58,7 @@ interface EscrowAccount {
 interface UPIEscrowProps {
     orderId?: string;
     amount?: number;
-    onPaymentComplete?: (result: any) => void;
+    onPaymentComplete?: (result: Record<string, unknown>) => void;
 }
 
 export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEscrowProps) {

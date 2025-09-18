@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
         const skip = (page - 1) * limit;
 
         // Build where clause
-        const where: any = {};
+        const where: Record<string, unknown> = {};
         if (role && role !== 'all') {
             where.role = role;
         }
@@ -97,7 +97,7 @@ export async function PATCH(request: NextRequest) {
             }, { status: 400 });
         }
 
-        const updateData: any = {};
+        const updateData: Record<string, unknown> = {};
         if (role) updateData.role = role;
         if (status) updateData.status = status;
 

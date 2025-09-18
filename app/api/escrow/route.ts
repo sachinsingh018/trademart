@@ -186,14 +186,14 @@ class EscrowService {
     }
 
     // Generate unique account number
-    private generateAccountNumber(escrowId: string): string {
+    private generateAccountNumber(_escrowId: string): string {
         const timestamp = Date.now().toString().slice(-6);
         const random = Math.random().toString(36).substring(2, 6).toUpperCase();
         return `ESC${timestamp}${random}`;
     }
 
     // Send payment release notification
-    private async sendPaymentReleaseNotification(order: any) {
+    private async sendPaymentReleaseNotification(order: Record<string, unknown>) {
         try {
             // Send to supplier
             await notificationService.sendToUser(
@@ -214,7 +214,7 @@ class EscrowService {
     }
 
     // Send dispute notification
-    private async sendDisputeNotification(order: any) {
+    private async sendDisputeNotification(order: Record<string, unknown>) {
         try {
             // Send to both parties
             await notificationService.sendToUser(
@@ -242,7 +242,7 @@ class EscrowService {
     }
 
     // Send refund notification
-    private async sendRefundNotification(order: any) {
+    private async sendRefundNotification(order: Record<string, unknown>) {
         try {
             // Send to buyer
             await notificationService.sendToUser(

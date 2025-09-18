@@ -90,7 +90,7 @@ export default function CreateRFQPage() {
                 const errorData = await response.json();
                 setError(errorData.error || "Failed to create RFQ");
             }
-        } catch (err) {
+        } catch {
             setError("Error creating RFQ");
         } finally {
             setSaving(false);

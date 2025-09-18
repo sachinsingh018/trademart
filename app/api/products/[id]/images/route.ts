@@ -6,7 +6,7 @@ import { deleteFromS3 } from "@/lib/aws-s3";
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -15,7 +15,7 @@ export async function POST(
         }
 
         const { imageKeys } = await request.json();
-        const productId = params.id;
+        const { id: productId } = await params;
 
         // Verify the product belongs to the user
         const product = await prisma.product.findFirst({
@@ -54,7 +54,7 @@ export async function POST(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -63,7 +63,7 @@ export async function DELETE(
         }
 
         const { imageKey } = await request.json();
-        const productId = params.id;
+        const { id: productId } = await params;
 
         // Verify the product belongs to the user
         const product = await prisma.product.findFirst({

@@ -43,7 +43,7 @@ interface PublicRFQ {
         verified: boolean;
     };
     requirements: string[];
-    specifications: Record<string, any>;
+    specifications: Record<string, unknown>;
     tags: string[];
     views: number;
     quotesCount: number;

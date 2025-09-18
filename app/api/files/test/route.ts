@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { fileExists, generateFileKey } from '@/lib/aws-s3';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
     try {
         // Check authentication
         const session = await getServerSession(authOptions);
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
         const testKey = generateFileKey('test-file.txt', 'test');
 
         // Check if we can connect to S3 (this will fail if credentials are wrong)
-        const exists = await fileExists(testKey);
+        const _exists = await fileExists(testKey);
 
         // Get environment variables (without exposing sensitive data)
         const config = {

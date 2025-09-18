@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
-import { Package } from "lucide-react";
+// import { Package } from "lucide-react"; // COMMENTED OUT - not used
 
 interface Supplier {
     id: string;

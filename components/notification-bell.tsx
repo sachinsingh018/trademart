@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Bell, Check, CheckCheck, X, Loader2 } from 'lucide-react';
+import { Bell, Check, CheckCheck, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -70,7 +70,7 @@ export default function NotificationBell() {
         }
     };
 
-    const handleNotificationClick = async (notification: any) => {
+    const handleNotificationClick = async (notification: Record<string, unknown>) => {
         if (!notification.read) {
             await markAsRead(notification.id);
         }

@@ -151,7 +151,7 @@ export default function QuoteComparison({ rfqId, quotes, onSelectQuote }: QuoteC
                 <div className="flex gap-2">
                     <select
                         value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as any)}
+                        onChange={(e) => setSortBy(e.target.value as 'price' | 'rating' | 'leadTime')}
                         className="px-3 py-2 border border-gray-300 rounded-md text-sm"
                     >
                         <option value="price">Sort by Price</option>

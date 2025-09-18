@@ -19,7 +19,6 @@ import {
     TrendingUp,
     DollarSign,
     Calendar,
-    Filter,
     MoreHorizontal
 } from "lucide-react";
 import {

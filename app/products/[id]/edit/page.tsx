@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+// import Link from "next/link"; // COMMENTED OUT - not used
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -276,7 +276,7 @@ export default function EditProduct() {
             } else {
                 setError(data.error || "Failed to update product");
             }
-        } catch (error) {
+        } catch {
             setError("An error occurred. Please try again.");
         } finally {
             setIsSubmitting(false);

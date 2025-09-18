@@ -71,7 +71,7 @@ class VerificationService {
     }
 
     // Factory Verification
-    async scheduleFactoryVerification(supplierId: string, verificationData: any) {
+    async scheduleFactoryVerification(supplierId: string, verificationData: Record<string, unknown>) {
         try {
             const supplier = await prisma.supplier.findUnique({
                 where: { id: supplierId },
@@ -121,7 +121,7 @@ class VerificationService {
     }
 
     // Complete Factory Verification
-    async completeFactoryVerification(verificationId: string, verificationResults: any) {
+    async completeFactoryVerification(verificationId: string, verificationResults: Record<string, unknown>) {
         try {
             const verification = await prisma.factoryVerification.findUnique({
                 where: { id: verificationId },
@@ -231,7 +231,7 @@ class VerificationService {
     }
 
     // Mock GST API call
-    private async callGSTAPI(gstNumber: string) {
+    private async callGSTAPI(_gstNumber: string) {
         // In production, replace with actual GST API
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -250,7 +250,7 @@ class VerificationService {
     }
 
     // Mock Trade License API call
-    private async callTradeLicenseAPI(licenseNumber: string, state: string) {
+    private async callTradeLicenseAPI(_licenseNumber: string, _state: string) {
         // In production, replace with actual trade license API
         return new Promise((resolve) => {
             setTimeout(() => {

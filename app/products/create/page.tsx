@@ -60,7 +60,7 @@ export default function CreateProductPage() {
             } else {
                 setError("Failed to load supplier data");
             }
-        } catch (err) {
+        } catch {
             setError("Error loading supplier data");
         } finally {
             setLoading(false);
@@ -129,7 +129,7 @@ export default function CreateProductPage() {
                 const errorData = await response.json();
                 setError(errorData.error || "Failed to create product");
             }
-        } catch (err) {
+        } catch {
             setError("Error creating product");
         } finally {
             setSaving(false);

@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Build where clause
-        const where: any = {
+        const where: Record<string, unknown> = {
             supplierId: supplier.id
         };
 
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
         }
 
         // Build orderBy clause
-        let orderBy: any = {};
+        let orderBy: Record<string, unknown> = {};
         switch (sortBy) {
             case 'newest':
                 orderBy = { createdAt: 'desc' };

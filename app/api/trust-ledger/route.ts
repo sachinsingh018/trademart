@@ -82,11 +82,11 @@ class TrustLedgerService {
     }
 
     // Get public trust ledger data
-    async getPublicTrustLedger(page: number = 1, limit: number = 20, filters: any = {}) {
+    async getPublicTrustLedger(page: number = 1, limit: number = 20, filters: Record<string, unknown> = {}) {
         try {
             const skip = (page - 1) * limit;
             
-            const whereClause: any = {
+            const whereClause: Record<string, unknown> = {
                 verified: true,
                 totalOrders: { gt: 0 } // Only show suppliers with orders
             };
@@ -257,7 +257,7 @@ class TrustLedgerService {
     }
 
     // Calculate on-time delivery rate
-    private calculateOnTimeDeliveryRate(orders: any[]): number {
+    private calculateOnTimeDeliveryRate(orders: Record<string, unknown>[]): number {
         const completedOrders = orders.filter(order => order.status === 'completed');
         if (completedOrders.length === 0) return 0;
 
@@ -273,7 +273,7 @@ class TrustLedgerService {
     }
 
     // Calculate average response time
-    private calculateAverageResponseTime(quotes: any[]): number {
+    private calculateAverageResponseTime(quotes: Record<string, unknown>[]): number {
         if (quotes.length === 0) return 0;
 
         const responseTimes = quotes.map(quote => {
@@ -286,7 +286,7 @@ class TrustLedgerService {
     }
 
     // Calculate trust score value
-    private calculateTrustScoreValue(metrics: any): number {
+    private calculateTrustScoreValue(metrics: Record<string, unknown>): number {
         const {
             onTimeDeliveryRate,
             disputeRate,
