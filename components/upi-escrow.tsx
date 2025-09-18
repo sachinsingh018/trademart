@@ -194,7 +194,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <div className="text-center">
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Secure Escrow Payment</h2>
                 <p className="text-gray-600 mb-4">
@@ -217,7 +216,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Payment Methods */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -258,7 +256,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
                             </div>
                         ))}
 
-                        {/* Payment Amount */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Payment Amount (₹)
@@ -272,7 +269,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
                             />
                         </div>
 
-                        {/* UPI Details */}
                         {selectedPaymentMethod?.type === 'upi' && (
                             <div className="space-y-4">
                                 <div>
@@ -306,7 +302,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
                             </div>
                         )}
 
-                        {/* Net Banking Details */}
                         {selectedPaymentMethod?.type === 'netbanking' && (
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -327,7 +322,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
                             </div>
                         )}
 
-                        {/* Payment Button */}
                         <Button
                             onClick={initiatePayment}
                             disabled={isProcessing || !selectedPaymentMethod || !paymentAmount}
@@ -348,7 +342,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
                     </CardContent>
                 </Card>
 
-                {/* Payment Status & QR Code */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -444,7 +437,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
                 </Card>
             </div>
 
-{/* Escrow Information */ }
 <Card>
     <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -485,7 +477,6 @@ export default function UPIEscrow({ orderId, amount, onPaymentComplete }: UPIEsc
     </CardContent>
 </Card>
 
-{/* Payment Methods Info */ }
 <Card>
     <CardHeader>
         <CardTitle>Supported Payment Methods</CardTitle>
