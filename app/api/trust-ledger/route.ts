@@ -1,4 +1,6 @@
 // COMMENTED OUT - Trust Ledger Service for TradeMart
+export const trustLedgerDisabled = true;
+
 /*
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
