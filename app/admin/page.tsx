@@ -182,8 +182,8 @@ export default function AdminDashboard() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-4">
-                                        {stats?.recentUsers?.map((user) => (
-                                            <div key={user.id} className="flex items-center justify-between">
+                                        {stats?.recentUsers?.map((user, index) => (
+                                            <div key={user.id as string || index} className="flex items-center justify-between">
                                                 <div className="flex items-center space-x-3">
                                                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                                                         <Users className="h-4 w-4 text-blue-600" />

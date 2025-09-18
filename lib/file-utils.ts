@@ -144,7 +144,7 @@ export function isAllowedFileType(filename: string, allowedTypes: string[] = [])
 /**
  * Generate a thumbnail URL for image files
  */
-export function getThumbnailUrl(fileKey: string, _size: 'small' | 'medium' | 'large' = 'medium'): string {
+export function getThumbnailUrl(fileKey: string, size: 'small' | 'medium' | 'large' = 'medium'): string {
     const bucketName = process.env.AWS_S3_BUCKET_NAME || 'trademart-bucket';
     const region = process.env.AWS_REGION || 'eu-north-1';
 

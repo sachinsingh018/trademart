@@ -6,7 +6,7 @@ import { deleteFromS3 } from "@/lib/aws-s3";
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -15,7 +15,7 @@ export async function POST(
         }
 
         const { attachmentKeys } = await request.json();
-        const rfqId = params.id;
+        const { id: rfqId } = await params;
 
         // Verify the RFQ belongs to the user
         const rfq = await prisma.rfq.findFirst({
@@ -52,7 +52,7 @@ export async function POST(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -61,7 +61,7 @@ export async function DELETE(
         }
 
         const { attachmentKey } = await request.json();
-        const rfqId = params.id;
+        const { id: rfqId } = await params;
 
         // Verify the RFQ belongs to the user
         const rfq = await prisma.rfq.findFirst({
