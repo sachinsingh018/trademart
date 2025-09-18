@@ -194,7 +194,6 @@ export default function BadgesLeaderboards({ userRole, userId }: BadgesLeaderboa
 
     return (
         <div className="space-y-6">
-            {/* Header */}
 <div className="flex justify-between items-center">
     <div>
         <h2 className="text-2xl font-bold text-gray-900">Badges & Leaderboards</h2>
@@ -212,7 +211,6 @@ export default function BadgesLeaderboards({ userRole, userId }: BadgesLeaderboa
     </div>
 </div>
 
-{/* Tabs */ }
 <div className="flex gap-2">
     <Button
         variant={activeTab === 'badges' ? 'default' : 'outline'}
@@ -234,7 +232,6 @@ export default function BadgesLeaderboards({ userRole, userId }: BadgesLeaderboa
 {
     activeTab === 'badges' && (
         <div className="space-y-6">
-            {/* Badge Categories */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {['achievement', 'milestone', 'special', 'social'].map((category) => {
                     const categoryBadges = badges.filter(badge => badge.category === category);
@@ -257,7 +254,6 @@ export default function BadgesLeaderboards({ userRole, userId }: BadgesLeaderboa
                 })}
             </div>
 
-            {/* Badge Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {badges.map((badge) => (
                     <Card key={badge.id} className={`relative ${badge.unlocked ? 'ring-2 ring-green-500' : 'opacity-75'}`}>
@@ -334,11 +330,9 @@ export default function BadgesLeaderboards({ userRole, userId }: BadgesLeaderboa
     )
 }
 
-{/* Leaderboard Tab */ }
 {
     activeTab === 'leaderboard' && (
         <div className="space-y-6">
-            {/* Top 3 Podium */}
             <Card>
                 <CardHeader>
                     <CardTitle className="text-center">Top Performers</CardTitle>
@@ -348,7 +342,7 @@ export default function BadgesLeaderboards({ userRole, userId }: BadgesLeaderboa
                         {leaderboard.slice(0, 3).map((entry, index) => (
                             <div key={entry.supplierId} className="text-center">
                                 <div className={`p-4 rounded-full mb-4 ${index === 0 ? 'bg-yellow-100' :
-                                        index === 1 ? 'bg-gray-100' : 'bg-orange-100'
+                                    index === 1 ? 'bg-gray-100' : 'bg-orange-100'
                                     }`}>
                                     {index === 0 && <Crown className="h-8 w-8 text-yellow-500 mx-auto" />}
                                     {index === 1 && <Award className="h-8 w-8 text-gray-500 mx-auto" />}
@@ -366,7 +360,6 @@ export default function BadgesLeaderboards({ userRole, userId }: BadgesLeaderboa
                 </CardContent>
             </Card>
 
-            {/* Full Leaderboard */}
             <Card>
                 <CardHeader>
                     <CardTitle>Complete Leaderboard</CardTitle>

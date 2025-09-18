@@ -209,7 +209,6 @@ export default function OpenRFQFeed({ showFilters = true, limit = 20, category, 
 
     return (
         <div className="space-y-6">
-            {/* Header */}
 <div className="text-center">
     <h1 className="text-4xl font-bold text-gray-900 mb-4">
         Live RFQ Feed
@@ -222,7 +221,6 @@ export default function OpenRFQFeed({ showFilters = true, limit = 20, category, 
     </p>
 </div>
 
-{/* Filters */ }
 {
     showFilters && (
         <Card>
@@ -320,7 +318,6 @@ export default function OpenRFQFeed({ showFilters = true, limit = 20, category, 
     )
 }
 
-{/* Stats */ }
 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
     <Card>
         <CardContent className="p-4 text-center">
@@ -358,7 +355,6 @@ export default function OpenRFQFeed({ showFilters = true, limit = 20, category, 
     </Card>
 </div>
 
-{/* RFQ List */ }
 <div className="space-y-4">
     {filteredRfqs.map((rfq) => (
         <Card key={rfq.id} className="hover:shadow-lg transition-shadow">
@@ -452,7 +448,6 @@ export default function OpenRFQFeed({ showFilters = true, limit = 20, category, 
     ))}
 </div>
 
-{/* No Results */ }
 {
     filteredRfqs.length === 0 && !isLoading && (
         <Card>
@@ -477,7 +472,6 @@ export default function OpenRFQFeed({ showFilters = true, limit = 20, category, 
     )
 }
 
-{/* SEO Content */ }
 <Card>
     <CardContent className="p-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">

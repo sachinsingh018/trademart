@@ -168,7 +168,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
 
     return (
         <div className="space-y-6">
-            {/* Header */}
 <div className="flex justify-between items-center">
     <div>
         <h2 className="text-2xl font-bold text-gray-900">Certificate Packs</h2>
@@ -190,11 +189,9 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
     </div>
 </div>
 
-{/* Certificate Packs Tab */ }
 {
     activeTab === 'packs' && (
         <div className="space-y-6">
-            {/* Recommended Packs */}
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Recommended for You</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -215,7 +212,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                     </div>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    {/* Progress */}
                                     <div>
                                         <div className="flex justify-between text-sm mb-2">
                                             <span>Progress</span>
@@ -224,7 +220,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                         <Progress value={progress} />
                                     </div>
 
-                                    {/* Pack Details */}
                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                         <div>
                                             <p className="text-gray-600">Certificates</p>
@@ -244,7 +239,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                         </div>
                                     </div>
 
-                                    {/* Benefits */}
                                     <div>
                                         <p className="text-sm font-medium text-gray-700 mb-2">Key Benefits</p>
                                         <ul className="text-xs text-gray-600 space-y-1">
@@ -257,7 +251,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                         </ul>
                                     </div>
 
-                                    {/* Action Buttons */}
                                     <div className="flex gap-2">
                                         <Button
                                             size="sm"
@@ -281,7 +274,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                 </div>
             </div>
 
-            {/* All Packs */}
             <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">All Certificate Packs</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -302,7 +294,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                     </div>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    {/* Progress */}
                                     <div>
                                         <div className="flex justify-between text-sm mb-2">
                                             <span>Progress</span>
@@ -311,7 +302,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                         <Progress value={progress} />
                                     </div>
 
-                                    {/* Pack Details */}
                                     <div className="grid grid-cols-2 gap-4 text-sm">
                                         <div>
                                             <p className="text-gray-600">Certificates</p>
@@ -331,7 +321,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                         </div>
                                     </div>
 
-                                    {/* Action Buttons */}
                                     <div className="flex gap-2">
                                         <Button
                                             size="sm"
@@ -358,11 +347,9 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
     )
 }
 
-{/* My Certificates Tab */ }
 {
     activeTab === 'my_certificates' && (
         <div className="space-y-6">
-            {/* Certificate Status Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
                     <CardContent className="p-4 text-center">
@@ -402,7 +389,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                 </Card>
             </div>
 
-            {/* Certificate List */}
             <Card>
                 <CardHeader>
                     <CardTitle>My Certificates</CardTitle>
@@ -450,7 +436,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                     </div>
                                 </div>
 
-                                {/* Countries and Industries */}
                                 <div className="mb-4">
                                     <div className="flex flex-wrap gap-2 mb-2">
                                         <span className="text-sm text-gray-600">Valid in:</span>
@@ -470,7 +455,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                                     </div>
                                 </div>
 
-                                {/* Action Buttons */}
                                 <div className="flex gap-2">
                                     {certificate.status === 'completed' && (
                                         <Button size="sm" variant="outline">
@@ -502,7 +486,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
     )
 }
 
-{/* Certificate Pack Details Modal */ }
 {
     selectedPack && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -522,7 +505,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                     </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                    {/* Pack Overview */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="text-center p-4 bg-blue-50 rounded-lg">
                             <Package className="h-8 w-8 text-blue-500 mx-auto mb-2" />
@@ -541,7 +523,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                         </div>
                     </div>
 
-                    {/* Benefits */}
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Benefits</h3>
                         <ul className="space-y-2">
@@ -554,7 +535,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                         </ul>
                     </div>
 
-                    {/* Certificates List */}
                     <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">Certificates Included</h3>
                         <div className="space-y-3">
@@ -588,7 +568,6 @@ export default function CertificatePacks({ userRole, industry, targetMarkets }: 
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="flex gap-4">
                         <Button className="flex-1">
                             Start Certificate Pack

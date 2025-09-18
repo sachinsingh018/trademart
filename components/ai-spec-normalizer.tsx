@@ -351,7 +351,6 @@ export default function AISpecNormalizer({ onNormalizedRFQ }: AISpecNormalizerPr
 
             {normalizedRFQ && (
                 <div className="space-y-6">
-                    {/* Normalized RFQ Summary */}
 <Card>
     <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -389,7 +388,6 @@ export default function AISpecNormalizer({ onNormalizedRFQ }: AISpecNormalizerPr
     </CardContent>
 </Card>
 
-{/* Specifications */ }
 <Card>
     <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -411,7 +409,6 @@ export default function AISpecNormalizer({ onNormalizedRFQ }: AISpecNormalizerPr
     </CardContent>
 </Card>
 
-{/* Trade Terms */ }
 <Card>
     <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -455,7 +452,6 @@ export default function AISpecNormalizer({ onNormalizedRFQ }: AISpecNormalizerPr
     </CardContent>
 </Card>
 
-{/* Risk Assessment */ }
 <Card>
     <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -483,7 +479,6 @@ export default function AISpecNormalizer({ onNormalizedRFQ }: AISpecNormalizerPr
     </CardContent>
 </Card>
 
-{/* AI Suggestions */ }
 <Card>
     <CardHeader>
         <CardTitle className="flex items-center gap-2">
@@ -503,7 +498,6 @@ export default function AISpecNormalizer({ onNormalizedRFQ }: AISpecNormalizerPr
     </CardContent>
 </Card>
 
-{/* Action Buttons */ }
 <div className="flex gap-4">
     <Button
         onClick={() => onNormalizedRFQ(normalizedRFQ)}
