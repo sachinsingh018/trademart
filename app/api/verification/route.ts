@@ -1,3 +1,15 @@
+// COMMENTED OUT - Verification Service for TradeMart
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+    return NextResponse.json({ error: 'Verification service is disabled' }, { status: 503 });
+}
+
+export async function POST(request: NextRequest) {
+    return NextResponse.json({ error: 'Verification service is disabled' }, { status: 503 });
+}
+
+/*
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -336,3 +348,4 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
     }
 }
+*/
