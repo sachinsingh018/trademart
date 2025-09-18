@@ -108,13 +108,16 @@ export async function POST(request: NextRequest) {
         try {
             await notificationService.sendToUser(
                 quote.rfq.buyerId,
-                notificationService.createQuoteNotification(
-                    quote.rfq.title,
-                    quote.supplier.companyName,
-                    quote.price,
-                    quote.currency,
-                    quote.id
-                )
+                {
+                    userId: quote.rfq.buyerId,
+                    ...notificationService.createQuoteNotification(
+                        quote.rfq.title,
+                        quote.supplier.companyName,
+                        quote.price,
+                        quote.currency,
+                        quote.id
+                    )
+                }
             );
             console.log(`✅ Real-time quote notification sent to buyer ${quote.rfq.buyer.name}`);
         } catch (error) {

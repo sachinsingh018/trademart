@@ -6,7 +6,7 @@ import { notificationService } from '@/lib/notifications';
 export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
                     message: 'Connected to notifications stream',
                     timestamp: new Date().toISOString()
                 })}\n\n`;
-                
+
                 controller.enqueue(new TextEncoder().encode(initialMessage));
 
                 // Create a mock Response object for the notification service
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
                 } as Record<string, unknown>;
 
                 // Add client to notification service
-                notificationService.addClient(session.user.id, mockResponse);
+                notificationService.addClient(session.user.id, mockResponse as unknown as Response);
 
                 // Send periodic heartbeat to keep connection alive
                 const heartbeatInterval = setInterval(() => {
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
                 // Clean up on close
                 const cleanup = () => {
                     clearInterval(heartbeatInterval);
-                    notificationService.removeClient(session.user.id, mockResponse);
+                    notificationService.removeClient(session.user.id, mockResponse as unknown as Response);
                 };
 
                 // Handle client disconnect

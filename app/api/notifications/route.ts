@@ -7,7 +7,7 @@ import { notificationService } from '@/lib/notifications';
 export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -24,8 +24,8 @@ export async function GET(request: NextRequest) {
         );
 
         // Filter unread only if requested
-        const filteredNotifications = unreadOnly 
-            ? notifications.filter(n => !n.read)
+        const filteredNotifications = unreadOnly
+            ? notifications.filter((n: { read: boolean }) => !n.read)
             : notifications;
 
         const unreadCount = await notificationService.getUnreadCount(session.user.id);
@@ -40,9 +40,9 @@ export async function GET(request: NextRequest) {
         });
     } catch (error) {
         console.error('Error fetching notifications:', error);
-        return NextResponse.json({ 
-            success: false, 
-            error: 'Failed to fetch notifications' 
+        return NextResponse.json({
+            success: false,
+            error: 'Failed to fetch notifications'
         }, { status: 500 });
     }
 }
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -71,15 +71,15 @@ export async function POST(request: NextRequest) {
                 message: 'Notification marked as read'
             });
         } else {
-            return NextResponse.json({ 
-                error: 'Missing notificationId or markAll flag' 
+            return NextResponse.json({
+                error: 'Missing notificationId or markAll flag'
             }, { status: 400 });
         }
     } catch (error) {
         console.error('Error updating notification:', error);
-        return NextResponse.json({ 
-            success: false, 
-            error: 'Failed to update notification' 
+        return NextResponse.json({
+            success: false,
+            error: 'Failed to update notification'
         }, { status: 500 });
     }
 }
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -97,8 +97,8 @@ export async function DELETE(request: NextRequest) {
         const notificationId = searchParams.get('id');
 
         if (!notificationId) {
-            return NextResponse.json({ 
-                error: 'Missing notification ID' 
+            return NextResponse.json({
+                error: 'Missing notification ID'
             }, { status: 400 });
         }
 
@@ -111,9 +111,9 @@ export async function DELETE(request: NextRequest) {
         });
     } catch (error) {
         console.error('Error deleting notification:', error);
-        return NextResponse.json({ 
-            success: false, 
-            error: 'Failed to delete notification' 
+        return NextResponse.json({
+            success: false,
+            error: 'Failed to delete notification'
         }, { status: 500 });
     }
 }

@@ -265,20 +265,31 @@ class BadgesLeaderboardsService {
 
     // Calculate badge progress
     private calculateBadgeProgress(badge: Record<string, unknown>, supplier: Record<string, unknown>): number {
-        switch (badge.requirements.type) {
+        const requirements = badge.requirements as Record<string, unknown>;
+        const reqType = String(requirements.type || '');
+
+        switch (reqType) {
             case 'orders':
-                return Math.min(100, (supplier.totalOrders / badge.requirements.value) * 100);
+                const totalOrders = Number(supplier.totalOrders || 0);
+                const ordersValue = Number(requirements.value || 1);
+                return Math.min(100, (totalOrders / ordersValue) * 100);
             case 'quotes':
-                return Math.min(100, (supplier.quotes.length / badge.requirements.value) * 100);
+                const quotesLength = Array.isArray(supplier.quotes) ? supplier.quotes.length : 0;
+                const quotesValue = Number(requirements.value || 1);
+                return Math.min(100, (quotesLength / quotesValue) * 100);
             case 'verification':
-                return supplier.verified ? 100 : 0;
+                return Boolean(supplier.verified) ? 100 : 0;
             case 'rating':
-                return supplier.rating >= badge.requirements.value ? 100 : 0;
+                const rating = Number(supplier.rating || 0);
+                const ratingValue = Number(requirements.value || 0);
+                return rating >= ratingValue ? 100 : 0;
             case 'response_time':
-                const avgResponseTime = parseFloat(supplier.responseTime) || 24;
-                return avgResponseTime <= badge.requirements.value ? 100 : 0;
+                const avgResponseTime = parseFloat(String(supplier.responseTime || '24')) || 24;
+                const responseValue = Number(requirements.value || 24);
+                return avgResponseTime <= responseValue ? 100 : 0;
             case 'early_join':
-                const daysSinceJoin = (Date.now() - new Date(supplier.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+                const createdAt = String(supplier.createdAt || new Date().toISOString());
+                const daysSinceJoin = (Date.now() - new Date(createdAt).getTime()) / (1000 * 60 * 60 * 24);
                 return daysSinceJoin <= 30 ? 100 : 0;
             case 'qc_success':
                 // Mock QC success rate
@@ -296,16 +307,18 @@ class BadgesLeaderboardsService {
         let points = 0;
 
         // Base points from orders
-        points += supplier.totalOrders * 10;
+        const totalOrders = Number(supplier.totalOrders || 0);
+        points += totalOrders * 10;
 
         // Rating bonus
-        points += supplier.rating * 20;
+        const rating = Number(supplier.rating || 0);
+        points += rating * 20;
 
         // Verification bonus
-        if (supplier.verified) points += 200;
+        if (Boolean(supplier.verified)) points += 200;
 
         // Response time bonus
-        const responseTime = parseFloat(supplier.responseTime) || 24;
+        const responseTime = parseFloat(String(supplier.responseTime || '24')) || 24;
         if (responseTime < 2) points += 100;
         else if (responseTime < 6) points += 50;
 
@@ -314,7 +327,10 @@ class BadgesLeaderboardsService {
         const unlockedBadges = badges.filter(badge =>
             this.calculateBadgeProgress(badge, supplier) >= 100
         );
-        points += unlockedBadges.reduce((sum, badge) => sum + badge.points, 0);
+        points += unlockedBadges.reduce((sum, badge) => {
+            const badgePoints = Number((badge as Record<string, unknown>).points || 0);
+            return sum + badgePoints;
+        }, 0);
 
         return Math.floor(points);
     }
