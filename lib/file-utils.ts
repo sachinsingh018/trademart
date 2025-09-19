@@ -70,7 +70,7 @@ export async function getUserFile(fileId: string): Promise<FileUploadInfo | null
         fileKey: file.fileKey,
         fileSize: file.fileSize,
         contentType: file.contentType,
-        url: file.url,
+        url: file.url || undefined,
         uploadedAt: file.uploadedAt,
     };
 }
