@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageSquare, CheckCircle, XCircle, Loader2 } from "lucide-react";
+// import { MessageSquare, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 interface RFQ {
     id: string;
@@ -76,8 +76,8 @@ export default function RFQDetailPage() {
         leadTimeDays: "",
         notes: "",
     });
-    const [whatsappStatus, setWhatsappStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-    const [whatsappError, setWhatsappError] = useState('');
+    // const [whatsappStatus, setWhatsappStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+    // const [whatsappError, setWhatsappError] = useState('');
 
     // Mock data - replace with actual API call
     useEffect(() => {
@@ -192,8 +192,8 @@ export default function RFQDetailPage() {
     };
 
     const sendWhatsAppNotification = async (quoteId: string) => {
-        setWhatsappStatus('sending');
-        setWhatsappError('');
+        // setWhatsappStatus('sending');
+        // setWhatsappError('');
 
         try {
             const response = await fetch('/api/whatsapp/send-notification', {
@@ -213,15 +213,15 @@ export default function RFQDetailPage() {
             const result = await response.json();
 
             if (result.success) {
-                setWhatsappStatus('success');
+                // setWhatsappStatus('success');
                 console.log('WhatsApp notification sent successfully');
             } else {
-                setWhatsappStatus('error');
-                setWhatsappError(result.error || 'Failed to send notification');
+                // setWhatsappStatus('error');
+                // setWhatsappError(result.error || 'Failed to send notification');
             }
         } catch (error) {
-            setWhatsappStatus('error');
-            setWhatsappError('Failed to send WhatsApp notification');
+            // setWhatsappStatus('error');
+            // setWhatsappError('Failed to send WhatsApp notification');
             console.error('WhatsApp notification error:', error);
         }
     };
