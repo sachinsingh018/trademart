@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 // import Link from "next/link"; // COMMENTED OUT - not used
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,10 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { 
-    ArrowLeft, 
-    Plus, 
-    X, 
+import {
+    ArrowLeft,
+    Plus,
+    X,
     Package,
     CheckCircle
 } from "lucide-react";
@@ -123,13 +123,13 @@ export default function EditProduct() {
         if (params.id && session?.user?.role === "supplier") {
             fetchProduct();
         }
-    }, [params.id, session]);
+    }, [params.id, session, fetchProduct]);
 
-    const fetchProduct = async () => {
+    const fetchProduct = useCallback(async () => {
         try {
             const response = await fetch(`/api/products/${params.id}`);
             const data = await response.json();
-            
+
             if (data.success) {
                 const productData = data.data;
                 setProduct(productData);
@@ -159,7 +159,7 @@ export default function EditProduct() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [params.id]);
 
     const handleInputChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -376,7 +376,7 @@ export default function EditProduct() {
                             {/* Basic Information */}
                             <div className="space-y-6">
                                 <h3 className="text-lg font-semibold">Basic Information</h3>
-                                
+
                                 <div>
                                     <Label htmlFor="name">Product Name *</Label>
                                     <Input
@@ -432,7 +432,7 @@ export default function EditProduct() {
                             {/* Pricing & Quantity */}
                             <div className="space-y-6">
                                 <h3 className="text-lg font-semibold">Pricing & Quantity</h3>
-                                
+
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div>
                                         <Label htmlFor="price">Price *</Label>
@@ -506,7 +506,7 @@ export default function EditProduct() {
                             {/* Inventory */}
                             <div className="space-y-6">
                                 <h3 className="text-lg font-semibold">Inventory</h3>
-                                
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="flex items-center space-x-2">
                                         <input
@@ -535,7 +535,7 @@ export default function EditProduct() {
                             {/* Features */}
                             <div className="space-y-6">
                                 <h3 className="text-lg font-semibold">Features</h3>
-                                
+
                                 <div className="space-y-2">
                                     <div className="flex gap-2">
                                         <Input
@@ -552,8 +552,8 @@ export default function EditProduct() {
                                         {formData.features.map((feature, index) => (
                                             <Badge key={index} variant="secondary" className="flex items-center gap-1">
                                                 {feature}
-                                                <X 
-                                                    className="h-3 w-3 cursor-pointer" 
+                                                <X
+                                                    className="h-3 w-3 cursor-pointer"
                                                     onClick={() => removeFeature(index)}
                                                 />
                                             </Badge>
@@ -565,7 +565,7 @@ export default function EditProduct() {
                             {/* Tags */}
                             <div className="space-y-6">
                                 <h3 className="text-lg font-semibold">Tags</h3>
-                                
+
                                 <div className="space-y-2">
                                     <div className="flex gap-2">
                                         <Input
@@ -582,8 +582,8 @@ export default function EditProduct() {
                                         {formData.tags.map((tag, index) => (
                                             <Badge key={index} variant="outline" className="flex items-center gap-1">
                                                 {tag}
-                                                <X 
-                                                    className="h-3 w-3 cursor-pointer" 
+                                                <X
+                                                    className="h-3 w-3 cursor-pointer"
                                                     onClick={() => removeTag(index)}
                                                 />
                                             </Badge>
@@ -595,7 +595,7 @@ export default function EditProduct() {
                             {/* Images */}
                             <div className="space-y-6">
                                 <h3 className="text-lg font-semibold">Product Images</h3>
-                                
+
                                 <div className="space-y-2">
                                     <div className="flex gap-2">
                                         <Input
@@ -611,8 +611,8 @@ export default function EditProduct() {
                                         {formData.images.map((image, index) => (
                                             <Badge key={index} variant="secondary" className="flex items-center gap-1">
                                                 Image {index + 1}
-                                                <X 
-                                                    className="h-3 w-3 cursor-pointer" 
+                                                <X
+                                                    className="h-3 w-3 cursor-pointer"
                                                     onClick={() => removeImage(index)}
                                                 />
                                             </Badge>
@@ -624,7 +624,7 @@ export default function EditProduct() {
                             {/* Specifications */}
                             <div className="space-y-6">
                                 <h3 className="text-lg font-semibold">Specifications</h3>
-                                
+
                                 <div className="space-y-2">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                                         <Input
@@ -646,8 +646,8 @@ export default function EditProduct() {
                                             <div key={key} className="flex items-center justify-between bg-gray-50 p-2 rounded">
                                                 <span className="font-medium">{key}:</span>
                                                 <span className="text-gray-600">{value}</span>
-                                                <X 
-                                                    className="h-4 w-4 cursor-pointer text-red-500" 
+                                                <X
+                                                    className="h-4 w-4 cursor-pointer text-red-500"
                                                     onClick={() => removeSpecification(key)}
                                                 />
                                             </div>
@@ -658,8 +658,8 @@ export default function EditProduct() {
 
                             {/* Submit */}
                             <div className="flex justify-end pt-6 border-t">
-                                <Button 
-                                    type="submit" 
+                                <Button
+                                    type="submit"
                                     disabled={isSubmitting}
                                     className="bg-green-600 hover:bg-green-700"
                                 >
