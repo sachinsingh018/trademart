@@ -119,12 +119,6 @@ export default function EditProduct() {
         }
     }, [status, session, router]);
 
-    useEffect(() => {
-        if (params.id && session?.user?.role === "supplier") {
-            fetchProduct();
-        }
-    }, [params.id, session, fetchProduct]);
-
     const fetchProduct = useCallback(async () => {
         try {
             const response = await fetch(`/api/products/${params.id}`);
@@ -160,6 +154,12 @@ export default function EditProduct() {
             setLoading(false);
         }
     }, [params.id]);
+
+    useEffect(() => {
+        if (params.id && session?.user?.role === "supplier") {
+            fetchProduct();
+        }
+    }, [params.id, session, fetchProduct]);
 
     const handleInputChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({ ...prev, [field]: value }));
