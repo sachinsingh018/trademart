@@ -148,7 +148,7 @@
 //     const shareBadge = (badge: Badge) => {
 //         const text = `🏆 I just earned the "${badge.name}" badge on TradeMart! ${badge.description}`;
 //         const url = window.location.origin;
-        
+
 //         if (navigator.share) {
 //             navigator.share({
 //                 title: `TradeMart Badge: ${badge.name}`,
@@ -420,11 +420,11 @@
 // }
 // */
 
-// export default function BadgesLeaderboards() {
-//     return (
-//         <div className="p-8 text-center">
-//             <h2 className="text-xl font-semibold mb-2">Badges & Leaderboards</h2>
-//             <p className="text-gray-600">This component is currently disabled</p>
-//         </div>
-//     );
-// }
+export default function BadgesLeaderboards() {
+    return (
+        <div className="p-8 text-center">
+            <h2 className="text-xl font-semibold mb-2">Badges & Leaderboards</h2>
+            <p className="text-gray-600">This component is currently disabled</p>
+        </div>
+    );
+}
