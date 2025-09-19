@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 
 // Type for response objects that can handle SSE connections
-interface SSEResponse {
+export interface SSEResponse {
     on?: (event: string, callback: () => void) => void;
     write?: (data: string) => void;
     end?: () => void;
