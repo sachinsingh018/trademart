@@ -38,7 +38,7 @@ export async function getUserFiles(): Promise<FileUploadInfo[]> {
         fileKey: file.fileKey,
         fileSize: file.fileSize,
         contentType: file.contentType,
-        url: file.url,
+        url: file.url || undefined,
         uploadedAt: file.uploadedAt,
     }));
 }
