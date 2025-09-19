@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
                 // Clean up on close
                 const cleanup = () => {
                     clearInterval(heartbeatInterval);
-                    notificationService.removeClient(session.user.id, mockResponse as unknown as Response);
+                    notificationService.removeClient(session.user.id, mockResponse as unknown as SSEResponse);
                 };
 
                 // Handle client disconnect
