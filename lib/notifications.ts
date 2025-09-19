@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
 export interface Notification {
     id: string;
@@ -25,7 +26,7 @@ export interface NotificationData {
 
 class NotificationService {
     private static instance: NotificationService;
-    private clients: Map<string, Set<Response>> = new Map();
+    private clients: Map<string, Set<any>> = new Map();
 
     static getInstance(): NotificationService {
         if (!NotificationService.instance) {
@@ -35,20 +36,22 @@ class NotificationService {
     }
 
     // Add client to notification stream
-    addClient(userId: string, response: Response) {
+    addClient(userId: string, response: any) {
         if (!this.clients.has(userId)) {
             this.clients.set(userId, new Set());
         }
         this.clients.get(userId)!.add(response);
 
         // Remove client when connection closes
-        response.on('close', () => {
-            this.removeClient(userId, response);
-        });
+        if (response.on && typeof response.on === 'function') {
+            response.on('close', () => {
+                this.removeClient(userId, response);
+            });
+        }
     }
 
     // Remove client from notification stream
-    removeClient(userId: string, response: Response) {
+    removeClient(userId: string, response: any) {
         const userClients = this.clients.get(userId);
         if (userClients) {
             userClients.delete(response);
