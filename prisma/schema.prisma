@@ -24,6 +24,7 @@ model User {
   supplier          Supplier?
   buyerTransactions Transaction[]    @relation("BuyerTransactions")
   fileUploads       FileUpload[]
+  notifications     Notification[]
 
   @@map("users")
   @@schema("trademart")
@@ -243,5 +244,21 @@ model FileUpload {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("file_uploads")
+  @@schema("trademart")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  type      String
+  title     String
+  message   String
+  data      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
   @@schema("trademart")
 }
