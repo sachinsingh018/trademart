@@ -1,5 +1,11 @@
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+
+// Type for response objects that can handle SSE connections
+interface SSEResponse {
+    on?: (event: string, callback: () => void) => void;
+    write?: (data: string) => void;
+    end?: () => void;
+}
 
 export interface Notification {
     id: string;
@@ -26,7 +32,7 @@ export interface NotificationData {
 
 class NotificationService {
     private static instance: NotificationService;
-    private clients: Map<string, Set<any>> = new Map();
+    private clients: Map<string, Set<SSEResponse>> = new Map();
 
     static getInstance(): NotificationService {
         if (!NotificationService.instance) {
@@ -36,7 +42,7 @@ class NotificationService {
     }
 
     // Add client to notification stream
-    addClient(userId: string, response: any) {
+    addClient(userId: string, response: SSEResponse) {
         if (!this.clients.has(userId)) {
             this.clients.set(userId, new Set());
         }
@@ -51,7 +57,7 @@ class NotificationService {
     }
 
     // Remove client from notification stream
-    removeClient(userId: string, response: any) {
+    removeClient(userId: string, response: SSEResponse) {
         const userClients = this.clients.get(userId);
         if (userClients) {
             userClients.delete(response);
