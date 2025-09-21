@@ -117,7 +117,8 @@ export async function POST(request: NextRequest) {
             //                 read: false,
             //     // }
             // );
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error sending welcome notification:", error);
         }
 

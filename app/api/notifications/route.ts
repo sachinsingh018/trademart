@@ -25,9 +25,7 @@ export async function GET(request: NextRequest) {
         const notifications: unknown[] = [];
 
         // Filter unread only if requested
-        const filteredNotifications = unreadOnly
-            ? notifications.filter((n: { read: boolean }) => !n.read)
-            : notifications;
+        const filteredNotifications = notifications;
 
         // const unreadCount = await notificationService.getUnreadCount(session.user.id);
         const unreadCount = 0;
