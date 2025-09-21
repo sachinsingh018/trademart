@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
         // Create user with enhanced data
         const userData: {
             name: string;
-            email: string;
+            email: string;//nnnn
             phone: string | null;
             passwordHash: string;
             role: string;
