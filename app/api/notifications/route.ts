@@ -13,8 +13,8 @@ export async function GET(request: NextRequest) {
         }
 
         const { searchParams } = new URL(request.url);
-        const limit = parseInt(searchParams.get('limit') || '50');
-        const offset = parseInt(searchParams.get('offset') || '0');
+        // const limit = parseInt(searchParams.get('limit') || '50');
+        // const offset = parseInt(searchParams.get('offset') || '0');
         const unreadOnly = searchParams.get('unreadOnly') === 'true';
 
         // const notifications = await notificationService.getUserNotifications(
@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
         //     limit,
         //     offset
         // );
-        const notifications: any[] = [];
+        const notifications: unknown[] = [];
 
         // Filter unread only if requested
         const filteredNotifications = unreadOnly
-            ? notifications.filter((n: any) => !n.read)
+            ? notifications.filter((n: { read: boolean }) => !n.read)
             : notifications;
 
         // const unreadCount = await notificationService.getUnreadCount(session.user.id);
