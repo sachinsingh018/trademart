@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { notificationService } from "@/lib/notifications"
+// import { notificationService } from "@/lib/notifications"
 
 export async function POST(request: NextRequest) {
     try {
@@ -106,19 +106,19 @@ export async function POST(request: NextRequest) {
 
         // Send real-time notification to buyer about new quote
         try {
-            await notificationService.sendToUser(
-                quote.rfq.buyerId,
-                {
-                    userId: quote.rfq.buyerId,
-                    ...notificationService.createQuoteNotification(
-                        quote.rfq.title,
-                        quote.supplier.companyName,
-                        Number(quote.price),
-                        quote.currency,
-                        quote.id
-                    )
-                }
-            );
+            // await notificationService.sendToUser(
+            //     quote.rfq.buyerId,
+            //     {
+            //         userId: quote.rfq.buyerId,
+            //         ...notificationService.createQuoteNotification(
+            //             quote.rfq.title,
+            //             quote.supplier.companyName,
+            //             Number(quote.price),
+            //             quote.currency,
+            //             quote.id
+            //         )
+            //     }
+            // );
             console.log(`✅ Real-time quote notification sent to buyer ${quote.rfq.buyer.name}`);
         } catch (error) {
             console.error('Error sending real-time quote notification:', error);

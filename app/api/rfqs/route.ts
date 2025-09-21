@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { notificationService } from '@/lib/notifications';
+// import { notificationService } from '@/lib/notifications';
 
 const prisma = new PrismaClient();
 
@@ -286,17 +286,17 @@ async function sendRFQNotifications(rfq: Record<string, unknown>) {
         // Send in-app notifications to each supplier
         for (const supplier of relevantSuppliers) {
             try {
-                await notificationService.sendToUser(
-                    supplier.userId,
-                    {
-                        userId: supplier.userId,
-                        ...notificationService.createRFQNotification(
-                            String(rfq.title || ''),
-                            String((rfq.buyer as Record<string, unknown>)?.name || ''),
-                            String(rfq.id || '')
-                        )
-                    }
-                );
+                // await notificationService.sendToUser(
+                //     supplier.userId,
+                //     {
+                //         userId: supplier.userId,
+                //         ...notificationService.createRFQNotification(
+                //             String(rfq.title || ''),
+                //             String((rfq.buyer as Record<string, unknown>)?.name || ''),
+                //             String(rfq.id || '')
+                //         )
+                //     }
+                // );
                 console.log(`✅ Notification sent to ${supplier.companyName}`);
             } catch (error) {
                 console.error(`Error sending notification to ${supplier.companyName}:`, error);

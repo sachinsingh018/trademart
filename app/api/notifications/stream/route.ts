@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { notificationService, SSEResponse } from '@/lib/notifications';
+// import { notificationService, SSEResponse } from '@/lib/notifications';
 
 export async function GET(request: NextRequest) {
     try {
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
                 } as Record<string, unknown>;
 
                 // Add client to notification service
-                notificationService.addClient(session.user.id, mockResponse as unknown as SSEResponse);
+                // notificationService.addClient(session.user.id, mockResponse as unknown as SSEResponse);
 
                 // Send periodic heartbeat to keep connection alive
                 const heartbeatInterval = setInterval(() => {
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
                 // Clean up on close
                 const cleanup = () => {
                     clearInterval(heartbeatInterval);
-                    notificationService.removeClient(session.user.id, mockResponse as unknown as SSEResponse);
+                    // notificationService.removeClient(session.user.id, mockResponse as unknown as SSEResponse);
                 };
 
                 // Handle client disconnect

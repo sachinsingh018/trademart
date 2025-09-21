@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
-import { notificationService } from "@/lib/notifications"
+// import { notificationService } from "@/lib/notifications"
 
 export async function POST(request: NextRequest) {
     try {
@@ -107,16 +107,16 @@ export async function POST(request: NextRequest) {
 
         // Send welcome notification
         try {
-            await notificationService.sendToUser(
-                user.id,
-                {
-                    userId: user.id,
-                    type: 'system',
-                    title: "Welcome to TradeMart!",
-                    message: `Welcome ${name}! Your ${role} account has been created successfully. You can now start using TradeMart to ${role === "buyer" ? "post RFQs and get quotes" : "submit quotes and grow your business"}.`,
-                    read: false,
-                }
-            );
+            // await notificationService.sendToUser(
+            //     user.id,
+            //     {
+            // userId: user.id,
+            //     type: 'system',
+            //         title: "Welcome to TradeMart!",
+            //             message: `Welcome ${name}! Your ${role} account has been created successfully. You can now start using TradeMart to ${role === "buyer" ? "post RFQs and get quotes" : "submit quotes and grow your business"}.`,
+            //                 read: false,
+            //     // }
+            // );
         } catch (error) {
             console.error("Error sending welcome notification:", error);
         }
