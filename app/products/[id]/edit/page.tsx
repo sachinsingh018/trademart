@@ -120,10 +120,13 @@ export default function EditProduct() {
     }, [status, session, router]);
 
     const fetchProduct = useCallback(async () => {
-        if (!params?.id) return;
-
         try {
-            const response = await fetch(`/api/products/${params.id}`);
+            if (!params?.id) {
+                console.error('Product ID is missing');
+                return;
+            }
+
+            const response = await fetch(`/api/products/${params.id!}`);
             const data = await response.json();
 
             if (data.success) {
