@@ -137,7 +137,7 @@ class NotificationService {
                 select: { id: true }
             });
 
-            const userIds = users.map((user: any) => user.id);
+            const userIds = users.map((user: { id: string }) => user.id);
             return await this.sendToUsers(userIds, notification);
         } catch (error) {
             console.error('Error sending notification to role:', error);
@@ -155,7 +155,7 @@ class NotificationService {
                 skip: offset,
             });
 
-            return notifications.map((notification: any) => ({
+            return notifications.map((notification: { data: string | null;[key: string]: any }) => ({
                 ...notification,
                 data: notification.data ? JSON.parse(notification.data) : null,
             }));
