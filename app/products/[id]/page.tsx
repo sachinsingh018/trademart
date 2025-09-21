@@ -73,8 +73,10 @@ export default function ProductDetailPage() {
 
     // Mock data - replace with actual API call
     useEffect(() => {
+        if (!params?.id) return;
+
         const mockProduct: Product = {
-            id: params.id as string,
+            id: params.id,
             name: "Wireless Bluetooth Headphones",
             description: "High-quality wireless headphones with advanced noise cancellation technology, 30-hour battery life, and premium sound quality. Perfect for professionals, music lovers, and anyone who values superior audio experience. Features quick charge capability, Bluetooth 5.0 connectivity, and comfortable over-ear design.",
             category: "Electronics",
