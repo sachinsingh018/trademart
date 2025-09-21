@@ -153,13 +153,13 @@ export default function EditProduct() {
         } finally {
             setLoading(false);
         }
-    }, [params.id]);
+    }, [params?.id]);
 
     useEffect(() => {
-        if (params.id && session?.user?.role === "supplier") {
+        if (params?.id && session?.user?.role === "supplier") {
             fetchProduct();
         }
-    }, [params.id, session, fetchProduct]);
+    }, [params?.id, session, fetchProduct]);
 
     const handleInputChange = (field: string, value: string | boolean) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -252,7 +252,7 @@ export default function EditProduct() {
         }
 
         try {
-            const response = await fetch(`/api/products/${params.id}`, {
+            const response = await fetch(`/api/products/${params?.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
