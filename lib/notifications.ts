@@ -155,7 +155,7 @@ class NotificationService {
                 skip: offset,
             });
 
-            return notifications.map((notification: { data: string | null;[key: string]: any }) => ({
+            return notifications.map((notification: { data: string | null;[key: string]: unknown }) => ({
                 ...notification,
                 data: notification.data ? JSON.parse(notification.data) : null,
             }));
