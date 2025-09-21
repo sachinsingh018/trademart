@@ -59,7 +59,7 @@ function SignUpForm() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
-    const roleParam = searchParams.get("role");
+    const roleParam = searchParams?.get("role");
 
     const [formData, setFormData] = useState<FormData>({
         name: "",
