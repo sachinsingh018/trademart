@@ -384,7 +384,7 @@ export default function SuppliersPage() {
                         </div>
                     ) : (
                         filteredSuppliers.map((supplier) => (
-                            <Card key={supplier.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
+                            <Card key={supplier.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
                                 <CardHeader>
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
@@ -405,8 +405,8 @@ export default function SuppliersPage() {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
+                                <CardContent className="flex flex-col flex-grow">
+                                    <div className="space-y-4 flex-grow">
                                         <p className="text-sm text-gray-600 line-clamp-2">
                                             {supplier.description}
                                         </p>
@@ -462,7 +462,7 @@ export default function SuppliersPage() {
                                             </div>
                                         </div>
 
-                                        <div className="pt-4 border-t border-gray-200 flex justify-between items-center">
+                                        <div className="pt-4 border-t border-gray-200 flex justify-between items-center mt-auto">
                                             <div className="text-sm text-gray-600">
                                                 Min Order: {supplier.currency} {supplier.minOrderValue.toLocaleString()}
                                             </div>
