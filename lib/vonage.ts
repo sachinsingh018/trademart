@@ -17,7 +17,6 @@ if (hasVonageCredentials) {
         vonage = new Vonage({
             apiKey: process.env.VONAGE_API_KEY!,
             apiSecret: process.env.VONAGE_API_SECRET!,
-            signatureSecret: process.env.VONAGE_SIGNATURE_SECRET,
         });
         vonageInitialized = true;
         console.log('✅ Vonage client initialized successfully');
