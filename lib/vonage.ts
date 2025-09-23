@@ -6,12 +6,13 @@ const hasVonageCredentials = process.env.VONAGE_API_KEY &&
     process.env.VONAGE_API_SECRET.length > 0;
 
 // Initialize Vonage client only if credentials are available
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let vonage: any = null;
 let vonageInitialized = false;
 
 if (hasVonageCredentials) {
     try {
-        // Dynamic import to avoid TypeScript issues
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const { Vonage } = require('@vonage/server-sdk');
         vonage = new Vonage({
             apiKey: process.env.VONAGE_API_KEY!,
