@@ -14,10 +14,10 @@ let vonageInitialized = false;
 if (hasVonageCredentials) {
     try {
         console.log('🔧 Initializing Vonage with API Key:', process.env.VONAGE_API_KEY);
-        vonage = new Vonage(
-            process.env.VONAGE_API_KEY!,
-            process.env.VONAGE_API_SECRET!
-        );
+        vonage = new Vonage({
+            apiKey: process.env.VONAGE_API_KEY!,
+            apiSecret: process.env.VONAGE_API_SECRET!,
+        } as any); // Type assertion to bypass TypeScript issues
         vonageInitialized = true;
         console.log('✅ Vonage client initialized successfully');
     } catch (error) {
