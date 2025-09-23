@@ -54,6 +54,7 @@ function SignUpForm() {
     const [success, setSuccess] = useState("");
     const [otpSent, setOtpSent] = useState(false);
     const [otpVerified, setOtpVerified] = useState(false);
+    const [otpRequestId, setOtpRequestId] = useState<string | null>(null);
     const [emailValidation, setEmailValidation] = useState<{ isValid: boolean; message: string } | null>(null);
     const [phoneValidation, setPhoneValidation] = useState<{ isValid: boolean; message: string; countryCode?: string } | null>(null);
 
@@ -243,8 +244,10 @@ function SignUpForm() {
             });
 
             if (response.ok) {
+                const data = await response.json();
                 setOtpSent(true);
-                setSuccess(`OTP sent to your ${formData.verificationMethod}`);
+                setOtpRequestId(data.requestId || null);
+                setSuccess(data.message || `OTP sent to your ${formData.verificationMethod}`);
             } else {
                 const data = await response.json();
                 setError(data.error || "Failed to send OTP");
@@ -270,6 +273,7 @@ function SignUpForm() {
                     email: formData.email,
                     phone: formData.phone,
                     otp: formData.otpCode,
+                    requestId: otpRequestId,
                 }),
             });
 
@@ -699,6 +703,7 @@ function SignUpForm() {
                                         onClick={() => {
                                             setOtpSent(false);
                                             setOtpVerified(false);
+                                            setOtpRequestId(null);
                                             setFormData(prev => ({ ...prev, otpCode: "" }));
                                         }}
                                         className="w-full"

@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-
-// TODO: Replace with actual AWS services
-// import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
-// import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
+import { VonageOTPService } from "@/lib/vonage";
+import { MockOTPService } from "@/lib/mock-otp";
 
 export async function POST(request: NextRequest) {
     try {
@@ -20,63 +17,53 @@ export async function POST(request: NextRequest) {
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-        // Store OTP in database (for verification)
-        await prisma.verificationToken.upsert({
-            where: {
-                identifier_token: {
-                    identifier: method === "email" ? email : phone,
-                    token: otp,
-                },
-            },
-            update: {
-                token: otp,
-                expires: expiresAt,
-            },
-            create: {
-                identifier: method === "email" ? email : phone,
-                token: otp,
-                expires: expiresAt,
-            },
-        });
+        // Store OTP in mock storage (database disabled for now)
+        const identifier = method === "email" ? email : phone;
+        MockOTPService.storeOTP(identifier, otp, method);
 
         if (method === "email") {
-            // TODO: Replace with AWS SES
-            // const sesClient = new SESClient({ region: process.env.AWS_REGION });
-            // const command = new SendEmailCommand({
-            //   Source: process.env.FROM_EMAIL,
-            //   Destination: { ToAddresses: [email] },
-            //   Message: {
-            //     Subject: { Data: "TradeMart Verification Code" },
-            //     Body: {
-            //       Text: { Data: `Your verification code is: ${otp}. This code expires in 10 minutes.` },
-            //       Html: { Data: `<h2>TradeMart Verification</h2><p>Your verification code is: <strong>${otp}</strong></p><p>This code expires in 10 minutes.</p>` }
-            //     }
-            //   }
-            // });
-            // await sesClient.send(command);
+            // Send OTP via Vonage Email service
+            const emailResult = await VonageOTPService.sendEmailOTP(email, otp);
 
-            // Placeholder - in development, log the OTP
-            console.log(`📧 Email OTP for ${email}: ${otp}`);
+            if (!emailResult.success) {
+                console.error("Email OTP failed:", emailResult.error);
+                return NextResponse.json(
+                    { error: emailResult.message },
+                    { status: 500 }
+                );
+            }
+
+            // In development, log the OTP for testing
+            if (process.env.NODE_ENV === "development") {
+                console.log(`📧 Email OTP for ${email}: ${otp}`);
+            }
 
             return NextResponse.json({
-                message: "OTP sent to email successfully",
+                message: emailResult.message,
+                requestId: emailResult.requestId,
                 // In development, include OTP for testing
                 ...(process.env.NODE_ENV === "development" && { otp }),
             });
         } else if (method === "phone") {
-            // TODO: Replace with AWS SNS
-            // const snsClient = new SNSClient({ region: process.env.AWS_REGION });
-            // const command = new PublishCommand({
-            //   PhoneNumber: phone,
-            //   Message: `Your TradeMart verification code is: ${otp}. This code expires in 10 minutes.`
-            // });
-            // await snsClient.send(command);
+            // Send OTP via Vonage SMS service
+            const smsResult = await VonageOTPService.sendSMSOTP(phone, otp);
 
-            // Placeholder - in development, log the OTP
-            console.log(`📱 SMS OTP for ${phone}: ${otp}`);
+            if (!smsResult.success) {
+                console.error("SMS OTP failed:", smsResult.error);
+                return NextResponse.json(
+                    { error: smsResult.message },
+                    { status: 500 }
+                );
+            }
+
+            // In development, log the OTP for testing
+            if (process.env.NODE_ENV === "development") {
+                console.log(`📱 SMS OTP for ${phone}: ${otp}`);
+            }
 
             return NextResponse.json({
-                message: "OTP sent to phone successfully",
+                message: smsResult.message,
+                requestId: smsResult.requestId,
                 // In development, include OTP for testing
                 ...(process.env.NODE_ENV === "development" && { otp }),
             });
