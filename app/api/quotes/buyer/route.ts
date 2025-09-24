@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
             }
             acc[rfqId].quotes.push({
                 id: quote.id,
-                price: quote.price,
+                price: Number(quote.price),
                 leadTimeDays: quote.leadTimeDays,
                 notes: quote.notes,
                 status: quote.status,
