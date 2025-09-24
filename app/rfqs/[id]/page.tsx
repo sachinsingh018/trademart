@@ -184,7 +184,24 @@ export default function RFQDetailPage() {
 
                     // Transform quotes data
                     if (rfqData.quotes) {
-                        const transformedQuotes = rfqData.quotes.map((quote: any) => ({
+                        const transformedQuotes = rfqData.quotes.map((quote: {
+                            id: string;
+                            supplierId: string;
+                            supplier?: {
+                                user?: { name: string };
+                                companyName?: string;
+                                country?: string;
+                                verified?: boolean;
+                                rating?: number;
+                            };
+                            price?: number;
+                            currency?: string;
+                            leadTimeDays?: number;
+                            notes?: string;
+                            status?: string;
+                            createdAt: string;
+                            whatsappSent?: boolean;
+                        }) => ({
                             id: quote.id,
                             supplierId: quote.supplierId,
                             supplier: {
@@ -219,40 +236,6 @@ export default function RFQDetailPage() {
         fetchRFQ();
     }, [params.id]);
 
-    const sendWhatsAppNotification = async (quoteId: string) => {
-        // setWhatsappStatus('sending');
-        // setWhatsappError('');
-
-        try {
-            const response = await fetch('/api/whatsapp/send-notification', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    quoteId,
-                    supplierPhone: '+1234567890', // This should come from the quote data
-                    rfqTitle: rfq?.title,
-                    buyerCompany: rfq?.buyer.name,
-                    rfqId: rfq?.id
-                }),
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                // setWhatsappStatus('success');
-                console.log('WhatsApp notification sent successfully');
-            } else {
-                // setWhatsappStatus('error');
-                // setWhatsappError(result.error || 'Failed to send notification');
-            }
-        } catch (error) {
-            // setWhatsappStatus('error');
-            // setWhatsappError('Failed to send WhatsApp notification');
-            console.error('WhatsApp notification error:', error);
-        }
-    };
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {

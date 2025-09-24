@@ -10,15 +10,59 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Package } from "lucide-react";
 
+interface Product {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    price: number;
+    currency: string;
+    minOrderQuantity: number;
+    unit: string;
+    stockQuantity?: number;
+    inStock: boolean;
+    views?: number;
+    features: string[];
+    tags: string[];
+    supplier?: {
+        company: string;
+        verified: boolean;
+    };
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface RFQ {
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    quantity?: number;
+    unit?: string;
+    budget?: number;
+    currency?: string;
+    status: string;
+    quotes?: Array<{
+        id: string;
+        price: number;
+        leadTime: number;
+        notes: string;
+    }>;
+    requirements: string[];
+    specifications: Record<string, string>;
+    createdAt: string;
+    expiresAt?: string;
+}
+
 export default function Dashboard() {
     const { data: session, status } = useSession();
     const router = useRouter();
-    const [rfqs, setRfqs] = useState([]);
-    const [products, setProducts] = useState([]);
+    const [rfqs, setRfqs] = useState<RFQ[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [deleting, setDeleting] = useState<string | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<any>(null);
+    const [itemToDelete, setItemToDelete] = useState<Product | RFQ | null>(null);
     const [viewMode, setViewMode] = useState<'rfqs' | 'products'>('rfqs');
 
     useEffect(() => {
@@ -86,9 +130,9 @@ export default function Dashboard() {
             if (data.success) {
                 // Remove the deleted item from the appropriate list
                 if (isProduct) {
-                    setProducts(prevProducts => prevProducts.filter((product: any) => product.id !== itemToDelete.id));
+                    setProducts(prevProducts => prevProducts.filter((product: Product) => product.id !== itemToDelete.id));
                 } else {
-                    setRfqs(prevRfqs => prevRfqs.filter((rfq: any) => rfq.id !== itemToDelete.id));
+                    setRfqs(prevRfqs => prevRfqs.filter((rfq: RFQ) => rfq.id !== itemToDelete.id));
                 }
                 setShowDeleteModal(false);
                 setItemToDelete(null);
@@ -122,19 +166,6 @@ export default function Dashboard() {
         }
     };
 
-    const fetchAllProducts = async () => {
-        try {
-            console.log("Fetching all products for buyer:", session?.user?.id);
-            const response = await fetch("/api/products");
-            const data = await response.json();
-            console.log("All products response:", data);
-            setProducts(data.data?.products || []);
-        } catch (error) {
-            console.error("Error fetching all products:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
 
     if (status === "loading" || loading) {
@@ -366,19 +397,19 @@ export default function Dashboard() {
                         </div>
                         <div className="bg-green-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-green-600 mb-2">
-                                {rfqs.filter((rfq: any) => rfq.status === "open").length}
+                                {rfqs.filter((rfq: RFQ) => rfq.status === "open").length}
                             </div>
                             <div className="text-gray-600">Open for Quotes</div>
                         </div>
                         <div className="bg-purple-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-purple-600 mb-2">
-                                {rfqs.reduce((sum: number, rfq: any) => sum + (rfq.quotes?.length || 0), 0)}
+                                {rfqs.reduce((sum: number, rfq: RFQ) => sum + (rfq.quotes?.length || 0), 0)}
                             </div>
                             <div className="text-gray-600">Total Quotes</div>
                         </div>
                         <div className="bg-orange-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-orange-600 mb-2">
-                                ${rfqs.reduce((sum: number, rfq: any) => sum + Number(rfq.budget || 0), 0)}
+                                ${rfqs.reduce((sum: number, rfq: RFQ) => sum + Number(rfq.budget || 0), 0)}
                             </div>
                             <div className="text-gray-600">Total Budget</div>
                         </div>
@@ -394,7 +425,7 @@ export default function Dashboard() {
                         </div>
                         <div className="bg-blue-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-blue-600 mb-2">
-                                {products.filter((product: any) => product.inStock).length}
+                                {products.filter((product: Product) => product.inStock).length}
                             </div>
                             <div className="text-gray-600">In Stock</div>
                         </div>
@@ -406,7 +437,7 @@ export default function Dashboard() {
                         </div>
                         <div className="bg-orange-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-orange-600 mb-2">
-                                ${products.reduce((sum: number, product: any) => sum + Number(product.price || 0), 0)}
+                                ${products.reduce((sum: number, product: Product) => sum + Number(product.price || 0), 0)}
                             </div>
                             <div className="text-gray-600">Total Value</div>
                         </div>
@@ -422,19 +453,19 @@ export default function Dashboard() {
                         </div>
                         <div className="bg-blue-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-blue-600 mb-2">
-                                {products.filter((product: any) => product.inStock).length}
+                                {products.filter((product: Product) => product.inStock).length}
                             </div>
                             <div className="text-gray-600">In Stock</div>
                         </div>
                         <div className="bg-orange-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-orange-600 mb-2">
-                                {products.filter((product: any) => !product.inStock).length}
+                                {products.filter((product: Product) => !product.inStock).length}
                             </div>
                             <div className="text-gray-600">Out of Stock</div>
                         </div>
                         <div className="bg-purple-50 rounded-lg p-6">
                             <div className="text-3xl font-bold text-purple-600 mb-2">
-                                ${products.reduce((sum: number, product: any) => sum + Number(product.price || 0), 0)}
+                                ${products.reduce((sum: number, product: Product) => sum + Number(product.price || 0), 0)}
                             </div>
                             <div className="text-gray-600">Total Value</div>
                         </div>
@@ -500,98 +531,70 @@ export default function Dashboard() {
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {(!isBuyer && viewMode === 'products' ? products : rfqs).map((item: any) => (
-                                    <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold text-gray-900 text-xl mb-2">
-                                                    {!isBuyer && viewMode === 'products' ? item.name : item.title}
-                                                </h3>
-                                                <p className="text-gray-600 mb-4 line-clamp-2">
-                                                    {item.description}
-                                                </p>
-                                            </div>
-                                            <Badge
-                                                variant={(!isBuyer && viewMode === 'products' ? item.inStock : item.status === "open") ? "default" : "secondary"}
-                                                className={`${(!isBuyer && viewMode === 'products' ? item.inStock : item.status === "open") ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
-                                            >
-                                                {!isBuyer && viewMode === 'products'
-                                                    ? (item.inStock ? 'In Stock' : 'Out of Stock')
-                                                    : item.status.charAt(0).toUpperCase() + item.status.slice(1)
-                                                }
-                                            </Badge>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                                            {/* Product/RFQ Details */}
-                                            <div className="space-y-4">
-                                                <h4 className="font-semibold text-gray-900">
-                                                    {!isBuyer && viewMode === 'products' ? 'Product Details' : 'RFQ Details'}
-                                                </h4>
-                                                <div className="space-y-2 text-sm">
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Category:</span>
-                                                        <span className="font-medium">{item.category}</span>
-                                                    </div>
-                                                    {(isBuyer && viewMode === 'products') || (!isBuyer && viewMode === 'products') ? (
-                                                        <>
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-600">Price:</span>
-                                                                <span className="font-medium">{item.currency} {item.price}</span>
-                                                            </div>
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-600">Min Order:</span>
-                                                                <span className="font-medium">{item.minOrderQuantity} {item.unit}</span>
-                                                            </div>
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-600">Stock:</span>
-                                                                <span className="font-medium">{item.stockQuantity || 'N/A'}</span>
-                                                            </div>
-                                                            {(isBuyer && viewMode === 'products') && (
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-600">Supplier:</span>
-                                                                    <span className="font-medium">{item.supplier?.company || 'N/A'}</span>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            {item.quantity && (
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-600">Quantity:</span>
-                                                                    <span className="font-medium">{item.quantity.toLocaleString()} {item.unit || 'pieces'}</span>
-                                                                </div>
-                                                            )}
-                                                            {item.budget && (
-                                                                <div className="flex justify-between">
-                                                                    <span className="text-gray-600">Budget:</span>
-                                                                    <span className="font-medium">{item.currency || 'USD'} {item.budget}</span>
-                                                                </div>
-                                                            )}
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-600">Quotes:</span>
-                                                                <span className="font-medium">{item.quotes?.length || 0} received</span>
-                                                            </div>
-                                                        </>
-                                                    )}
+                                {!isBuyer && viewMode === 'products' ? (
+                                    products.map((item: Product) => (
+                                        <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex-1">
+                                                    <h3 className="font-semibold text-gray-900 text-xl mb-2">
+                                                        {item.name}
+                                                    </h3>
+                                                    <p className="text-gray-600 mb-4 line-clamp-2">
+                                                        {item.description}
+                                                    </p>
                                                 </div>
+                                                <Badge
+                                                    variant={item.inStock ? "default" : "secondary"}
+                                                    className={`${item.inStock ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
+                                                >
+                                                    {item.inStock ? 'In Stock' : 'Out of Stock'}
+                                                </Badge>
                                             </div>
 
-                                            {/* Timeline */}
-                                            <div className="space-y-4">
-                                                <h4 className="font-semibold text-gray-900">Timeline</h4>
-                                                <div className="space-y-2 text-sm">
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">
-                                                            {(isBuyer && viewMode === 'products') || (!isBuyer && viewMode === 'products') ? 'Added:' : 'Posted:'}
-                                                        </span>
-                                                        <span className="font-medium">{new Date(item.createdAt).toLocaleDateString("en-US", {
-                                                            year: "numeric",
-                                                            month: "short",
-                                                            day: "numeric",
-                                                        })}</span>
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                                {/* Product/RFQ Details */}
+                                                <div className="space-y-4">
+                                                    <h4 className="font-semibold text-gray-900">
+                                                        Product Details
+                                                    </h4>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Category:</span>
+                                                            <span className="font-medium">{item.category}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Price:</span>
+                                                            <span className="font-medium">{item.currency} {item.price}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Min Order:</span>
+                                                            <span className="font-medium">{item.minOrderQuantity} {item.unit}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Stock:</span>
+                                                            <span className="font-medium">{item.stockQuantity || 'N/A'}</span>
+                                                        </div>
+                                                        {item.supplier && (
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Supplier:</span>
+                                                                <span className="font-medium">{item.supplier.company || 'N/A'}</span>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    {(isBuyer && viewMode === 'products') || (!isBuyer && viewMode === 'products') ? (
+                                                </div>
+
+                                                {/* Timeline */}
+                                                <div className="space-y-4">
+                                                    <h4 className="font-semibold text-gray-900">Timeline</h4>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Added:</span>
+                                                            <span className="font-medium">{new Date(item.createdAt).toLocaleDateString("en-US", {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric",
+                                                            })}</span>
+                                                        </div>
                                                         <div className="flex justify-between">
                                                             <span className="text-gray-600">Updated:</span>
                                                             <span className="font-medium">{new Date(item.updatedAt).toLocaleDateString("en-US", {
@@ -600,58 +603,35 @@ export default function Dashboard() {
                                                                 day: "numeric",
                                                             })}</span>
                                                         </div>
-                                                    ) : (
-                                                        item.expiresAt && (
-                                                            <div className="flex justify-between">
-                                                                <span className="text-gray-600">Expires:</span>
-                                                                <span className="font-medium">{new Date(item.expiresAt).toLocaleDateString("en-US", {
-                                                                    year: "numeric",
-                                                                    month: "short",
-                                                                    day: "numeric",
-                                                                })}</span>
-                                                            </div>
-                                                        )
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            {/* Status & Actions */}
-                                            <div className="space-y-4">
-                                                <h4 className="font-semibold text-gray-900">Status & Actions</h4>
-                                                <div className="space-y-2 text-sm">
-                                                    <div className="flex justify-between">
-                                                        <span className="text-gray-600">Status:</span>
-                                                        <span className={`font-medium ${(!isBuyer && viewMode === 'products' ? item.inStock : item.status === "open") ? "text-green-600" : "text-gray-600"}`}>
-                                                            {!isBuyer && viewMode === 'products'
-                                                                ? (item.inStock ? 'In Stock' : 'Out of Stock')
-                                                                : item.status.charAt(0).toUpperCase() + item.status.slice(1)
-                                                            }
-                                                        </span>
                                                     </div>
-                                                    {!isBuyer && viewMode === 'products' ? (
+                                                </div>
+
+                                                {/* Status & Actions */}
+                                                <div className="space-y-4">
+                                                    <h4 className="font-semibold text-gray-900">Status & Actions</h4>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Status:</span>
+                                                            <span className={`font-medium ${item.inStock ? "text-green-600" : "text-gray-600"}`}>
+                                                                {item.inStock ? 'In Stock' : 'Out of Stock'}
+                                                            </span>
+                                                        </div>
                                                         <div className="flex justify-between">
                                                             <span className="text-gray-600">Views:</span>
                                                             <span className="font-medium">{item.views || 0}</span>
                                                         </div>
-                                                    ) : (
-                                                        <div className="flex justify-between">
-                                                            <span className="text-gray-600">Total Quotes:</span>
-                                                            <span className="font-medium">{item.quotes?.length || 0}</span>
-                                                        </div>
-                                                    )}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Requirements/Features */}
-                                        {(!isBuyer && viewMode === 'products' ? item.features : item.requirements) &&
-                                            (!isBuyer && viewMode === 'products' ? item.features.length > 0 : item.requirements.length > 0) && (
+                                            {/* Features */}
+                                            {item.features && item.features.length > 0 && (
                                                 <div className="mb-6 pt-6 border-t border-gray-200">
                                                     <h4 className="font-semibold text-gray-900 mb-3">
-                                                        {!isBuyer && viewMode === 'products' ? 'Key Features' : 'Key Requirements'}
+                                                        Key Features
                                                     </h4>
                                                     <div className="flex flex-wrap gap-2">
-                                                        {(!isBuyer && viewMode === 'products' ? item.features : item.requirements).map((feature: string, index: number) => (
+                                                        {item.features.map((feature: string, index: number) => (
                                                             <Badge key={index} variant="outline" className="text-xs">
                                                                 {feature}
                                                             </Badge>
@@ -660,22 +640,13 @@ export default function Dashboard() {
                                                 </div>
                                             )}
 
-                                        {/* Actions */}
-                                        <div className="pt-6 border-t border-gray-200 flex justify-between items-center">
-                                            <div className="text-sm text-gray-600">
-                                                <span className="font-medium">
-                                                    {!isBuyer && viewMode === 'products' ? 'Tags:' : 'Specifications:'}
-                                                </span>
-                                                {!isBuyer && viewMode === 'products'
-                                                    ? (item.tags && item.tags.length > 0 ? item.tags.join(", ") : "No tags")
-                                                    : (item.specifications && Object.entries(item.specifications)
-                                                        .filter(([, value]) => value)
-                                                        .map(([key, value]) => `${key}: ${value}`)
-                                                        .join(", ") || "None specified")
-                                                }
-                                            </div>
-                                            <div className="flex gap-3">
-                                                {isBuyer ? (
+                                            {/* Actions */}
+                                            <div className="pt-6 border-t border-gray-200 flex justify-between items-center">
+                                                <div className="text-sm text-gray-600">
+                                                    <span className="font-medium">Tags:</span>
+                                                    {item.tags && item.tags.length > 0 ? item.tags.join(", ") : "No tags"}
+                                                </div>
+                                                <div className="flex gap-3">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -689,40 +660,33 @@ export default function Dashboard() {
                                                             '🗑️'
                                                         )}
                                                     </Button>
-                                                ) : !isBuyer && viewMode === 'products' ? (
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
-                                                        disabled={deleting === item.id}
-                                                        onClick={() => handleDeleteClick(item)}
-                                                    >
-                                                        {deleting === item.id ? (
-                                                            <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
-                                                        ) : (
-                                                            '🗑️'
-                                                        )}
-                                                    </Button>
-                                                ) : (
-                                                    <>
-                                                        <Link href={`/rfqs/${item.id}`}>
-                                                            <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
-                                                                View Details
-                                                            </Button>
-                                                        </Link>
-                                                        {item.status === "open" && (
-                                                            <Link href={`/rfqs/${item.id}`}>
-                                                                <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800">
-                                                                    Submit Quote
-                                                                </Button>
-                                                            </Link>
-                                                        )}
-                                                    </>
-                                                )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))
+                                ) : (
+                                    rfqs.map((item: RFQ) => (
+                                        <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                                            <div className="flex justify-between items-start mb-4">
+                                                <div className="flex-1">
+                                                    <h3 className="font-semibold text-gray-900 text-xl mb-2">
+                                                        {item.title}
+                                                    </h3>
+                                                    <p className="text-gray-600 mb-4 line-clamp-2">
+                                                        {item.description}
+                                                    </p>
+                                                </div>
+                                                <Badge
+                                                    variant={item.status === "open" ? "default" : "secondary"}
+                                                    className={`${item.status === "open" ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
+                                                >
+                                                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                                                </Badge>
+                                            </div>
+                                            {/* RFQ specific content would go here */}
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         )}
                     </Card>
@@ -752,7 +716,7 @@ export default function Dashboard() {
                             {itemToDelete && (
                                 <div className="bg-gray-50 rounded-lg p-4">
                                     <h4 className="font-medium text-gray-900 mb-1">
-                                        {!isBuyer && viewMode === 'products' ? itemToDelete.name : itemToDelete.title}
+                                        {'name' in itemToDelete ? itemToDelete.name : itemToDelete.title}
                                     </h4>
                                     <p className="text-sm text-gray-600 line-clamp-2">{itemToDelete.description}</p>
                                     <div className="flex items-center gap-2 mt-2">
@@ -760,10 +724,10 @@ export default function Dashboard() {
                                             {itemToDelete.category}
                                         </Badge>
                                         <Badge
-                                            variant={(!isBuyer && viewMode === 'products' ? itemToDelete.inStock : itemToDelete.status === "open") ? "default" : "secondary"}
-                                            className={`text-xs ${(!isBuyer && viewMode === 'products' ? itemToDelete.inStock : itemToDelete.status === "open") ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"}`}
+                                            variant={('inStock' in itemToDelete ? itemToDelete.inStock : itemToDelete.status === "open") ? "default" : "secondary"}
+                                            className={`text-xs ${('inStock' in itemToDelete ? itemToDelete.inStock : itemToDelete.status === "open") ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"}`}
                                         >
-                                            {!isBuyer && viewMode === 'products'
+                                            {'inStock' in itemToDelete
                                                 ? (itemToDelete.inStock ? 'In Stock' : 'Out of Stock')
                                                 : itemToDelete.status
                                             }
