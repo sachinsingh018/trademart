@@ -5,10 +5,10 @@ import { authOptions } from '@/lib/auth';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const rfqId = params.id;
+        const { id: rfqId } = await params;
 
         // Fetch the RFQ with all related data
         const rfq = await prisma.rfq.findUnique({
@@ -72,7 +72,7 @@ export async function GET(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -81,7 +81,7 @@ export async function DELETE(
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        const rfqId = params.id;
+        const { id: rfqId } = await params;
 
         // Check if the RFQ exists and belongs to the current user
         const rfq = await prisma.rfq.findUnique({
