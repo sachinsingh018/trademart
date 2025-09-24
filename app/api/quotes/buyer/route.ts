@@ -96,8 +96,8 @@ export async function GET(request: NextRequest) {
             rfq: {
                 id: string;
                 title: string;
-                budget: number;
-                currency: string;
+                budget: number | null;
+                currency: string | null;
                 status: string;
                 createdAt: Date;
             };
