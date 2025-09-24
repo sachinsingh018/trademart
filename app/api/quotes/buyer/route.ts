@@ -108,7 +108,15 @@ export async function GET(request: NextRequest) {
                 notes: string | null;
                 status: string;
                 createdAt: Date;
-                supplier: any;
+                supplier: {
+                    id: string;
+                    companyName: string;
+                    user: {
+                        name: string | null;
+                        email: string;
+                        phone: string | null;
+                    };
+                };
             }>;
         }>);
 
