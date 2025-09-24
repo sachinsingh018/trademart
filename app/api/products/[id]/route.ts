@@ -5,10 +5,10 @@ import { authOptions } from '@/lib/auth';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const productId = params.id;
+        const { id: productId } = await params;
 
         // Get the product with supplier information
         const product = await prisma.product.findUnique({
@@ -104,7 +104,7 @@ export async function GET(
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -113,7 +113,7 @@ export async function DELETE(
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        const productId = params.id;
+        const { id: productId } = await params;
 
         // Check if the product exists and belongs to the current supplier
         const product = await prisma.product.findUnique({
