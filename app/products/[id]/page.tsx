@@ -73,6 +73,8 @@ export default function ProductDetailPage() {
 
     useEffect(() => {
         const fetchProduct = async () => {
+            if (!params?.id) return;
+
             try {
                 setLoading(true);
                 const response = await fetch(`/api/products/${params.id}`);
@@ -92,10 +94,10 @@ export default function ProductDetailPage() {
             }
         };
 
-        if (params.id) {
+        if (params?.id) {
             fetchProduct();
         }
-    }, [params.id]);
+    }, [params?.id]);
 
     const handleQuoteRequest = () => {
         // TODO: Implement quote request functionality
