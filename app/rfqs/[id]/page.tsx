@@ -144,7 +144,7 @@ export default function RFQDetailPage() {
     // Fetch RFQ data
     useEffect(() => {
         const fetchRFQ = async () => {
-            if (!params.id) return;
+            if (!params?.id) return;
 
             try {
                 const response = await fetch(`/api/rfqs/${params.id}`);
@@ -234,7 +234,7 @@ export default function RFQDetailPage() {
         };
 
         fetchRFQ();
-    }, [params.id]);
+    }, [params?.id]);
 
 
     const formatDate = (dateString: string) => {
