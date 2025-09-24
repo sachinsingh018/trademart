@@ -78,7 +78,10 @@ export async function GET(request: NextRequest) {
             const rfqId = quote.rfq.id;
             if (!acc[rfqId]) {
                 acc[rfqId] = {
-                    rfq: quote.rfq,
+                    rfq: {
+                        ...quote.rfq,
+                        budget: quote.rfq.budget ? Number(quote.rfq.budget) : null
+                    },
                     quotes: []
                 };
             }
