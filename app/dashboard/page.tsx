@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -71,22 +71,8 @@ export default function Dashboard() {
         }
     }, [status, router]);
 
-    useEffect(() => {
-        if (session) {
-            if (session.user.role === 'buyer') {
-                // Buyers only see RFQs for now (Browse Products section is hidden)
-                fetchRfqs();
-            } else if (session.user.role === 'supplier') {
-                if (viewMode === 'rfqs') {
-                    fetchRfqs();
-                } else {
-                    fetchProducts();
-                }
-            }
-        }
-    }, [session, viewMode]);
 
-    const fetchRfqs = async () => {
+    const fetchRfqs = useCallback(async () => {
         try {
             // For buyers, fetch their own RFQs; for suppliers, fetch all RFQs
             const isBuyer = session?.user?.role === "buyer";
@@ -101,9 +87,9 @@ export default function Dashboard() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [session]);
 
-    const handleDeleteClick = (item: any) => {
+    const handleDeleteClick = (item: Product | RFQ) => {
         setItemToDelete(item);
         setShowDeleteModal(true);
     };
@@ -152,7 +138,7 @@ export default function Dashboard() {
         setItemToDelete(null);
     };
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             console.log("Fetching products for supplier:", session?.user?.id);
             const response = await fetch("/api/products/my-products");
@@ -164,9 +150,22 @@ export default function Dashboard() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [session]);
 
-
+    useEffect(() => {
+        if (session) {
+            if (session.user.role === 'buyer') {
+                // Buyers only see RFQs for now (Browse Products section is hidden)
+                fetchRfqs();
+            } else if (session.user.role === 'supplier') {
+                if (viewMode === 'rfqs') {
+                    fetchRfqs();
+                } else {
+                    fetchProducts();
+                }
+            }
+        }
+    }, [session, viewMode, fetchRfqs, fetchProducts]);
 
     if (status === "loading" || loading) {
         return (

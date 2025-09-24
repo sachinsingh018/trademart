@@ -26,7 +26,12 @@ export async function GET(request: NextRequest) {
         const rfqId = searchParams.get("rfqId");
 
         // Build where clause
-        const where: any = {
+        const where: {
+            rfq: {
+                buyerId: string;
+            };
+            rfqId?: string;
+        } = {
             rfq: {
                 buyerId: session.user.id
             }
@@ -87,7 +92,25 @@ export async function GET(request: NextRequest) {
                 supplier: quote.supplier
             });
             return acc;
-        }, {} as any);
+        }, {} as Record<string, {
+            rfq: {
+                id: string;
+                title: string;
+                budget: number;
+                currency: string;
+                status: string;
+                createdAt: Date;
+            };
+            quotes: Array<{
+                id: string;
+                price: number;
+                leadTimeDays: number;
+                notes: string | null;
+                status: string;
+                createdAt: Date;
+                supplier: any;
+            }>;
+        }>);
 
         return NextResponse.json({
             success: true,

@@ -829,7 +829,7 @@ function SignUpForm() {
                                         />
                                         <div>
                                             <div className="font-medium text-blue-900">Phone Verification</div>
-                                            <div className="text-sm text-blue-700">We'll send a verification code to {formData.phone}</div>
+                                            <div className="text-sm text-blue-700">We&apos;ll send a verification code to {formData.phone}</div>
                                         </div>
                                     </div>
                                 </div>
