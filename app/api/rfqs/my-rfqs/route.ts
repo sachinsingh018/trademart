@@ -11,8 +11,8 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        if (session.user.role !== 'supplier') {
-            return NextResponse.json({ success: false, error: 'Only suppliers can access their products' }, { status: 403 });
+        if (session.user.role !== 'buyer') {
+            return NextResponse.json({ success: false, error: 'Only buyers can access their RFQs' }, { status: 403 });
         }
 
         const { searchParams } = new URL(request.url);
@@ -20,34 +20,32 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get("limit") || "20");
         const search = searchParams.get("search") || "";
         const category = searchParams.get("category") || "";
+        const status = searchParams.get("status") || "";
         const sortBy = searchParams.get("sortBy") || "newest";
 
         const skip = (page - 1) * limit;
 
-        // Build where clause for supplier's products
+        // Build where clause for user's RFQs
         const where: {
-            supplier: {
-                userId: string;
-            };
+            buyerId: string;
             OR?: Array<{
-                name?: { contains: string; mode: "insensitive" };
+                title?: { contains: string; mode: "insensitive" };
                 description?: { contains: string; mode: "insensitive" };
                 category?: { contains: string; mode: "insensitive" };
-                tags?: { has: string };
+                requirements?: { has: string };
             }>;
             category?: string;
+            status?: string;
         } = {
-            supplier: {
-                userId: session.user.id
-            }
+            buyerId: session.user.id
         };
 
         if (search) {
             where.OR = [
-                { name: { contains: search, mode: "insensitive" } },
+                { title: { contains: search, mode: "insensitive" } },
                 { description: { contains: search, mode: "insensitive" } },
                 { category: { contains: search, mode: "insensitive" } },
-                { tags: { has: search } },
+                { requirements: { has: search } },
             ];
         }
 
@@ -55,8 +53,12 @@ export async function GET(request: NextRequest) {
             where.category = category;
         }
 
+        if (status && status !== "all") {
+            where.status = status;
+        }
+
         // Build orderBy clause
-        let orderBy: { [key: string]: "asc" | "desc" } = {};
+        let orderBy: { [key: string]: "asc" | "desc" } | { quotes: { _count: "desc" } } = {};
         switch (sortBy) {
             case "newest":
                 orderBy = { createdAt: "desc" };
@@ -64,73 +66,72 @@ export async function GET(request: NextRequest) {
             case "oldest":
                 orderBy = { createdAt: "asc" };
                 break;
-            case "price-high":
-                orderBy = { price: "desc" };
+            case "budget-high":
+                orderBy = { budget: "desc" };
                 break;
-            case "price-low":
-                orderBy = { price: "asc" };
+            case "budget-low":
+                orderBy = { budget: "asc" };
                 break;
-            case "name":
-                orderBy = { name: "asc" };
+            case "quotes":
+                orderBy = { quotes: { _count: "desc" } };
                 break;
             default:
                 orderBy = { createdAt: "desc" };
         }
 
-        // Get supplier's products with pagination
-        console.log("Fetching products for supplier:", session.user.id, "with where clause:", where);
-        const [products, total] = await Promise.all([
-            prisma.product.findMany({
+        // Get user's RFQs with pagination
+        console.log("Fetching RFQs for user:", session.user.id, "with where clause:", where);
+        const [rfqs, total] = await Promise.all([
+            prisma.rfq.findMany({
                 where,
                 orderBy,
                 skip,
                 take: limit,
                 include: {
-                    supplier: {
+                    buyer: {
                         select: {
-                            companyName: true,
-                            industry: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                    quotes: {
+                        select: {
+                            id: true,
                         },
                     },
                 },
             }),
-            prisma.product.count({ where }),
+            prisma.rfq.count({ where }),
         ]);
-        console.log("Found products:", products.length, "total:", total);
+        console.log("Found RFQs:", rfqs.length, "total:", total);
 
-        // Calculate statistics for supplier's products
-        const stats = await prisma.product.aggregate({
-            where: {
-                supplier: {
-                    userId: session.user.id
-                }
-            },
+        // Calculate statistics for user's RFQs
+        const stats = await prisma.rfq.aggregate({
+            where: { buyerId: session.user.id },
             _count: { id: true },
-            _sum: { price: true },
+            _sum: { budget: true },
         });
 
-        const inStockCount = await prisma.product.count({
-            where: {
-                supplier: {
-                    userId: session.user.id
-                },
-                inStock: true
-            },
+        const openCount = await prisma.rfq.count({
+            where: { buyerId: session.user.id, status: "open" },
         });
 
-        const outOfStockCount = await prisma.product.count({
+        const quotedCount = await prisma.rfq.count({
+            where: { buyerId: session.user.id, status: "quoted" },
+        });
+
+        const totalQuotes = await prisma.quote.count({
             where: {
-                supplier: {
-                    userId: session.user.id
-                },
-                inStock: false
+                rfq: {
+                    buyerId: session.user.id
+                }
             }
         });
 
         return NextResponse.json({
             success: true,
             data: {
-                products,
+                rfqs,
                 pagination: {
                     page,
                     limit,
@@ -138,19 +139,20 @@ export async function GET(request: NextRequest) {
                     totalPages: Math.ceil(total / limit),
                 },
                 stats: {
-                    totalProducts: stats._count.id,
-                    totalValue: stats._sum.price || 0,
-                    inStock: inStockCount,
-                    outOfStock: outOfStockCount,
+                    totalRfqs: stats._count.id,
+                    totalBudget: stats._sum.budget || 0,
+                    openRfqs: openCount,
+                    quotedRfqs: quotedCount,
+                    totalQuotes,
                 },
             },
         });
     } catch (error) {
-        console.error("Supplier products fetch error:", error);
+        console.error("User RFQs fetch error:", error);
         return NextResponse.json(
             {
                 success: false,
-                error: "Failed to fetch supplier products",
+                error: "Failed to fetch user RFQs",
                 details: error instanceof Error ? error.message : "Unknown error"
             },
             { status: 500 }

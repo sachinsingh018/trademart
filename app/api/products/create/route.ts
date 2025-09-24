@@ -41,24 +41,25 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Process arrays
+        // Process arrays - handle both string and array inputs
         const features = data.features ?
-            data.features.split(",").map((f: string) => f.trim()).filter(Boolean) : [];
+            (Array.isArray(data.features) ? data.features : data.features.split(",").map((f: string) => f.trim()).filter(Boolean)) : [];
         const tags = data.tags ?
-            data.tags.split(",").map((t: string) => t.trim()).filter(Boolean) : [];
+            (Array.isArray(data.tags) ? data.tags : data.tags.split(",").map((t: string) => t.trim()).filter(Boolean)) : [];
         const images = data.images ?
-            data.images.split(",").map((i: string) => i.trim()).filter(Boolean) : [];
+            (Array.isArray(data.images) ? data.images : data.images.split(",").map((i: string) => i.trim()).filter(Boolean)) : [];
 
-        // Parse specifications JSON
+        // Handle specifications - can be JSON string or plain text
         let specifications = null;
         if (data.specifications) {
             try {
+                // Try to parse as JSON first
                 specifications = JSON.parse(data.specifications);
             } catch {
-                return NextResponse.json(
-                    { error: "Invalid specifications JSON format" },
-                    { status: 400 }
-                );
+                // If not valid JSON, treat as plain text and create a simple object
+                specifications = {
+                    description: data.specifications
+                };
             }
         }
 

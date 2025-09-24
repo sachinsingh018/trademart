@@ -238,7 +238,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/auth/signup?role=supplier">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold">
+              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
                 Start Selling
               </Button>
             </Link>

@@ -70,6 +70,7 @@ export default function RFQDetailPage() {
     const [quotes, setQuotes] = useState<Quote[]>([]);
     const [loading, setLoading] = useState(true);
     const [showQuoteForm, setShowQuoteForm] = useState(false);
+    const [submittingQuote, setSubmittingQuote] = useState(false);
     const [quoteForm, setQuoteForm] = useState({
         price: "",
         currency: "USD",
@@ -82,17 +83,141 @@ export default function RFQDetailPage() {
 
     const handleQuoteSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Submit quote via API
-        console.log("Submitting quote:", quoteForm);
-        setShowQuoteForm(false);
-        // Reset form
-        setQuoteForm({
-            price: "",
-            currency: "USD",
-            leadTimeDays: "",
-            notes: "",
-        });
+
+        if (!rfq?.id) {
+            console.error("No RFQ ID available");
+            return;
+        }
+
+        setSubmittingQuote(true);
+
+        try {
+            const response = await fetch('/api/quotes/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rfqId: rfq.id,
+                    price: quoteForm.price,
+                    currency: quoteForm.currency,
+                    leadTimeDays: quoteForm.leadTimeDays,
+                    notes: quoteForm.notes,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                console.log("Quote submitted successfully:", result.data);
+                alert("Quote submitted successfully!");
+                // Refresh the page to show the new quote
+                window.location.reload();
+            } else {
+                console.error("Failed to submit quote:", result.error);
+                if (result.error === 'Unauthorized') {
+                    alert("You need to be logged in as a supplier to submit quotes. Please sign in first.");
+                } else if (result.error === 'Supplier profile not found') {
+                    alert("You need to complete your supplier profile to submit quotes.");
+                } else if (result.error === 'You have already submitted a quote for this RFQ') {
+                    alert("You have already submitted a quote for this RFQ.");
+                } else {
+                    alert(`Failed to submit quote: ${result.error}`);
+                }
+            }
+        } catch (error) {
+            console.error("Error submitting quote:", error);
+            alert("Error submitting quote. Please try again.");
+        } finally {
+            setSubmittingQuote(false);
+            setShowQuoteForm(false);
+            // Reset form
+            setQuoteForm({
+                price: "",
+                currency: "USD",
+                leadTimeDays: "",
+                notes: "",
+            });
+        }
     };
+
+    // Fetch RFQ data
+    useEffect(() => {
+        const fetchRFQ = async () => {
+            if (!params.id) return;
+
+            try {
+                const response = await fetch(`/api/rfqs/${params.id}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Transform database data to match component interface
+                    const rfqData = result.data.rfq;
+                    const transformedRFQ = {
+                        id: rfqData.id,
+                        title: rfqData.title,
+                        description: rfqData.description,
+                        category: rfqData.category || "General",
+                        quantity: rfqData.quantity || 0,
+                        unit: rfqData.unit || "pieces",
+                        budget: rfqData.budget ? parseFloat(rfqData.budget.toString()) : 0,
+                        currency: rfqData.currency || "USD",
+                        status: rfqData.status,
+                        buyer: {
+                            name: rfqData.buyer?.name || "Anonymous Buyer",
+                            company: "Individual Buyer", // Users don't have company info, only suppliers do
+                            country: "Unknown", // Users don't have country info in the schema
+                            verified: false, // Users are not verified by default
+                            email: rfqData.buyer?.email || "buyer@example.com",
+                            phone: rfqData.buyer?.phone || "Not provided",
+                        },
+                        quotesCount: rfqData.quotes?.length || 0,
+                        createdAt: rfqData.createdAt,
+                        expiresAt: rfqData.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                        requirements: rfqData.requirements || [],
+                        specifications: rfqData.specifications || {},
+                        attachments: rfqData.attachments || [],
+                        additionalInfo: rfqData.additionalInfo || "",
+                    };
+
+                    setRfq(transformedRFQ);
+
+                    // Transform quotes data
+                    if (rfqData.quotes) {
+                        const transformedQuotes = rfqData.quotes.map((quote: any) => ({
+                            id: quote.id,
+                            supplierId: quote.supplierId,
+                            supplier: {
+                                name: quote.supplier?.user?.name || "Supplier Name",
+                                company: quote.supplier?.companyName || "Company Name",
+                                country: quote.supplier?.country || "Unknown",
+                                verified: quote.supplier?.verified || false,
+                                rating: quote.supplier?.rating ? parseFloat(quote.supplier.rating.toString()) : 4.5,
+                            },
+                            price: quote.price ? parseFloat(quote.price.toString()) : 0,
+                            currency: quote.currency || "USD",
+                            leadTimeDays: quote.leadTimeDays || 0,
+                            notes: quote.notes || "",
+                            status: quote.status || "pending",
+                            createdAt: quote.createdAt,
+                            whatsappSent: quote.whatsappSent || false,
+                        }));
+                        setQuotes(transformedQuotes);
+                    }
+                } else {
+                    console.error("Failed to fetch RFQ:", result.error);
+                    setRfq(null);
+                }
+            } catch (error) {
+                console.error("Error fetching RFQ:", error);
+                setRfq(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRFQ();
+    }, [params.id]);
 
     const sendWhatsAppNotification = async (quoteId: string) => {
         // setWhatsappStatus('sending');
@@ -355,73 +480,68 @@ export default function RFQDetailPage() {
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
-                                    {quotes.map((quote) => (
-                                        <div key={quote.id} className="border border-gray-200 rounded-lg p-4">
-                                            <div className="flex justify-between items-start mb-3">
-                                                <div>
-                                                    <div className="font-semibold">{quote.supplier.company}</div>
-                                                    <div className="text-sm text-gray-600">
-                                                        {quote.supplier.name} • {quote.supplier.country}
-                                                        {quote.supplier.verified && <span className="text-green-600 ml-2">✓ Verified</span>}
-                                                    </div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="text-xl font-bold text-green-600">
-                                                        {quote.currency} {quote.price.toFixed(2)} per {rfq.unit}
-                                                    </div>
-                                                    <div className="text-sm text-gray-600">
-                                                        Total: {quote.currency} {(quote.price * rfq.quantity).toLocaleString()}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 text-sm">
-                                                <div>
-                                                    <span className="text-gray-600">Lead Time:</span>
-                                                    <span className="font-medium ml-2">{quote.leadTimeDays} days</span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-600">Rating:</span>
-                                                    <span className="font-medium ml-2">⭐ {quote.supplier.rating}</span>
-                                                </div>
-                                                <div>
-                                                    <span className="text-gray-600">Submitted:</span>
-                                                    <span className="font-medium ml-2">{formatDate(quote.createdAt)}</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="mb-3">
-                                                <div className="text-sm text-gray-600 mb-1">Notes:</div>
-                                                <p className="text-sm">{quote.notes}</p>
-                                            </div>
-
-                                            <div className="flex justify-between items-center">
-                                                <div className="flex items-center space-x-2">
-                                                    <Badge variant="outline" className={quote.status === "pending" ? "border-yellow-200 text-yellow-800" : ""}>
-                                                        {quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
-                                                    </Badge>
-                                                    {quote.whatsappSent && (
-                                                        <Badge variant="outline" className="border-green-200 text-green-800">
-                                                            📱 WhatsApp Sent
-                                                        </Badge>
-                                                    )}
-                                                </div>
-                                                <div className="flex space-x-2">
-                                                    <Button variant="outline" size="sm">
-                                                        Contact Supplier
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => sendWhatsAppNotification(quote.id)}
-                                                        disabled={quote.whatsappSent}
-                                                    >
-                                                        {quote.whatsappSent ? "Sent" : "Send WhatsApp"}
-                                                    </Button>
-                                                </div>
-                                            </div>
+                                    {quotes.length === 0 ? (
+                                        <div className="text-center py-8">
+                                            <div className="text-gray-400 text-4xl mb-2">📝</div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Quotes Yet</h3>
+                                            <p className="text-gray-600">Be the first to submit a quote for this RFQ.</p>
                                         </div>
-                                    ))}
+                                    ) : (
+                                        quotes.map((quote) => (
+                                            <div key={quote.id} className="border border-gray-200 rounded-lg p-4">
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div>
+                                                        <div className="font-semibold">{quote.supplier.company}</div>
+                                                        <div className="text-sm text-gray-600">
+                                                            {quote.supplier.name} • {quote.supplier.country}
+                                                            {quote.supplier.verified && <span className="text-green-600 ml-2">✓ Verified</span>}
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className="text-xl font-bold text-green-600">
+                                                            {quote.currency} {quote.price.toFixed(2)} per {rfq.unit}
+                                                        </div>
+                                                        <div className="text-sm text-gray-600">
+                                                            Total: {quote.currency} {(quote.price * rfq.quantity).toLocaleString()}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 text-sm">
+                                                    <div>
+                                                        <span className="text-gray-600">Lead Time:</span>
+                                                        <span className="font-medium ml-2">{quote.leadTimeDays} days</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">Rating:</span>
+                                                        <span className="font-medium ml-2">⭐ {quote.supplier.rating}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">Submitted:</span>
+                                                        <span className="font-medium ml-2">{formatDate(quote.createdAt)}</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="mb-3">
+                                                    <div className="text-sm text-gray-600 mb-1">Notes:</div>
+                                                    <p className="text-sm">{quote.notes}</p>
+                                                </div>
+
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center space-x-2">
+                                                        <Badge variant="outline" className={quote.status === "pending" ? "border-yellow-200 text-yellow-800" : ""}>
+                                                            {quote.status.charAt(0).toUpperCase() + quote.status.slice(1)}
+                                                        </Badge>
+                                                        {quote.whatsappSent && (
+                                                            <Badge variant="outline" className="border-green-200 text-green-800">
+                                                                📱 WhatsApp Sent
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
@@ -459,11 +579,6 @@ export default function RFQDetailPage() {
                                                 {rfq.buyer.verified ? '✓ Verified' : 'Not Verified'}
                                             </span>
                                         </div>
-                                    </div>
-                                    <div className="pt-4 border-t border-gray-200">
-                                        <Button className="w-full" variant="outline">
-                                            Contact Buyer
-                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>
@@ -558,8 +673,12 @@ export default function RFQDetailPage() {
                                     <Button type="button" variant="outline" onClick={() => setShowQuoteForm(false)}>
                                         Cancel
                                     </Button>
-                                    <Button type="submit" className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800">
-                                        Submit Quote
+                                    <Button
+                                        type="submit"
+                                        disabled={submittingQuote}
+                                        className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:opacity-50"
+                                    >
+                                        {submittingQuote ? "Submitting..." : "Submit Quote"}
                                     </Button>
                                 </div>
                             </form>

@@ -33,16 +33,9 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            // In development, log the OTP for testing
-            if (process.env.NODE_ENV === "development") {
-                console.log(`📧 Email OTP for ${email}: ${otp}`);
-            }
-
             return NextResponse.json({
                 message: emailResult.message,
                 requestId: emailResult.requestId,
-                // In development, include OTP for testing
-                ...(process.env.NODE_ENV === "development" && { otp }),
             });
         } else if (method === "phone") {
             // Send OTP via Vonage SMS service
@@ -56,16 +49,9 @@ export async function POST(request: NextRequest) {
                 );
             }
 
-            // In development, log the OTP for testing
-            if (process.env.NODE_ENV === "development") {
-                console.log(`📱 SMS OTP for ${phone}: ${otp}`);
-            }
-
             return NextResponse.json({
                 message: smsResult.message,
                 requestId: smsResult.requestId,
-                // In development, include OTP for testing
-                ...(process.env.NODE_ENV === "development" && { otp }),
             });
         }
 

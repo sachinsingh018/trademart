@@ -71,6 +71,31 @@ export default function ProductDetailPage() {
         size: "",
     });
 
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/products/${params.id}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    setProduct(data.data);
+                } else {
+                    console.error("Failed to fetch product:", data.error);
+                    setProduct(null);
+                }
+            } catch (error) {
+                console.error("Error fetching product:", error);
+                setProduct(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (params.id) {
+            fetchProduct();
+        }
+    }, [params.id]);
 
     const handleQuoteRequest = () => {
         // TODO: Implement quote request functionality
@@ -217,7 +242,7 @@ export default function ProductDetailPage() {
                                         <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
                                         <div className="flex items-center space-x-4 mb-4">
                                             <div className="text-3xl font-bold text-green-600">
-                                                {product.currency} {product.price.toFixed(2)}
+                                                {product.currency} {Number(product.price || 0).toFixed(2)}
                                             </div>
                                             <div className="text-sm text-gray-600">
                                                 Min Order: {product.minOrderQuantity} {product.unit}
@@ -298,7 +323,7 @@ export default function ProductDetailPage() {
                                                 </div>
                                                 <h4 className="font-semibold mb-2 line-clamp-1">{relatedProduct.name}</h4>
                                                 <div className="text-lg font-bold text-green-600">
-                                                    {relatedProduct.currency} {relatedProduct.price.toFixed(2)}
+                                                    {relatedProduct.currency} {Number(relatedProduct.price || 0).toFixed(2)}
                                                 </div>
                                             </div>
                                         </Link>
@@ -420,11 +445,11 @@ export default function ProductDetailPage() {
                                 <div className="space-y-4">
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Views:</span>
-                                        <span className="font-medium">{product.views.toLocaleString()}</span>
+                                        <span className="font-medium">{Number(product.views || 0).toLocaleString()}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Orders:</span>
-                                        <span className="font-medium">{product.orders}</span>
+                                        <span className="font-medium">{Number(product.orders || 0)}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Lead Time:</span>
@@ -437,7 +462,7 @@ export default function ProductDetailPage() {
                                     {product.stockQuantity && (
                                         <div className="flex justify-between">
                                             <span className="text-gray-600">Stock:</span>
-                                            <span className="font-medium">{product.stockQuantity.toLocaleString()} units</span>
+                                            <span className="font-medium">{Number(product.stockQuantity || 0).toLocaleString()} units</span>
                                         </div>
                                     )}
                                 </div>

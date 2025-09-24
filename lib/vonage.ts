@@ -44,6 +44,19 @@ export class VonageOTPService {
      * Send SMS OTP using Vonage SMS API
      */
     static async sendSMSOTP(phoneNumber: string, otpCode: string): Promise<OTPResult> {
+        // MOCK OTP SERVICE - Commented out Vonage API for now
+        console.log(`📱 [MOCK SMS] Sending OTP to ${phoneNumber}: ${otpCode}`);
+
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        return {
+            success: true,
+            message: `SMS sent to ${phoneNumber} (mock mode - use code: ${otpCode})`,
+            requestId: `mock-sms-${Date.now()}`,
+        };
+
+        /* COMMENTED OUT VONAGE API - TO BE IMPLEMENTED BY OTHER ENGINEER
         // Check if Vonage is properly initialized
         if (!vonage || !vonageInitialized || !hasVonageCredentials) {
             // In production, this should not happen if credentials are properly set
@@ -57,6 +70,13 @@ export class VonageOTPService {
         try {
             // Try Vonage Verify API first
             const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
+            
+            console.log(`📱 Attempting to send OTP via Vonage Verify API to ${formattedPhone}...`);
+            console.log(`📱 Vonage credentials check:`, {
+                hasCredentials: hasVonageCredentials,
+                vonageInitialized: vonageInitialized,
+                vonageExists: !!vonage
+            });
 
             const response = await vonage.verify.start({
                 number: formattedPhone,
@@ -67,15 +87,22 @@ export class VonageOTPService {
                 workflow_id: 1, // SMS only workflow (no voice calls)
             });
 
+            console.log('📱 Verify API Response:', JSON.stringify(response, null, 2));
+
             if (response.status === '0') {
+                console.log(`✅ OTP sent successfully via Verify API to ${formattedPhone}`);
                 return {
                     success: true,
                     message: 'SMS OTP sent successfully',
                     requestId: response.request_id,
                 };
             } else {
+                console.log(`⚠️ Verify API failed (${response.status}): ${response.error_text || 'Unknown error'}`);
+                console.log(`⚠️ Full Verify API response:`, JSON.stringify(response, null, 2));
+                
                 // If Verify API fails due to credentials, try basic SMS API
                 if (response.status === '4' || response.error_text?.includes('Bad Credentials')) {
+                    console.log(`🔄 Falling back to basic SMS API...`);
                     return await this.sendBasicSMS(formattedPhone, otpCode);
                 }
 
@@ -86,8 +113,10 @@ export class VonageOTPService {
                 };
             }
         } catch (error) {
+            console.error('📱 Verify API error:', error);
             // Fallback: try basic SMS
             try {
+                console.log(`🔄 Falling back to basic SMS API due to error...`);
                 return await this.sendBasicSMS(phoneNumber, otpCode);
             } catch (fallbackError) {
                 console.error('SMS delivery failed:', fallbackError);
@@ -98,14 +127,35 @@ export class VonageOTPService {
                 };
             }
         }
+        */
     }
 
     /**
-     * Send basic SMS using Vonage SMS API (fallback method)
+     * Send basic SMS using Vonage SMS API (fallback method) - COMMENTED OUT
      */
     private static async sendBasicSMS(phoneNumber: string, otpCode: string): Promise<OTPResult> {
+        // MOCK SMS SERVICE - Commented out Vonage API for now
+        console.log(`📱 [MOCK SMS] Sending OTP to ${phoneNumber}: ${otpCode}`);
+
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        return {
+            success: true,
+            message: `SMS sent to ${phoneNumber} (mock mode - use code: ${otpCode})`,
+            requestId: `mock-sms-${Date.now()}`,
+        };
+
+        /* COMMENTED OUT VONAGE API - TO BE IMPLEMENTED BY OTHER ENGINEER
         try {
             const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
+            
+            console.log(`📱 Attempting to send SMS to ${formattedPhone} with OTP: ${otpCode}`);
+            console.log(`📱 Vonage credentials check:`, {
+                hasCredentials: hasVonageCredentials,
+                vonageInitialized: vonageInitialized,
+                vonageExists: !!vonage
+            });
 
             const smsResult = await vonage!.sms.send({
                 to: formattedPhone,
@@ -113,24 +163,46 @@ export class VonageOTPService {
                 text: `Your TradeMart verification code is: ${otpCode}. This code expires in 10 minutes. Do not share this code with anyone.`
             });
 
+            console.log(`📱 SMS API Response:`, JSON.stringify(smsResult, null, 2));
+
             if (smsResult.messages && smsResult.messages[0]?.status === '0') {
+                console.log(`✅ SMS sent successfully to ${formattedPhone}`);
                 return {
                     success: true,
                     message: 'SMS OTP sent successfully',
                     requestId: smsResult.messages[0]['message-id'],
                 };
             } else {
-                throw new Error(smsResult.messages?.[0]?.['error-text'] || 'SMS sending failed');
+                const errorText = smsResult.messages?.[0]?.['error-text'] || 'SMS sending failed';
+                const errorCode = smsResult.messages?.[0]?.['status'];
+                console.error(`❌ SMS failed: ${errorText} (Status: ${errorCode})`);
+                console.error(`❌ Full SMS response:`, JSON.stringify(smsResult, null, 2));
+                throw new Error(errorText);
             }
         } catch (error) {
+            console.error(`❌ SMS send error:`, error);
             throw error;
         }
+        */
     }
 
     /**
-     * Send Email OTP using Vonage Email API
+     * Send Email OTP using Vonage Email API - MOCKED FOR NOW
      */
     static async sendEmailOTP(email: string, otpCode: string): Promise<OTPResult> {
+        // MOCK EMAIL SERVICE - Commented out Vonage API for now
+        console.log(`📧 [MOCK EMAIL] Sending OTP to ${email}: ${otpCode}`);
+
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        return {
+            success: true,
+            message: `Email sent to ${email} (mock mode - use code: ${otpCode})`,
+            requestId: `mock-email-${Date.now()}`,
+        };
+
+        /* COMMENTED OUT VONAGE EMAIL API - TO BE IMPLEMENTED BY OTHER ENGINEER
         // Check if Vonage is available
         if (!vonage || !hasVonageCredentials) {
             return {
@@ -228,12 +300,35 @@ export class VonageOTPService {
                 error: error instanceof Error ? error.message : 'Unknown error',
             };
         }
+        */
     }
 
     /**
-     * Verify OTP using Vonage Verify API (for phone numbers)
+     * Verify OTP using Vonage Verify API (for phone numbers) - MOCKED FOR NOW
      */
     static async verifyOTP(phoneNumber: string, otpCode: string, requestId: string): Promise<VerifyResult> {
+        // MOCK OTP VERIFICATION - Commented out Vonage API for now
+        console.log(`🔍 [MOCK VERIFY] Verifying OTP ${otpCode} for ${phoneNumber} (request: ${requestId})`);
+
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Accept any 6-digit code for mock mode
+        if (otpCode.length === 6 && /^\d+$/.test(otpCode)) {
+            console.log(`✅ [MOCK VERIFY] OTP verified successfully`);
+            return {
+                success: true,
+                message: 'OTP verified successfully (mock mode)',
+            };
+        }
+
+        return {
+            success: false,
+            message: 'Invalid OTP format',
+            error: 'OTP must be 6 digits',
+        };
+
+        /* COMMENTED OUT VONAGE VERIFY API - TO BE IMPLEMENTED BY OTHER ENGINEER
         // Check if Vonage is available
         if (!vonage || !hasVonageCredentials) {
             return {
@@ -267,12 +362,27 @@ export class VonageOTPService {
                 error: error instanceof Error ? error.message : 'Unknown error',
             };
         }
+        */
     }
 
     /**
-     * Send OTP using Vonage Verify API (recommended for phone verification)
+     * Send OTP using Vonage Verify API (recommended for phone verification) - MOCKED FOR NOW
      */
     static async sendVerifyOTP(phoneNumber: string): Promise<OTPResult> {
+        // MOCK VERIFY OTP SERVICE - Commented out Vonage API for now
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        console.log(`📱 [MOCK VERIFY] Sending OTP to ${phoneNumber}: ${otpCode}`);
+
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        return {
+            success: true,
+            message: 'Verification code sent successfully (mock mode)',
+            requestId: `mock-verify-${Date.now()}`,
+        };
+
+        /* COMMENTED OUT VONAGE VERIFY API - TO BE IMPLEMENTED BY OTHER ENGINEER
         // Check if Vonage is available
         if (!vonage || !hasVonageCredentials) {
             const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -316,12 +426,25 @@ export class VonageOTPService {
                 error: error instanceof Error ? error.message : 'Unknown error',
             };
         }
+        */
     }
 
     /**
-     * Cancel a verification request
+     * Cancel a verification request - MOCKED FOR NOW
      */
     static async cancelVerification(requestId: string): Promise<VerifyResult> {
+        // MOCK CANCEL VERIFICATION - Commented out Vonage API for now
+        console.log(`📱 [MOCK CANCEL] Cancelling verification for request: ${requestId}`);
+
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        return {
+            success: true,
+            message: 'Verification cancelled successfully (mock mode)',
+        };
+
+        /* COMMENTED OUT VONAGE CANCEL API - TO BE IMPLEMENTED BY OTHER ENGINEER
         // Check if Vonage is available
         if (!vonage || !hasVonageCredentials) {
             console.log(`📱 Vonage not configured - mock cancel verification for request: ${requestId}`);
@@ -354,6 +477,7 @@ export class VonageOTPService {
                 error: error instanceof Error ? error.message : 'Unknown error',
             };
         }
+        */
     }
 }
 

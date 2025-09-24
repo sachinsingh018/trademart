@@ -14,7 +14,12 @@ export default function Dashboard() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [rfqs, setRfqs] = useState([]);
+    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [deleting, setDeleting] = useState<string | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<any>(null);
+    const [viewMode, setViewMode] = useState<'rfqs' | 'products'>('rfqs');
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -24,17 +29,108 @@ export default function Dashboard() {
 
     useEffect(() => {
         if (session) {
-            fetchRfqs();
+            if (session.user.role === 'buyer') {
+                // Buyers only see RFQs for now (Browse Products section is hidden)
+                fetchRfqs();
+            } else if (session.user.role === 'supplier') {
+                if (viewMode === 'rfqs') {
+                    fetchRfqs();
+                } else {
+                    fetchProducts();
+                }
+            }
         }
-    }, [session]);
+    }, [session, viewMode]);
 
     const fetchRfqs = async () => {
         try {
-            const response = await fetch("/api/rfqs");
+            // For buyers, fetch their own RFQs; for suppliers, fetch all RFQs
+            const isBuyer = session?.user?.role === "buyer";
+            const url = isBuyer ? "/api/rfqs/my-rfqs" : "/api/rfqs";
+            console.log("Fetching RFQs from:", url, "for user:", session?.user?.id, "role:", session?.user?.role);
+            const response = await fetch(url);
             const data = await response.json();
-            setRfqs(data.rfqs || []);
+            console.log("RFQs response:", data);
+            setRfqs(data.data?.rfqs || data.rfqs || []);
         } catch (error) {
             console.error("Error fetching RFQs:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteClick = (item: any) => {
+        setItemToDelete(item);
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!itemToDelete) return;
+
+        try {
+            setDeleting(itemToDelete.id);
+
+            // Determine the correct API endpoint based on the item type
+            const isProduct = !isBuyer && viewMode === 'products';
+            const apiUrl = isProduct ? `/api/products/${itemToDelete.id}` : `/api/rfqs/${itemToDelete.id}`;
+
+            console.log('Deleting item:', itemToDelete.id, 'Type:', isProduct ? 'product' : 'RFQ', 'API:', apiUrl);
+
+            const response = await fetch(apiUrl, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+            console.log('Delete response:', data);
+
+            if (data.success) {
+                // Remove the deleted item from the appropriate list
+                if (isProduct) {
+                    setProducts(prevProducts => prevProducts.filter((product: any) => product.id !== itemToDelete.id));
+                } else {
+                    setRfqs(prevRfqs => prevRfqs.filter((rfq: any) => rfq.id !== itemToDelete.id));
+                }
+                setShowDeleteModal(false);
+                setItemToDelete(null);
+            } else {
+                alert(`Failed to delete ${isProduct ? 'product' : 'RFQ'}: ` + (data.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error(`Error deleting ${!isBuyer && viewMode === 'products' ? 'product' : 'RFQ'}:`, error);
+            alert(`Failed to delete ${!isBuyer && viewMode === 'products' ? 'product' : 'RFQ'}. Please try again.`);
+        } finally {
+            setDeleting(null);
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setItemToDelete(null);
+    };
+
+    const fetchProducts = async () => {
+        try {
+            console.log("Fetching products for supplier:", session?.user?.id);
+            const response = await fetch("/api/products/my-products");
+            const data = await response.json();
+            console.log("Products response:", data);
+            setProducts(data.data?.products || []);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchAllProducts = async () => {
+        try {
+            console.log("Fetching all products for buyer:", session?.user?.id);
+            const response = await fetch("/api/products");
+            const data = await response.json();
+            console.log("All products response:", data);
+            setProducts(data.data?.products || []);
+        } catch (error) {
+            console.error("Error fetching all products:", error);
         } finally {
             setLoading(false);
         }
@@ -155,6 +251,62 @@ export default function Dashboard() {
                     </p>
                 </div>
 
+                {/* Toggle for Suppliers */}
+                {!isBuyer && (
+                    <div className="mb-8">
+                        <div className="flex items-center justify-center">
+                            <div className="bg-gray-100 rounded-lg p-1 flex">
+                                <button
+                                    onClick={() => setViewMode('rfqs')}
+                                    className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${viewMode === 'rfqs'
+                                        ? 'bg-white text-blue-600 shadow-sm'
+                                        : 'text-gray-600 hover:text-gray-900'
+                                        }`}
+                                >
+                                    📋 RFQs
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('products')}
+                                    className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${viewMode === 'products'
+                                        ? 'bg-white text-green-600 shadow-sm'
+                                        : 'text-gray-600 hover:text-gray-900'
+                                        }`}
+                                >
+                                    🏭 My Products
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Toggle for Buyers - COMMENTED OUT */}
+                {/* {isBuyer && (
+                    <div className="mb-8">
+                        <div className="flex items-center justify-center">
+                            <div className="bg-gray-100 rounded-lg p-1 flex">
+                                <button
+                                    onClick={() => setViewMode('rfqs')}
+                                    className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${viewMode === 'rfqs'
+                                        ? 'bg-white text-blue-600 shadow-sm'
+                                        : 'text-gray-600 hover:text-gray-900'
+                                        }`}
+                                >
+                                    📋 My RFQs
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('products')}
+                                    className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${viewMode === 'products'
+                                        ? 'bg-white text-green-600 shadow-sm'
+                                        : 'text-gray-600 hover:text-gray-900'
+                                        }`}
+                                >
+                                    🛍️ Browse Products
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )} */}
+
                 {isBuyer && (
                     <div className="mb-8">
                         <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-lg">
@@ -205,77 +357,368 @@ export default function Dashboard() {
                     </div>
                 )}
 
+                {/* Stats for Buyers - RFQs */}
+                {isBuyer && rfqs.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-blue-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-blue-600 mb-2">{rfqs.length}</div>
+                            <div className="text-gray-600">Your RFQs</div>
+                        </div>
+                        <div className="bg-green-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-green-600 mb-2">
+                                {rfqs.filter((rfq: any) => rfq.status === "open").length}
+                            </div>
+                            <div className="text-gray-600">Open for Quotes</div>
+                        </div>
+                        <div className="bg-purple-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-purple-600 mb-2">
+                                {rfqs.reduce((sum: number, rfq: any) => sum + (rfq.quotes?.length || 0), 0)}
+                            </div>
+                            <div className="text-gray-600">Total Quotes</div>
+                        </div>
+                        <div className="bg-orange-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-orange-600 mb-2">
+                                ${rfqs.reduce((sum: number, rfq: any) => sum + Number(rfq.budget || 0), 0)}
+                            </div>
+                            <div className="text-gray-600">Total Budget</div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Stats for Buyers - Products - COMMENTED OUT */}
+                {/* {isBuyer && viewMode === 'products' && products.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-green-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-green-600 mb-2">{products.length}</div>
+                            <div className="text-gray-600">Available Products</div>
+                        </div>
+                        <div className="bg-blue-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-blue-600 mb-2">
+                                {products.filter((product: any) => product.inStock).length}
+                            </div>
+                            <div className="text-gray-600">In Stock</div>
+                        </div>
+                        <div className="bg-purple-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-purple-600 mb-2">
+                                {products.filter((product: any) => product.supplier?.verified).length}
+                            </div>
+                            <div className="text-gray-600">Verified Suppliers</div>
+                        </div>
+                        <div className="bg-orange-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-orange-600 mb-2">
+                                ${products.reduce((sum: number, product: any) => sum + Number(product.price || 0), 0)}
+                            </div>
+                            <div className="text-gray-600">Total Value</div>
+                        </div>
+                    </div>
+                )} */}
+
+                {/* Stats for Suppliers - Products */}
+                {!isBuyer && viewMode === 'products' && products.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                        <div className="bg-green-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-green-600 mb-2">{products.length}</div>
+                            <div className="text-gray-600">Your Products</div>
+                        </div>
+                        <div className="bg-blue-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-blue-600 mb-2">
+                                {products.filter((product: any) => product.inStock).length}
+                            </div>
+                            <div className="text-gray-600">In Stock</div>
+                        </div>
+                        <div className="bg-orange-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-orange-600 mb-2">
+                                {products.filter((product: any) => !product.inStock).length}
+                            </div>
+                            <div className="text-gray-600">Out of Stock</div>
+                        </div>
+                        <div className="bg-purple-50 rounded-lg p-6">
+                            <div className="text-3xl font-bold text-purple-600 mb-2">
+                                ${products.reduce((sum: number, product: any) => sum + Number(product.price || 0), 0)}
+                            </div>
+                            <div className="text-gray-600">Total Value</div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="grid gap-6">
                     <Card className="p-6 shadow-lg border-0">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">📋</span>
+                                <span className="text-white font-bold text-sm">
+                                    {!isBuyer && viewMode === 'products' ? '🏭' : '📋'}
+                                </span>
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-gray-900">
-                                    {isBuyer ? "Your RFQs" : "Open RFQs"}
+                                    {isBuyer ? "Your RFQs" : (viewMode === 'products' ? "Your Products" : "Open RFQs")}
                                 </h2>
                                 <p className="text-gray-600">
                                     {isBuyer
                                         ? "Track the status of your requests for quotation"
-                                        : "Browse and quote on open requests"
+                                        : viewMode === 'products'
+                                            ? "Manage your product catalog"
+                                            : "Browse and quote on open requests"
                                     }
                                 </p>
                             </div>
                         </div>
 
-                        {rfqs.length === 0 ? (
+                        {((!isBuyer && viewMode === 'products' && products.length === 0) || (isBuyer && rfqs.length === 0) || (!isBuyer && viewMode === 'rfqs' && rfqs.length === 0)) ? (
                             <div className="text-center py-12">
                                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <span className="text-gray-400 text-2xl">📋</span>
+                                    <span className="text-gray-400 text-2xl">
+                                        {!isBuyer && viewMode === 'products' ? '🏭' : '📋'}
+                                    </span>
                                 </div>
                                 <p className="text-gray-500 text-lg">
                                     {isBuyer
                                         ? "No RFQs found. Create your first RFQ to get started."
-                                        : "No open RFQs available at the moment."
+                                        : !isBuyer && viewMode === 'products'
+                                            ? "No products found. Add your first product to get started."
+                                            : "No open RFQs available at the moment."
                                     }
                                 </p>
+                                {isBuyer && (
+                                    <div className="mt-4">
+                                        <Link href="/rfqs/create">
+                                            <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                                Create Your First RFQ
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                )}
+                                {!isBuyer && viewMode === 'products' && (
+                                    <div className="mt-4">
+                                        <Link href="/products/create">
+                                            <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                                Add Your First Product
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                )}
                             </div>
                         ) : (
-                            <div className="space-y-4">
-                                {rfqs.slice(0, 5).map((rfq: { id: string; title: string; description: string; category: string; status: string; createdAt: string; _count: { quotes: number } }) => (
-                                    <div key={rfq.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-                                        <div className="flex justify-between items-start">
+                            <div className="space-y-6">
+                                {(!isBuyer && viewMode === 'products' ? products : rfqs).map((item: any) => (
+                                    <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                                        <div className="flex justify-between items-start mb-4">
                                             <div className="flex-1">
-                                                <h3 className="font-semibold text-gray-900 text-lg mb-2">{rfq.title}</h3>
+                                                <h3 className="font-semibold text-gray-900 text-xl mb-2">
+                                                    {!isBuyer && viewMode === 'products' ? item.name : item.title}
+                                                </h3>
                                                 <p className="text-gray-600 mb-4 line-clamp-2">
-                                                    {rfq.description}
+                                                    {item.description}
                                                 </p>
-                                                <div className="flex items-center gap-3 flex-wrap">
-                                                    <Badge variant="outline" className="text-xs">
-                                                        {rfq.category}
-                                                    </Badge>
-                                                    <Badge
-                                                        variant={rfq.status === "open" ? "default" : "secondary"}
-                                                        className={rfq.status === "open" ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"}
-                                                    >
-                                                        {rfq.status}
-                                                    </Badge>
-                                                    {isBuyer && (
-                                                        <span className="text-sm text-gray-500">
-                                                            {rfq._count.quotes} quotes
-                                                        </span>
+                                            </div>
+                                            <Badge
+                                                variant={(!isBuyer && viewMode === 'products' ? item.inStock : item.status === "open") ? "default" : "secondary"}
+                                                className={`${(!isBuyer && viewMode === 'products' ? item.inStock : item.status === "open") ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
+                                            >
+                                                {!isBuyer && viewMode === 'products'
+                                                    ? (item.inStock ? 'In Stock' : 'Out of Stock')
+                                                    : item.status.charAt(0).toUpperCase() + item.status.slice(1)
+                                                }
+                                            </Badge>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                            {/* Product/RFQ Details */}
+                                            <div className="space-y-4">
+                                                <h4 className="font-semibold text-gray-900">
+                                                    {!isBuyer && viewMode === 'products' ? 'Product Details' : 'RFQ Details'}
+                                                </h4>
+                                                <div className="space-y-2 text-sm">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-600">Category:</span>
+                                                        <span className="font-medium">{item.category}</span>
+                                                    </div>
+                                                    {(isBuyer && viewMode === 'products') || (!isBuyer && viewMode === 'products') ? (
+                                                        <>
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Price:</span>
+                                                                <span className="font-medium">{item.currency} {item.price}</span>
+                                                            </div>
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Min Order:</span>
+                                                                <span className="font-medium">{item.minOrderQuantity} {item.unit}</span>
+                                                            </div>
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Stock:</span>
+                                                                <span className="font-medium">{item.stockQuantity || 'N/A'}</span>
+                                                            </div>
+                                                            {(isBuyer && viewMode === 'products') && (
+                                                                <div className="flex justify-between">
+                                                                    <span className="text-gray-600">Supplier:</span>
+                                                                    <span className="font-medium">{item.supplier?.company || 'N/A'}</span>
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {item.quantity && (
+                                                                <div className="flex justify-between">
+                                                                    <span className="text-gray-600">Quantity:</span>
+                                                                    <span className="font-medium">{item.quantity.toLocaleString()} {item.unit || 'pieces'}</span>
+                                                                </div>
+                                                            )}
+                                                            {item.budget && (
+                                                                <div className="flex justify-between">
+                                                                    <span className="text-gray-600">Budget:</span>
+                                                                    <span className="font-medium">{item.currency || 'USD'} {item.budget}</span>
+                                                                </div>
+                                                            )}
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Quotes:</span>
+                                                                <span className="font-medium">{item.quotes?.length || 0} received</span>
+                                                            </div>
+                                                        </>
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="text-right ml-6">
-                                                <p className="text-sm text-gray-500 mb-3">
-                                                    {new Date(rfq.createdAt).toLocaleDateString()}
-                                                </p>
-                                                <Link href={`/rfq/${rfq.id}`}>
+
+                                            {/* Timeline */}
+                                            <div className="space-y-4">
+                                                <h4 className="font-semibold text-gray-900">Timeline</h4>
+                                                <div className="space-y-2 text-sm">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-600">
+                                                            {(isBuyer && viewMode === 'products') || (!isBuyer && viewMode === 'products') ? 'Added:' : 'Posted:'}
+                                                        </span>
+                                                        <span className="font-medium">{new Date(item.createdAt).toLocaleDateString("en-US", {
+                                                            year: "numeric",
+                                                            month: "short",
+                                                            day: "numeric",
+                                                        })}</span>
+                                                    </div>
+                                                    {(isBuyer && viewMode === 'products') || (!isBuyer && viewMode === 'products') ? (
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Updated:</span>
+                                                            <span className="font-medium">{new Date(item.updatedAt).toLocaleDateString("en-US", {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric",
+                                                            })}</span>
+                                                        </div>
+                                                    ) : (
+                                                        item.expiresAt && (
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Expires:</span>
+                                                                <span className="font-medium">{new Date(item.expiresAt).toLocaleDateString("en-US", {
+                                                                    year: "numeric",
+                                                                    month: "short",
+                                                                    day: "numeric",
+                                                                })}</span>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Status & Actions */}
+                                            <div className="space-y-4">
+                                                <h4 className="font-semibold text-gray-900">Status & Actions</h4>
+                                                <div className="space-y-2 text-sm">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-gray-600">Status:</span>
+                                                        <span className={`font-medium ${(!isBuyer && viewMode === 'products' ? item.inStock : item.status === "open") ? "text-green-600" : "text-gray-600"}`}>
+                                                            {!isBuyer && viewMode === 'products'
+                                                                ? (item.inStock ? 'In Stock' : 'Out of Stock')
+                                                                : item.status.charAt(0).toUpperCase() + item.status.slice(1)
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                    {!isBuyer && viewMode === 'products' ? (
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Views:</span>
+                                                            <span className="font-medium">{item.views || 0}</span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Total Quotes:</span>
+                                                            <span className="font-medium">{item.quotes?.length || 0}</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Requirements/Features */}
+                                        {(!isBuyer && viewMode === 'products' ? item.features : item.requirements) &&
+                                            (!isBuyer && viewMode === 'products' ? item.features.length > 0 : item.requirements.length > 0) && (
+                                                <div className="mb-6 pt-6 border-t border-gray-200">
+                                                    <h4 className="font-semibold text-gray-900 mb-3">
+                                                        {!isBuyer && viewMode === 'products' ? 'Key Features' : 'Key Requirements'}
+                                                    </h4>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {(!isBuyer && viewMode === 'products' ? item.features : item.requirements).map((feature: string, index: number) => (
+                                                            <Badge key={index} variant="outline" className="text-xs">
+                                                                {feature}
+                                                            </Badge>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                        {/* Actions */}
+                                        <div className="pt-6 border-t border-gray-200 flex justify-between items-center">
+                                            <div className="text-sm text-gray-600">
+                                                <span className="font-medium">
+                                                    {!isBuyer && viewMode === 'products' ? 'Tags:' : 'Specifications:'}
+                                                </span>
+                                                {!isBuyer && viewMode === 'products'
+                                                    ? (item.tags && item.tags.length > 0 ? item.tags.join(", ") : "No tags")
+                                                    : (item.specifications && Object.entries(item.specifications)
+                                                        .filter(([, value]) => value)
+                                                        .map(([key, value]) => `${key}: ${value}`)
+                                                        .join(", ") || "None specified")
+                                                }
+                                            </div>
+                                            <div className="flex gap-3">
+                                                {isBuyer ? (
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                                                        className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
+                                                        disabled={deleting === item.id}
+                                                        onClick={() => handleDeleteClick(item)}
                                                     >
-                                                        View Details
+                                                        {deleting === item.id ? (
+                                                            <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
+                                                        ) : (
+                                                            '🗑️'
+                                                        )}
                                                     </Button>
-                                                </Link>
+                                                ) : !isBuyer && viewMode === 'products' ? (
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
+                                                        disabled={deleting === item.id}
+                                                        onClick={() => handleDeleteClick(item)}
+                                                    >
+                                                        {deleting === item.id ? (
+                                                            <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
+                                                        ) : (
+                                                            '🗑️'
+                                                        )}
+                                                    </Button>
+                                                ) : (
+                                                    <>
+                                                        <Link href={`/rfqs/${item.id}`}>
+                                                            <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+                                                                View Details
+                                                            </Button>
+                                                        </Link>
+                                                        {item.status === "open" && (
+                                                            <Link href={`/rfqs/${item.id}`}>
+                                                                <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800">
+                                                                    Submit Quote
+                                                                </Button>
+                                                            </Link>
+                                                        )}
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -285,6 +728,79 @@ export default function Dashboard() {
                     </Card>
                 </div>
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                <span className="text-red-600 text-xl">⚠️</span>
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-semibold text-gray-900">
+                                    Delete {!isBuyer && viewMode === 'products' ? 'Product' : 'RFQ'}
+                                </h3>
+                                <p className="text-gray-600">This action cannot be undone</p>
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <p className="text-gray-700 mb-2">
+                                Are you sure you want to delete this {!isBuyer && viewMode === 'products' ? 'product' : 'RFQ'}?
+                            </p>
+                            {itemToDelete && (
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <h4 className="font-medium text-gray-900 mb-1">
+                                        {!isBuyer && viewMode === 'products' ? itemToDelete.name : itemToDelete.title}
+                                    </h4>
+                                    <p className="text-sm text-gray-600 line-clamp-2">{itemToDelete.description}</p>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <Badge variant="outline" className="text-xs">
+                                            {itemToDelete.category}
+                                        </Badge>
+                                        <Badge
+                                            variant={(!isBuyer && viewMode === 'products' ? itemToDelete.inStock : itemToDelete.status === "open") ? "default" : "secondary"}
+                                            className={`text-xs ${(!isBuyer && viewMode === 'products' ? itemToDelete.inStock : itemToDelete.status === "open") ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"}`}
+                                        >
+                                            {!isBuyer && viewMode === 'products'
+                                                ? (itemToDelete.inStock ? 'In Stock' : 'Out of Stock')
+                                                : itemToDelete.status
+                                            }
+                                        </Badge>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex gap-3 justify-end">
+                            <Button
+                                variant="outline"
+                                onClick={handleDeleteCancel}
+                                disabled={deleting === itemToDelete?.id}
+                                className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                variant="destructive"
+                                onClick={handleDeleteConfirm}
+                                disabled={deleting === itemToDelete?.id}
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                            >
+                                {deleting === itemToDelete?.id ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        Deleting...
+                                    </div>
+                                ) : (
+                                    `Delete ${!isBuyer && viewMode === 'products' ? 'Product' : 'RFQ'}`
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

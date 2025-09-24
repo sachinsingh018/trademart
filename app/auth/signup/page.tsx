@@ -39,7 +39,7 @@ interface FormData {
     postalCode: string;
 
     // Verification
-    verificationMethod: "email" | "phone";
+    verificationMethod: "phone";
     otpCode: string;
 
     // Terms
@@ -78,7 +78,7 @@ function SignUpForm() {
         city: "",
         address: "",
         postalCode: "",
-        verificationMethod: "email",
+        verificationMethod: "phone",
         otpCode: "",
         agreeToTerms: false,
         agreeToMarketing: false,
@@ -247,7 +247,7 @@ function SignUpForm() {
                 const data = await response.json();
                 setOtpSent(true);
                 setOtpRequestId(data.requestId || null);
-                setSuccess(data.message || `OTP sent to your ${formData.verificationMethod}`);
+                setSuccess(data.message || "OTP sent to your phone number");
             } else {
                 const data = await response.json();
                 setError(data.error || "Failed to send OTP");
@@ -567,16 +567,202 @@ function SignUpForm() {
                                         <SelectValue placeholder="Select your country" />
                                     </SelectTrigger>
                                     <SelectContent>
+                                        {/* North America */}
                                         <SelectItem value="us">United States</SelectItem>
-                                        <SelectItem value="uk">United Kingdom</SelectItem>
                                         <SelectItem value="ca">Canada</SelectItem>
-                                        <SelectItem value="au">Australia</SelectItem>
+                                        <SelectItem value="mx">Mexico</SelectItem>
+
+                                        {/* Europe */}
+                                        <SelectItem value="uk">United Kingdom</SelectItem>
                                         <SelectItem value="de">Germany</SelectItem>
                                         <SelectItem value="fr">France</SelectItem>
-                                        <SelectItem value="jp">Japan</SelectItem>
-                                        <SelectItem value="cn">China</SelectItem>
+                                        <SelectItem value="it">Italy</SelectItem>
+                                        <SelectItem value="es">Spain</SelectItem>
+                                        <SelectItem value="nl">Netherlands</SelectItem>
+                                        <SelectItem value="be">Belgium</SelectItem>
+                                        <SelectItem value="ch">Switzerland</SelectItem>
+                                        <SelectItem value="at">Austria</SelectItem>
+                                        <SelectItem value="se">Sweden</SelectItem>
+                                        <SelectItem value="no">Norway</SelectItem>
+                                        <SelectItem value="dk">Denmark</SelectItem>
+                                        <SelectItem value="fi">Finland</SelectItem>
+                                        <SelectItem value="pl">Poland</SelectItem>
+                                        <SelectItem value="cz">Czech Republic</SelectItem>
+                                        <SelectItem value="hu">Hungary</SelectItem>
+                                        <SelectItem value="ro">Romania</SelectItem>
+                                        <SelectItem value="bg">Bulgaria</SelectItem>
+                                        <SelectItem value="hr">Croatia</SelectItem>
+                                        <SelectItem value="si">Slovenia</SelectItem>
+                                        <SelectItem value="sk">Slovakia</SelectItem>
+                                        <SelectItem value="ee">Estonia</SelectItem>
+                                        <SelectItem value="lv">Latvia</SelectItem>
+                                        <SelectItem value="lt">Lithuania</SelectItem>
+                                        <SelectItem value="ie">Ireland</SelectItem>
+                                        <SelectItem value="pt">Portugal</SelectItem>
+                                        <SelectItem value="gr">Greece</SelectItem>
+                                        <SelectItem value="cy">Cyprus</SelectItem>
+                                        <SelectItem value="mt">Malta</SelectItem>
+                                        <SelectItem value="lu">Luxembourg</SelectItem>
+
+                                        {/* BRICS Countries */}
+                                        <SelectItem value="br">Brazil</SelectItem>
+                                        <SelectItem value="ru">Russia</SelectItem>
                                         <SelectItem value="in">India</SelectItem>
+                                        <SelectItem value="cn">China</SelectItem>
+                                        <SelectItem value="za">South Africa</SelectItem>
+
+                                        {/* MENA Countries */}
+                                        <SelectItem value="ae">United Arab Emirates</SelectItem>
+                                        <SelectItem value="sa">Saudi Arabia</SelectItem>
+                                        <SelectItem value="qa">Qatar</SelectItem>
+                                        <SelectItem value="kw">Kuwait</SelectItem>
+                                        <SelectItem value="bh">Bahrain</SelectItem>
+                                        <SelectItem value="om">Oman</SelectItem>
+                                        <SelectItem value="jo">Jordan</SelectItem>
+                                        <SelectItem value="lb">Lebanon</SelectItem>
+                                        <SelectItem value="sy">Syria</SelectItem>
+                                        <SelectItem value="iq">Iraq</SelectItem>
+                                        <SelectItem value="ir">Iran</SelectItem>
+                                        <SelectItem value="tr">Turkey</SelectItem>
+                                        <SelectItem value="eg">Egypt</SelectItem>
+                                        <SelectItem value="ly">Libya</SelectItem>
+                                        <SelectItem value="tn">Tunisia</SelectItem>
+                                        <SelectItem value="dz">Algeria</SelectItem>
+                                        <SelectItem value="ma">Morocco</SelectItem>
+                                        <SelectItem value="sd">Sudan</SelectItem>
+                                        <SelectItem value="ye">Yemen</SelectItem>
+                                        <SelectItem value="ps">Palestine</SelectItem>
+                                        <SelectItem value="il">Israel</SelectItem>
+
+                                        {/* Asia Pacific */}
+                                        <SelectItem value="jp">Japan</SelectItem>
+                                        <SelectItem value="kr">South Korea</SelectItem>
+                                        <SelectItem value="tw">Taiwan</SelectItem>
+                                        <SelectItem value="hk">Hong Kong</SelectItem>
+                                        <SelectItem value="mo">Macau</SelectItem>
                                         <SelectItem value="sg">Singapore</SelectItem>
+                                        <SelectItem value="my">Malaysia</SelectItem>
+                                        <SelectItem value="th">Thailand</SelectItem>
+                                        <SelectItem value="vn">Vietnam</SelectItem>
+                                        <SelectItem value="ph">Philippines</SelectItem>
+                                        <SelectItem value="id">Indonesia</SelectItem>
+                                        <SelectItem value="bn">Brunei</SelectItem>
+                                        <SelectItem value="kh">Cambodia</SelectItem>
+                                        <SelectItem value="la">Laos</SelectItem>
+                                        <SelectItem value="mm">Myanmar</SelectItem>
+                                        <SelectItem value="bd">Bangladesh</SelectItem>
+                                        <SelectItem value="pk">Pakistan</SelectItem>
+                                        <SelectItem value="lk">Sri Lanka</SelectItem>
+                                        <SelectItem value="mv">Maldives</SelectItem>
+                                        <SelectItem value="np">Nepal</SelectItem>
+                                        <SelectItem value="bt">Bhutan</SelectItem>
+                                        <SelectItem value="af">Afghanistan</SelectItem>
+                                        <SelectItem value="mn">Mongolia</SelectItem>
+                                        <SelectItem value="kz">Kazakhstan</SelectItem>
+                                        <SelectItem value="uz">Uzbekistan</SelectItem>
+                                        <SelectItem value="kg">Kyrgyzstan</SelectItem>
+                                        <SelectItem value="tj">Tajikistan</SelectItem>
+                                        <SelectItem value="tm">Turkmenistan</SelectItem>
+                                        <SelectItem value="au">Australia</SelectItem>
+                                        <SelectItem value="nz">New Zealand</SelectItem>
+                                        <SelectItem value="fj">Fiji</SelectItem>
+                                        <SelectItem value="pg">Papua New Guinea</SelectItem>
+                                        <SelectItem value="sb">Solomon Islands</SelectItem>
+                                        <SelectItem value="vu">Vanuatu</SelectItem>
+                                        <SelectItem value="nc">New Caledonia</SelectItem>
+                                        <SelectItem value="pf">French Polynesia</SelectItem>
+                                        <SelectItem value="ws">Samoa</SelectItem>
+                                        <SelectItem value="to">Tonga</SelectItem>
+                                        <SelectItem value="ki">Kiribati</SelectItem>
+                                        <SelectItem value="tv">Tuvalu</SelectItem>
+                                        <SelectItem value="nr">Nauru</SelectItem>
+                                        <SelectItem value="pw">Palau</SelectItem>
+                                        <SelectItem value="fm">Micronesia</SelectItem>
+                                        <SelectItem value="mh">Marshall Islands</SelectItem>
+
+                                        {/* Africa */}
+                                        <SelectItem value="ng">Nigeria</SelectItem>
+                                        <SelectItem value="ke">Kenya</SelectItem>
+                                        <SelectItem value="gh">Ghana</SelectItem>
+                                        <SelectItem value="et">Ethiopia</SelectItem>
+                                        <SelectItem value="tz">Tanzania</SelectItem>
+                                        <SelectItem value="ug">Uganda</SelectItem>
+                                        <SelectItem value="rw">Rwanda</SelectItem>
+                                        <SelectItem value="bi">Burundi</SelectItem>
+                                        <SelectItem value="dj">Djibouti</SelectItem>
+                                        <SelectItem value="so">Somalia</SelectItem>
+                                        <SelectItem value="er">Eritrea</SelectItem>
+                                        <SelectItem value="ss">South Sudan</SelectItem>
+                                        <SelectItem value="cf">Central African Republic</SelectItem>
+                                        <SelectItem value="td">Chad</SelectItem>
+                                        <SelectItem value="ne">Niger</SelectItem>
+                                        <SelectItem value="ml">Mali</SelectItem>
+                                        <SelectItem value="bf">Burkina Faso</SelectItem>
+                                        <SelectItem value="ci">Ivory Coast</SelectItem>
+                                        <SelectItem value="sn">Senegal</SelectItem>
+                                        <SelectItem value="gm">Gambia</SelectItem>
+                                        <SelectItem value="gn">Guinea</SelectItem>
+                                        <SelectItem value="sl">Sierra Leone</SelectItem>
+                                        <SelectItem value="lr">Liberia</SelectItem>
+                                        <SelectItem value="gh">Ghana</SelectItem>
+                                        <SelectItem value="tg">Togo</SelectItem>
+                                        <SelectItem value="bj">Benin</SelectItem>
+                                        <SelectItem value="cm">Cameroon</SelectItem>
+                                        <SelectItem value="gq">Equatorial Guinea</SelectItem>
+                                        <SelectItem value="ga">Gabon</SelectItem>
+                                        <SelectItem value="cg">Republic of the Congo</SelectItem>
+                                        <SelectItem value="cd">Democratic Republic of the Congo</SelectItem>
+                                        <SelectItem value="ao">Angola</SelectItem>
+                                        <SelectItem value="zm">Zambia</SelectItem>
+                                        <SelectItem value="zw">Zimbabwe</SelectItem>
+                                        <SelectItem value="bw">Botswana</SelectItem>
+                                        <SelectItem value="na">Namibia</SelectItem>
+                                        <SelectItem value="sz">Eswatini</SelectItem>
+                                        <SelectItem value="ls">Lesotho</SelectItem>
+                                        <SelectItem value="mg">Madagascar</SelectItem>
+                                        <SelectItem value="mu">Mauritius</SelectItem>
+                                        <SelectItem value="sc">Seychelles</SelectItem>
+                                        <SelectItem value="km">Comoros</SelectItem>
+                                        <SelectItem value="yt">Mayotte</SelectItem>
+                                        <SelectItem value="re">Réunion</SelectItem>
+                                        <SelectItem value="mz">Mozambique</SelectItem>
+                                        <SelectItem value="mw">Malawi</SelectItem>
+                                        <SelectItem value="za">South Africa</SelectItem>
+
+                                        {/* South America */}
+                                        <SelectItem value="ar">Argentina</SelectItem>
+                                        <SelectItem value="bo">Bolivia</SelectItem>
+                                        <SelectItem value="cl">Chile</SelectItem>
+                                        <SelectItem value="co">Colombia</SelectItem>
+                                        <SelectItem value="ec">Ecuador</SelectItem>
+                                        <SelectItem value="gy">Guyana</SelectItem>
+                                        <SelectItem value="py">Paraguay</SelectItem>
+                                        <SelectItem value="pe">Peru</SelectItem>
+                                        <SelectItem value="sr">Suriname</SelectItem>
+                                        <SelectItem value="uy">Uruguay</SelectItem>
+                                        <SelectItem value="ve">Venezuela</SelectItem>
+
+                                        {/* Central America & Caribbean */}
+                                        <SelectItem value="bz">Belize</SelectItem>
+                                        <SelectItem value="cr">Costa Rica</SelectItem>
+                                        <SelectItem value="sv">El Salvador</SelectItem>
+                                        <SelectItem value="gt">Guatemala</SelectItem>
+                                        <SelectItem value="hn">Honduras</SelectItem>
+                                        <SelectItem value="ni">Nicaragua</SelectItem>
+                                        <SelectItem value="pa">Panama</SelectItem>
+                                        <SelectItem value="bb">Barbados</SelectItem>
+                                        <SelectItem value="bs">Bahamas</SelectItem>
+                                        <SelectItem value="cu">Cuba</SelectItem>
+                                        <SelectItem value="dm">Dominica</SelectItem>
+                                        <SelectItem value="do">Dominican Republic</SelectItem>
+                                        <SelectItem value="gd">Grenada</SelectItem>
+                                        <SelectItem value="ht">Haiti</SelectItem>
+                                        <SelectItem value="jm">Jamaica</SelectItem>
+                                        <SelectItem value="kn">Saint Kitts and Nevis</SelectItem>
+                                        <SelectItem value="lc">Saint Lucia</SelectItem>
+                                        <SelectItem value="vc">Saint Vincent and the Grenadines</SelectItem>
+                                        <SelectItem value="tt">Trinidad and Tobago</SelectItem>
+                                        <SelectItem value="ag">Antigua and Barbuda</SelectItem>
                                         <SelectItem value="other">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
@@ -624,36 +810,28 @@ function SignUpForm() {
                 return (
                     <div className="space-y-6">
                         <div className="text-center mb-6">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Contact (Optional)</h3>
-                            <p className="text-gray-600">You can verify your contact information or skip this step</p>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Phone Number</h3>
+                            <p className="text-gray-600">Please verify your phone number to complete your account setup</p>
                         </div>
 
                         <div className="space-y-4">
                             <div>
                                 <Label>Verification Method</Label>
-                                <div className="flex space-x-4 mt-2">
-                                    <label className="flex items-center">
-                                        <input
-                                            type="radio"
-                                            name="verificationMethod"
-                                            value="email"
-                                            checked={formData.verificationMethod === "email"}
-                                            onChange={handleInputChange}
-                                            className="mr-2"
-                                        />
-                                        Email ({formData.email})
-                                    </label>
-                                    <label className="flex items-center">
+                                <div className="mt-2">
+                                    <div className="flex items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
                                         <input
                                             type="radio"
                                             name="verificationMethod"
                                             value="phone"
-                                            checked={formData.verificationMethod === "phone"}
-                                            onChange={handleInputChange}
-                                            className="mr-2"
+                                            checked={true}
+                                            readOnly
+                                            className="mr-3"
                                         />
-                                        Phone ({formData.phone})
-                                    </label>
+                                        <div>
+                                            <div className="font-medium text-blue-900">Phone Verification</div>
+                                            <div className="text-sm text-blue-700">We'll send a verification code to {formData.phone}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -664,7 +842,7 @@ function SignUpForm() {
                                     disabled={isLoading}
                                     className="w-full"
                                 >
-                                    {isLoading ? "Sending..." : `Send OTP to ${formData.verificationMethod}`}
+                                    {isLoading ? "Sending..." : "Send OTP to Phone"}
                                 </Button>
                             ) : (
                                 <div className="space-y-4">
@@ -713,23 +891,6 @@ function SignUpForm() {
                                 </div>
                             )}
 
-                            {/* Skip Verification Option */}
-                            <div className="text-center pt-4 border-t border-gray-200">
-                                <p className="text-sm text-gray-500 mb-3">
-                                    Verification is optional. You can skip this step and complete your account creation.
-                                </p>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => {
-                                        setOtpVerified(true);
-                                        setSuccess("Verification skipped. You can verify later in your account settings.");
-                                    }}
-                                    className="w-full"
-                                >
-                                    Skip Verification
-                                </Button>
-                            </div>
                         </div>
                     </div>
                 );

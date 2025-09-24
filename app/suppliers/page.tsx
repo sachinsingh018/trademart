@@ -462,17 +462,17 @@ export default function SuppliersPage() {
                                             </div>
                                         </div>
 
-                                        <div className="pt-4 border-t border-gray-200 flex justify-between items-center mt-auto">
-                                            <div className="text-sm text-gray-600">
+                                        <div className="pt-4 border-t border-gray-200 mt-auto">
+                                            <div className="text-sm text-gray-600 mb-3">
                                                 Min Order: {supplier.currency} {supplier.minOrderValue.toLocaleString()}
                                             </div>
-                                            <div className="flex space-x-2">
-                                                <Link href={`/suppliers/${supplier.id}`}>
-                                                    <Button variant="outline" size="sm">
+                                            <div className="flex gap-2">
+                                                <Link href={`/suppliers/${supplier.id}`} className="flex-1">
+                                                    <Button variant="outline" size="sm" className="w-full">
                                                         View Profile
                                                     </Button>
                                                 </Link>
-                                                <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                                                <Button size="sm" className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
                                                     Contact
                                                 </Button>
                                             </div>

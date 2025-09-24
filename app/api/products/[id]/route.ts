@@ -1,27 +1,126 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
 
-// GET - Get single product
 export async function GET(
     request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: { params: { id: string } }
+) {
+    try {
+        const productId = params.id;
+
+        // Get the product with supplier information
+        const product = await prisma.product.findUnique({
+            where: { id: productId },
+            include: {
+                supplier: {
+                    select: {
+                        id: true,
+                        companyName: true,
+                        country: true,
+                        verified: true,
+                        rating: true,
+                        totalOrders: true,
+                        responseTime: true,
+                        user: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        if (!product) {
+            return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
+        }
+
+        // Increment view count
+        await prisma.product.update({
+            where: { id: productId },
+            data: { views: { increment: 1 } }
+        });
+
+        // Get related products (same category, different product)
+        const relatedProducts = await prisma.product.findMany({
+            where: {
+                category: product.category,
+                id: { not: productId },
+                inStock: true
+            },
+            take: 3,
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                currency: true,
+                images: true
+            }
+        });
+
+        // Transform the data to match the expected format
+        const transformedProduct = {
+            ...product,
+            supplier: {
+                id: product.supplier.id,
+                name: product.supplier.user.name,
+                company: product.supplier.companyName,
+                country: product.supplier.country,
+                verified: product.supplier.verified,
+                rating: product.supplier.rating,
+                totalOrders: product.supplier.totalOrders,
+                responseTime: product.supplier.responseTime,
+            },
+            relatedProducts: relatedProducts.map(rp => ({
+                id: rp.id,
+                name: rp.name,
+                price: rp.price,
+                currency: rp.currency,
+                image: rp.images[0] || '/placeholder-product.jpg'
+            }))
+        };
+
+        return NextResponse.json({
+            success: true,
+            data: transformedProduct
+        });
+
+    } catch (error) {
+        console.error("Product fetch error:", error);
+        return NextResponse.json(
+            {
+                success: false,
+                error: "Failed to fetch product",
+                details: error instanceof Error ? error.message : "Unknown error"
+            },
+            { status: 500 }
+        );
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export async function DELETE(
+    request: NextRequest,
+    { params }: { params: { id: string } }
 ) {
     try {
         const session = await getServerSession(authOptions);
-        if (!session?.user) {
+
+        if (!session?.user?.id) {
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id } = await params;
+        const productId = params.id;
+
+        // Check if the product exists and belongs to the current supplier
         const product = await prisma.product.findUnique({
-            where: { id },
+            where: { id: productId },
             include: {
                 supplier: {
-                    include: {
-                        user: true
-                    }
+                    select: { userId: true }
                 }
             }
         });
@@ -30,147 +129,14 @@ export async function GET(
             return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
         }
 
-        return NextResponse.json({
-            success: true,
-            data: product
-        });
-
-    } catch (error) {
-        console.error('Product fetch error:', error);
-        return NextResponse.json({ success: false, error: 'Failed to fetch product' }, { status: 500 });
-    }
-}
-
-// PUT - Update product
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session?.user || session.user.role !== 'supplier') {
-            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        // Check if the user is the owner of the product
+        if (product.supplier.userId !== session.user.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized to delete this product' }, { status: 403 });
         }
 
-        const { id } = await params;
-        const body = await request.json();
-        const {
-            name,
-            description,
-            category,
-            subcategory,
-            price,
-            currency,
-            minOrderQuantity,
-            unit,
-            specifications,
-            features,
-            tags,
-            images,
-            inStock,
-            stockQuantity,
-            leadTime,
-        } = body;
-
-        // Get supplier to verify ownership
-        const supplier = await prisma.supplier.findUnique({
-            where: { userId: session.user.id }
-        });
-
-        if (!supplier) {
-            return NextResponse.json({ success: false, error: 'Supplier profile not found' }, { status: 404 });
-        }
-
-        // Verify product belongs to this supplier
-        const existingProduct = await prisma.product.findUnique({
-            where: { id }
-        });
-
-        if (!existingProduct || existingProduct.supplierId !== supplier.id) {
-            return NextResponse.json({ success: false, error: 'Product not found or unauthorized' }, { status: 404 });
-        }
-
-        // Parse specifications if provided
-        let parsedSpecifications = null;
-        if (specifications) {
-            try {
-                parsedSpecifications = JSON.parse(specifications);
-            } catch {
-                return NextResponse.json({ success: false, error: 'Invalid specifications JSON format' }, { status: 400 });
-            }
-        }
-
-        const updatedProduct = await prisma.product.update({
-            where: { id },
-            data: {
-                name,
-                description,
-                category,
-                subcategory,
-                price: parseFloat(price),
-                currency,
-                minOrderQuantity: parseInt(minOrderQuantity),
-                unit,
-                specifications: parsedSpecifications,
-                features: features ? features.split(',').map((f: string) => f.trim()) : [],
-                tags: tags ? tags.split(',').map((t: string) => t.trim()) : [],
-                images: images ? images.split(',').map((i: string) => i.trim()) : [],
-                inStock,
-                stockQuantity: stockQuantity ? parseInt(stockQuantity) : null,
-                leadTime,
-            },
-            include: {
-                supplier: {
-                    include: {
-                        user: true
-                    }
-                }
-            }
-        });
-
-        return NextResponse.json({
-            success: true,
-            data: updatedProduct
-        });
-
-    } catch (error) {
-        console.error('Product update error:', error);
-        return NextResponse.json({ success: false, error: 'Failed to update product' }, { status: 500 });
-    }
-}
-
-// DELETE - Delete product
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session?.user || session.user.role !== 'supplier') {
-            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const { id } = await params;
-        // Get supplier to verify ownership
-        const supplier = await prisma.supplier.findUnique({
-            where: { userId: session.user.id }
-        });
-
-        if (!supplier) {
-            return NextResponse.json({ success: false, error: 'Supplier profile not found' }, { status: 404 });
-        }
-
-        // Verify product belongs to this supplier
-        const existingProduct = await prisma.product.findUnique({
-            where: { id }
-        });
-
-        if (!existingProduct || existingProduct.supplierId !== supplier.id) {
-            return NextResponse.json({ success: false, error: 'Product not found or unauthorized' }, { status: 404 });
-        }
-
+        // Delete the product
         await prisma.product.delete({
-            where: { id }
+            where: { id: productId }
         });
 
         return NextResponse.json({
@@ -179,7 +145,16 @@ export async function DELETE(
         });
 
     } catch (error) {
-        console.error('Product delete error:', error);
-        return NextResponse.json({ success: false, error: 'Failed to delete product' }, { status: 500 });
+        console.error("Product delete error:", error);
+        return NextResponse.json(
+            {
+                success: false,
+                error: "Failed to delete product",
+                details: error instanceof Error ? error.message : "Unknown error"
+            },
+            { status: 500 }
+        );
+    } finally {
+        await prisma.$disconnect();
     }
 }

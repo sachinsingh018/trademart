@@ -289,7 +289,7 @@ export default function RFQsPage() {
                             </div>
                             <div className="bg-orange-50 rounded-lg p-6">
                                 <div className="text-3xl font-bold text-orange-600 mb-2">
-                                    ${rfqs.reduce((sum, rfq) => sum + rfq.budget, 0).toLocaleString()}
+                                    ${rfqs.reduce((sum, rfq) => sum + Number(rfq.budget || 0), 0)}
                                 </div>
                                 <div className="text-gray-600">Total Budget</div>
                             </div>
@@ -394,7 +394,7 @@ export default function RFQsPage() {
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-gray-600">Budget:</span>
-                                                    <span className="font-medium">{rfq.currency} {rfq.budget.toLocaleString()}</span>
+                                                    <span className="font-medium">{rfq.currency} {rfq.budget}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-gray-600">Quotes:</span>
@@ -476,11 +476,6 @@ export default function RFQsPage() {
                                                     View Details
                                                 </Button>
                                             </Link>
-                                            {rfq.status === "open" && (
-                                                <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800">
-                                                    Submit Quote
-                                                </Button>
-                                            )}
                                         </div>
                                     </div>
                                 </CardContent>

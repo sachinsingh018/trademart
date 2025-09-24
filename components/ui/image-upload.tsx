@@ -76,7 +76,7 @@ export default function ImageUpload({
             setUploadProgress(100);
 
             // Add new files to existing ones
-            const allFiles = [...uploadedFiles, ...result.files];
+            const allFiles = [...uploadedFiles, ...result.uploaded];
             onUpload(allFiles);
 
             setTimeout(() => {

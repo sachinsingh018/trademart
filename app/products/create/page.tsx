@@ -115,7 +115,7 @@ export default function CreateProductPage() {
                 supplierId: supplier.id
             };
 
-            const response = await fetch("/api/products", {
+            const response = await fetch("/api/products/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
