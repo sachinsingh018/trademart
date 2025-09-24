@@ -16,7 +16,6 @@ import {
 import {
     DollarSign,
     Clock,
-    User,
     FileText,
     CheckCircle,
     XCircle,

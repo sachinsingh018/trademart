@@ -74,7 +74,7 @@ export default function QuoteSubmissionModal({
             } else {
                 setError(data.error || "Failed to submit quote");
             }
-        } catch (err) {
+        } catch {
             setError("Network error. Please try again.");
         } finally {
             setIsSubmitting(false);
@@ -145,7 +145,7 @@ export default function QuoteSubmissionModal({
                             />
                             {rfqBudget && (
                                 <p className="text-sm text-gray-500">
-                                    Buyer's budget: {rfqCurrency} {rfqBudget.toLocaleString()}
+                                    Buyer&apos;s budget: {rfqCurrency} {rfqBudget.toLocaleString()}
                                 </p>
                             )}
                         </div>

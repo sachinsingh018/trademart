@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -65,10 +65,9 @@ interface Product {
 }
 
 export default function SupplierDetailPage() {
-    const params = useParams();
-    const [supplier, setSupplier] = useState<Supplier | null>(null);
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [supplier] = useState<Supplier | null>(null);
+    const [products] = useState<Product[]>([]);
+    const [loading] = useState(true);
 
 
     const formatDate = (dateString: string) => {

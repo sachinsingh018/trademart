@@ -26,6 +26,12 @@ if (hasVonageCredentials) {
     }
 }
 
+// Suppress unused variable warnings for mocked service
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _unusedVonage = vonage;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _unusedVonageInitialized = vonageInitialized;
+
 interface OTPResult {
     success: boolean;
     message: string;
