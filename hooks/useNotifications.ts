@@ -8,7 +8,7 @@ export interface Notification {
     type: 'rfq_created' | 'quote_received' | 'quote_accepted' | 'quote_rejected' | 'order_placed' | 'order_updated' | 'system' | 'whatsapp_sent';
     title: string;
     message: string;
-    data?: any;
+    data?: Record<string, unknown>;
     read: boolean;
     createdAt: string;
 }
@@ -55,7 +55,7 @@ export function useNotifications() {
                     isLoading: false,
                 }));
             }
-        } catch (error) {
+        } catch {
             setState(prev => ({
                 ...prev,
                 error: 'Failed to fetch notifications',
@@ -126,7 +126,7 @@ export function useNotifications() {
         es.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                
+
                 if (data.type === 'connected') {
                     console.log('Connected to notifications stream');
                 } else if (data.type === 'heartbeat') {
@@ -156,8 +156,8 @@ export function useNotifications() {
 
         es.onerror = (error) => {
             console.error('SSE connection error:', error);
-            setState(prev => ({ 
-                ...prev, 
+            setState(prev => ({
+                ...prev,
                 isConnected: false,
                 error: 'Connection lost. Reconnecting...'
             }));
