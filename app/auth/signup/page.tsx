@@ -259,37 +259,6 @@ function SignUpForm() {
         }
     };
 
-    const verifyOTP = async () => {
-        setIsLoading(true);
-        setError("");
-
-        try {
-            // TODO: Replace with actual AWS OTP verification
-            const response = await fetch("/api/auth/verify-otp", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    method: formData.verificationMethod,
-                    email: formData.email,
-                    phone: formData.phone,
-                    otp: formData.otpCode,
-                    requestId: otpRequestId,
-                }),
-            });
-
-            if (response.ok) {
-                setOtpVerified(true);
-                setSuccess("Verification successful!");
-            } else {
-                const data = await response.json();
-                setError(data.error || "Invalid OTP");
-            }
-        } catch {
-            setError("Verification failed. Please try again.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleSubmit = async () => {
         if (!validateStep(5)) return;
@@ -811,7 +780,7 @@ function SignUpForm() {
                     <div className="space-y-6">
                         <div className="text-center mb-6">
                             <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome to TradeMart!</h3>
-                            <p className="text-gray-600">You're almost ready to start your trading journey</p>
+                            <p className="text-gray-600">You&apos;re almost ready to start your trading journey</p>
                         </div>
 
                         <div className="space-y-6">
@@ -820,7 +789,7 @@ function SignUpForm() {
                                     <div className="text-4xl mb-4">🚀</div>
                                     <h4 className="text-xl font-semibold text-gray-900 mb-2">Welcome to TradeMart!</h4>
                                     <p className="text-gray-700 mb-4">
-                                        You're about to join the world's leading B2B trading platform.
+                                        You&apos;re about to join the world&apos;s leading B2B trading platform.
                                         Connect with thousands of verified suppliers and buyers worldwide.
                                     </p>
                                 </div>

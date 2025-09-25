@@ -33,7 +33,7 @@ export default function TermsOfService() {
                             <div>
                                 <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Acceptance of Terms</h2>
                                 <p className="text-gray-700 leading-relaxed">
-                                    By accessing and using TradeMart ("the Platform"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+                                    By accessing and using TradeMart (&quot;the Platform&quot;), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
                                 </p>
                             </div>
 
