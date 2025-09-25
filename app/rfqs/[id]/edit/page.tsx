@@ -107,6 +107,12 @@ export default function EditRFQPage() {
         e.preventDefault();
         setSaving(true);
 
+        if (!params?.id) {
+            setError("RFQ ID not found");
+            setSaving(false);
+            return;
+        }
+
         try {
             const response = await fetch(`/api/rfqs/${params.id}`, {
                 method: 'PUT',
