@@ -152,10 +152,7 @@ export async function PUT(
                 inStock: body.inStock,
                 stockQuantity: body.stockQuantity,
                 specifications: body.specifications,
-                certifications: body.certifications,
                 leadTime: body.leadTime,
-                origin: body.origin,
-                packaging: body.packaging,
                 images: body.images,
                 updatedAt: new Date()
             },
