@@ -84,22 +84,22 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/logofinal.png', type: 'image/png', sizes: '32x32' },
-      { url: '/logofinal.png', type: 'image/png', sizes: '16x16' },
-      { url: '/logofinal.png', type: 'image/png', sizes: '48x48' },
-      { url: '/logofinal.png', type: 'image/png', sizes: '64x64' },
+      { url: '/favicon.ico?v=3', sizes: 'any' },
+      { url: '/favicon-32.png?v=3', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16.png?v=3', type: 'image/png', sizes: '16x16' },
+      { url: '/logofinal.png?v=3', type: 'image/png', sizes: '48x48' },
+      { url: '/logofinal.png?v=3', type: 'image/png', sizes: '64x64' },
     ],
-    shortcut: '/favicon.ico',
+    shortcut: '/favicon.ico?v=3',
     apple: [
-      { url: '/logofinal.png', sizes: '180x180' },
-      { url: '/logofinal.png', sizes: '152x152' },
-      { url: '/logofinal.png', sizes: '120x120' },
+      { url: '/logofinal.png?v=3', sizes: '180x180' },
+      { url: '/logofinal.png?v=3', sizes: '152x152' },
+      { url: '/logofinal.png?v=3', sizes: '120x120' },
     ],
     other: [
       {
         rel: 'mask-icon',
-        url: '/logofinal.png',
+        url: '/logofinal.png?v=3',
         color: '#2563eb',
       },
     ],
@@ -148,6 +148,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico?v=3" />
+        <link rel="shortcut icon" href="/favicon.ico?v=3" />
+        <link rel="apple-touch-icon" href="/logofinal.png?v=3" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=3" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=3" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/logofinal.png?v=3" />
+        <link rel="icon" type="image/png" sizes="64x64" href="/logofinal.png?v=3" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
