@@ -84,9 +84,9 @@ export async function GET(
             },
             businessInfo: {
                 businessType: supplier.businessType || "Manufacturer",
-                annualRevenue: supplier.annualRevenue || "Not disclosed",
-                exportMarkets: supplier.exportMarkets || [],
-                mainProducts: supplier.mainProducts || [],
+                annualRevenue: "Not disclosed",
+                exportMarkets: [],
+                mainProducts: [],
             },
             reviews: supplier.reviews.map(review => ({
                 id: review.id,
