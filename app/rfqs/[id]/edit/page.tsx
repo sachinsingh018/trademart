@@ -37,6 +37,7 @@ export default function EditRFQPage() {
     const [rfq, setRfq] = useState<RFQ | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -232,6 +233,13 @@ export default function EditRFQPage() {
                         <CardDescription>Update your request for quotation details</CardDescription>
                     </CardHeader>
                     <CardContent>
+                        {/* Error Message */}
+                        {error && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <p className="text-red-600">{error}</p>
+                            </div>
+                        )}
+
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Basic Information */}
                             <div className="space-y-4">
