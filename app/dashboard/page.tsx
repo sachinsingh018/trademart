@@ -64,6 +64,7 @@ export default function Dashboard() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<Product | RFQ | null>(null);
     const [viewMode, setViewMode] = useState<'rfqs' | 'products'>('rfqs');
+    const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -136,6 +137,43 @@ export default function Dashboard() {
     const handleDeleteCancel = () => {
         setShowDeleteModal(false);
         setItemToDelete(null);
+    };
+
+    const handleStatusToggle = async (rfqId: string, currentStatus: string) => {
+        try {
+            setUpdatingStatus(rfqId);
+            const newStatus = currentStatus === "open" ? "closed" : "open";
+
+            const response = await fetch(`/api/rfqs/${rfqId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    status: newStatus
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update the RFQ status in the local state
+                setRfqs(prevRfqs =>
+                    prevRfqs.map(rfq =>
+                        rfq.id === rfqId
+                            ? { ...rfq, status: newStatus }
+                            : rfq
+                    )
+                );
+            } else {
+                alert(`Failed to update RFQ status: ${data.error}`);
+            }
+        } catch (error) {
+            console.error("Error updating RFQ status:", error);
+            alert("Failed to update RFQ status. Please try again.");
+        } finally {
+            setUpdatingStatus(null);
+        }
     };
 
     const fetchProducts = useCallback(async () => {
@@ -675,14 +713,246 @@ export default function Dashboard() {
                                                         {item.description}
                                                     </p>
                                                 </div>
-                                                <Badge
-                                                    variant={item.status === "open" ? "default" : "secondary"}
-                                                    className={`${item.status === "open" ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
-                                                >
-                                                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                                                </Badge>
+                                                <div className="flex items-center gap-3">
+                                                    <Badge
+                                                        variant={item.status === "open" ? "default" : "secondary"}
+                                                        className={`${item.status === "open" ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
+                                                    >
+                                                        {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                                                    </Badge>
+                                                    <div className="flex gap-2">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                                                            onClick={() => router.push(`/rfqs/${item.id}/edit`)}
+                                                        >
+                                                            ✏️ Edit
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className={`${item.status === "open"
+                                                                ? "border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
+                                                                : "border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                                } disabled:opacity-50`}
+                                                            disabled={updatingStatus === item.id}
+                                                            onClick={() => handleStatusToggle(item.id, item.status)}
+                                                        >
+                                                            {updatingStatus === item.id ? (
+                                                                <div className="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
+                                                            ) : (
+                                                                item.status === "open" ? "🔒 Close" : "🔓 Reopen"
+                                                            )}
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
+                                                            disabled={deleting === item.id}
+                                                            onClick={() => handleDeleteClick(item)}
+                                                        >
+                                                            {deleting === item.id ? (
+                                                                <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
+                                                            ) : (
+                                                                '🗑️ Delete'
+                                                            )}
+                                                        </Button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            {/* RFQ specific content would go here */}
+
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                                {/* RFQ Details */}
+                                                <div className="space-y-4">
+                                                    <h4 className="font-semibold text-gray-900">
+                                                        RFQ Details
+                                                    </h4>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Category:</span>
+                                                            <span className="font-medium">{item.category}</span>
+                                                        </div>
+                                                        {item.quantity && (
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Quantity:</span>
+                                                                <span className="font-medium">{item.quantity} {item.unit || 'units'}</span>
+                                                            </div>
+                                                        )}
+                                                        {item.budget && (
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Budget:</span>
+                                                                <span className="font-medium">{item.currency || '$'} {item.budget}</span>
+                                                            </div>
+                                                        )}
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Quotes:</span>
+                                                            <span className="font-medium">{item.quotes?.length || 0} received</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Timeline */}
+                                                <div className="space-y-4">
+                                                    <h4 className="font-semibold text-gray-900">Timeline</h4>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Created:</span>
+                                                            <span className="font-medium">{new Date(item.createdAt).toLocaleDateString("en-US", {
+                                                                year: "numeric",
+                                                                month: "short",
+                                                                day: "numeric",
+                                                            })}</span>
+                                                        </div>
+                                                        {item.expiresAt && (
+                                                            <div className="flex justify-between">
+                                                                <span className="text-gray-600">Expires:</span>
+                                                                <span className="font-medium">{new Date(item.expiresAt).toLocaleDateString("en-US", {
+                                                                    year: "numeric",
+                                                                    month: "short",
+                                                                    day: "numeric",
+                                                                })}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Status & Actions */}
+                                                <div className="space-y-4">
+                                                    <h4 className="font-semibold text-gray-900">Status & Actions</h4>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Status:</span>
+                                                            <span className={`font-medium ${item.status === "open" ? "text-green-600" : "text-gray-600"}`}>
+                                                                {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-600">Quotes:</span>
+                                                            <span className="font-medium">{item.quotes?.length || 0}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Requirements */}
+                                            {item.requirements && item.requirements.length > 0 && (
+                                                <div className="mb-6 pt-6 border-t border-gray-200">
+                                                    <h4 className="font-semibold text-gray-900 mb-3">
+                                                        Requirements
+                                                    </h4>
+                                                    <div className="space-y-2">
+                                                        {item.requirements.map((requirement: string, index: number) => (
+                                                            <div key={index} className="flex items-start gap-2">
+                                                                <span className="text-blue-500 mt-1">•</span>
+                                                                <span className="text-sm text-gray-700">{requirement}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Specifications */}
+                                            {item.specifications && Object.keys(item.specifications).length > 0 && (
+                                                <div className="mb-6 pt-6 border-t border-gray-200">
+                                                    <h4 className="font-semibold text-gray-900 mb-3">
+                                                        Specifications
+                                                    </h4>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        {Object.entries(item.specifications).map(([key, value]) => (
+                                                            <div key={key} className="flex justify-between py-2 border-b border-gray-100">
+                                                                <span className="text-gray-600 font-medium">{key}:</span>
+                                                                <span className="text-gray-900">{value}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Quotes Preview */}
+                                            {item.quotes && item.quotes.length > 0 && (
+                                                <div className="mb-6 pt-6 border-t border-gray-200">
+                                                    <h4 className="font-semibold text-gray-900 mb-3">
+                                                        Recent Quotes ({item.quotes.length})
+                                                    </h4>
+                                                    <div className="space-y-3">
+                                                        {item.quotes.slice(0, 3).map((quote, index) => (
+                                                            <div key={index} className="bg-gray-50 rounded-lg p-4">
+                                                                <div className="flex justify-between items-start mb-2">
+                                                                    <span className="font-medium text-gray-900">
+                                                                        {item.currency || '$'} {quote.price}
+                                                                    </span>
+                                                                    <span className="text-sm text-gray-600">
+                                                                        {quote.leadTime} days lead time
+                                                                    </span>
+                                                                </div>
+                                                                {quote.notes && (
+                                                                    <p className="text-sm text-gray-600">{quote.notes}</p>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                        {item.quotes.length > 3 && (
+                                                            <p className="text-sm text-gray-500 text-center">
+                                                                +{item.quotes.length - 3} more quotes
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Actions */}
+                                            <div className="pt-6 border-t border-gray-200 flex justify-between items-center">
+                                                <div className="text-sm text-gray-600">
+                                                    <span className="font-medium">RFQ ID:</span> {item.id}
+                                                </div>
+                                                <div className="flex gap-3">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => router.push(`/rfqs/${item.id}`)}
+                                                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                                                    >
+                                                        👁️ View Details
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => router.push(`/rfqs/${item.id}/edit`)}
+                                                        className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                    >
+                                                        ✏️ Edit RFQ
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className={`${item.status === "open"
+                                                            ? "border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
+                                                            : "border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                            } disabled:opacity-50`}
+                                                        disabled={updatingStatus === item.id}
+                                                        onClick={() => handleStatusToggle(item.id, item.status)}
+                                                    >
+                                                        {updatingStatus === item.id ? (
+                                                            <div className="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
+                                                        ) : (
+                                                            item.status === "open" ? "🔒 Close RFQ" : "🔓 Reopen RFQ"
+                                                        )}
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
+                                                        disabled={deleting === item.id}
+                                                        onClick={() => handleDeleteClick(item)}
+                                                    >
+                                                        {deleting === item.id ? (
+                                                            <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
+                                                        ) : (
+                                                            '🗑️ Delete'
+                                                        )}
+                                                    </Button>
+                                                </div>
+                                            </div>
                                         </div>
                                     ))
                                 )}

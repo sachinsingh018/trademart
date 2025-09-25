@@ -70,6 +70,106 @@ export async function GET(
     }
 }
 
+export async function PUT(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session?.user?.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const { id: rfqId } = await params;
+        const body = await request.json();
+
+        // Check if the RFQ exists and belongs to the current user
+        const existingRfq = await prisma.rfq.findUnique({
+            where: { id: rfqId },
+            select: { buyerId: true }
+        });
+
+        if (!existingRfq) {
+            return NextResponse.json({ success: false, error: 'RFQ not found' }, { status: 404 });
+        }
+
+        // Check if the user is the owner of the RFQ
+        if (existingRfq.buyerId !== session.user.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized to edit this RFQ' }, { status: 403 });
+        }
+
+        // Update the RFQ
+        const updatedRfq = await prisma.rfq.update({
+            where: { id: rfqId },
+            data: {
+                title: body.title,
+                description: body.description,
+                category: body.category,
+                quantity: body.quantity,
+                unit: body.unit,
+                budget: body.budget,
+                currency: body.currency,
+                status: body.status,
+                requirements: body.requirements,
+                specifications: body.specifications,
+                additionalInfo: body.additionalInfo,
+                updatedAt: new Date()
+            },
+            include: {
+                buyer: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true
+                    }
+                },
+                quotes: {
+                    include: {
+                        supplier: {
+                            select: {
+                                id: true,
+                                companyName: true,
+                                country: true,
+                                verified: true,
+                                rating: true,
+                                user: {
+                                    select: {
+                                        name: true
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                }
+            }
+        });
+
+        return NextResponse.json({
+            success: true,
+            data: { rfq: updatedRfq },
+            message: 'RFQ updated successfully'
+        });
+
+    } catch (error) {
+        console.error("RFQ update error:", error);
+        return NextResponse.json(
+            {
+                success: false,
+                error: "Failed to update RFQ",
+                details: error instanceof Error ? error.message : "Unknown error"
+            },
+            { status: 500 }
+        );
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
 export async function DELETE(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
