@@ -165,14 +165,14 @@ async function main() {
         currency: 'USD',
         establishedYear: Math.floor(Math.random() * 30) + 1990,
         employees: `${Math.floor(Math.random() * 500) + 10}`,
-        specialties: subcategories[industry]?.slice(0, Math.floor(Math.random() * 3) + 1) || [],
+        specialties: (subcategories as any)[industry]?.slice(0, Math.floor(Math.random() * 3) + 1) || [],
         certifications: ['ISO 9001', 'ISO 14001', 'CE Certification'].slice(0, Math.floor(Math.random() * 3) + 1),
         contactEmail: `contact@${companyName.toLowerCase().replace(/\s+/g, '')}.com`,
         contactPhone: `+1-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 900) + 100}-${Math.floor(Math.random() * 9000) + 1000}`,
         businessInfo: {
           annualRevenue: `$${(Math.floor(Math.random() * 50) + 5)}M`,
           exportMarkets: countries.slice(0, Math.floor(Math.random() * 5) + 3),
-          mainProducts: subcategories[industry]?.slice(0, Math.floor(Math.random() * 3) + 1) || []
+          mainProducts: (subcategories as any)[industry]?.slice(0, Math.floor(Math.random() * 3) + 1) || []
         },
         companyLogo: `https://ui-avatars.com/api/?name=${encodeURIComponent(companyName)}&background=3b82f6&color=ffffff&size=200`,
         lastActive: new Date(Date.now() - Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000), // Last 7 days
@@ -207,8 +207,8 @@ async function main() {
   for (let i = 0; i < 100; i++) {
     const supplier = suppliers[Math.floor(Math.random() * suppliers.length)];
     const category = categories[Math.floor(Math.random() * categories.length)];
-    const subcategory = subcategories[category]?.[Math.floor(Math.random() * (subcategories[category]?.length || 1))] || 'General';
-    const productName = productNames[category]?.[Math.floor(Math.random() * (productNames[category]?.length || 1))] || `${category} Product ${i + 1}`;
+    const subcategory = (subcategories as any)[category]?.[Math.floor(Math.random() * ((subcategories as any)[category]?.length || 1))] || 'General';
+    const productName = (productNames as any)[category]?.[Math.floor(Math.random() * ((productNames as any)[category]?.length || 1))] || `${category} Product ${i + 1}`;
     
     const product = await prisma.product.create({
       data: {
