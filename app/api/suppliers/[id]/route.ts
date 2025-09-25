@@ -72,7 +72,7 @@ export async function GET(
             establishedYear: supplier.establishedYear || new Date().getFullYear(),
             employees: supplier.employees || "1-10",
             website: supplier.website,
-            logo: supplier.logo,
+            logo: supplier.companyLogo,
             joinedDate: supplier.createdAt,
             lastActive: supplier.updatedAt,
             contactInfo: {
