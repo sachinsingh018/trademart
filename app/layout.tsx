@@ -87,10 +87,14 @@ export const metadata: Metadata = {
       { url: '/favicon.ico', sizes: 'any' },
       { url: '/logofinal.png', type: 'image/png', sizes: '32x32' },
       { url: '/logofinal.png', type: 'image/png', sizes: '16x16' },
+      { url: '/logofinal.png', type: 'image/png', sizes: '48x48' },
+      { url: '/logofinal.png', type: 'image/png', sizes: '64x64' },
     ],
     shortcut: '/favicon.ico',
     apple: [
       { url: '/logofinal.png', sizes: '180x180' },
+      { url: '/logofinal.png', sizes: '152x152' },
+      { url: '/logofinal.png', sizes: '120x120' },
     ],
     other: [
       {
