@@ -84,22 +84,22 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico?v=3', sizes: 'any' },
-      { url: '/favicon-32.png?v=3', type: 'image/png', sizes: '32x32' },
-      { url: '/favicon-16.png?v=3', type: 'image/png', sizes: '16x16' },
-      { url: '/logofinal.png?v=3', type: 'image/png', sizes: '48x48' },
-      { url: '/logofinal.png?v=3', type: 'image/png', sizes: '64x64' },
+      { url: '/api/favicon', sizes: 'any' },
+      { url: '/favicon-32.png?v=4', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16.png?v=4', type: 'image/png', sizes: '16x16' },
+      { url: '/logofinal.png?v=4', type: 'image/png', sizes: '48x48' },
+      { url: '/logofinal.png?v=4', type: 'image/png', sizes: '64x64' },
     ],
-    shortcut: '/favicon.ico?v=3',
+    shortcut: '/api/favicon',
     apple: [
-      { url: '/logofinal.png?v=3', sizes: '180x180' },
-      { url: '/logofinal.png?v=3', sizes: '152x152' },
-      { url: '/logofinal.png?v=3', sizes: '120x120' },
+      { url: '/logofinal.png?v=4', sizes: '180x180' },
+      { url: '/logofinal.png?v=4', sizes: '152x152' },
+      { url: '/logofinal.png?v=4', sizes: '120x120' },
     ],
     other: [
       {
         rel: 'mask-icon',
-        url: '/logofinal.png?v=3',
+        url: '/logofinal.png?v=4',
         color: '#2563eb',
       },
     ],
@@ -149,13 +149,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico?v=3" />
-        <link rel="shortcut icon" href="/favicon.ico?v=3" />
-        <link rel="apple-touch-icon" href="/logofinal.png?v=3" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=3" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=3" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/logofinal.png?v=3" />
-        <link rel="icon" type="image/png" sizes="64x64" href="/logofinal.png?v=3" />
+        <link rel="icon" href="/api/favicon" />
+        <link rel="shortcut icon" href="/api/favicon" />
+        <link rel="apple-touch-icon" href="/logofinal.png?v=4" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=4" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=4" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/logofinal.png?v=4" />
+        <link rel="icon" type="image/png" sizes="64x64" href="/logofinal.png?v=4" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
