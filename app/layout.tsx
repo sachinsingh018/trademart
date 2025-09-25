@@ -14,13 +14,69 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://trademart.com'),
-  title: "TradeMart - Global B2B Marketplace",
-  description: "Connect buyers and suppliers worldwide. Find products, submit RFQs, and grow your business on TradeMart.",
-  keywords: "B2B marketplace, global trade, suppliers, buyers, RFQ, business, commerce, manufacturing, wholesale",
-  authors: [{ name: "TradeMart Team" }],
+  metadataBase: new URL('https://trademart.app'),
+  title: {
+    default: "TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide",
+    template: "%s | TradeMart - Global B2B Marketplace"
+  },
+  description: "TradeMart is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business with 10K+ suppliers across 100+ countries.",
+  keywords: [
+    "B2B marketplace",
+    "global trade",
+    "suppliers",
+    "buyers",
+    "RFQ",
+    "business commerce",
+    "manufacturing",
+    "wholesale",
+    "international trade",
+    "trade platform",
+    "B2B sourcing",
+    "supply chain",
+    "trade marketplace",
+    "business network",
+    "trade partners",
+    "global suppliers",
+    "trade security",
+    "escrow payments",
+    "trade verification",
+    "business growth"
+  ],
+  authors: [{ name: "TradeMart Team", url: "https://trademart.app" }],
   creator: "TradeMart",
   publisher: "TradeMart",
+  applicationName: "TradeMart",
+  category: "Business",
+  classification: "B2B Marketplace",
+  referrer: "origin-when-cross-origin",
+  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#2563eb" },
+    { media: "(prefers-color-scheme: dark)", color: "#1d4ed8" }
+  ],
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://trademart.app",
+    languages: {
+      "en-US": "https://trademart.app",
+      "en-GB": "https://trademart.app",
+    },
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -29,32 +85,55 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
-      { url: '/logofinal.png', type: 'image/png' },
+      { url: '/logofinal.png', type: 'image/png', sizes: '32x32' },
+      { url: '/logofinal.png', type: 'image/png', sizes: '16x16' },
     ],
     shortcut: '/favicon.ico',
-    apple: '/logofinal.png',
-  },
-  openGraph: {
-    title: "TradeMart - Global B2B Marketplace",
-    description: "Connect buyers and suppliers worldwide. Find products, submit RFQs, and grow your business on TradeMart.",
-    url: "https://trademart.com",
-    siteName: "TradeMart",
-    images: [
+    apple: [
+      { url: '/logofinal.png', sizes: '180x180' },
+    ],
+    other: [
       {
+        rel: 'mask-icon',
         url: '/logofinal.png',
-        width: 1200,
-        height: 630,
-        alt: 'TradeMart Logo',
+        color: '#2563eb',
       },
     ],
-    locale: 'en_US',
+  },
+  manifest: '/manifest.json',
+  openGraph: {
     type: 'website',
+    locale: 'en_US',
+    url: 'https://trademart.app',
+    siteName: 'TradeMart',
+    title: 'TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide',
+    description: 'TradeMart is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business with 10K+ suppliers across 100+ countries.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'TradeMart - Global B2B Marketplace',
+        type: 'image/png',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "TradeMart - Global B2B Marketplace",
-    description: "Connect buyers and suppliers worldwide. Find products, submit RFQs, and grow your business on TradeMart.",
-    images: ['/logofinal.png'],
+    site: '@trademart',
+    creator: '@trademart',
+    title: 'TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide',
+    description: 'TradeMart is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business.',
+    images: ['/twitter-image.png'],
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+    yahoo: 'your-yahoo-verification-code',
+  },
+  other: {
+    'msapplication-TileColor': '#2563eb',
+    'msapplication-config': '/browserconfig.xml',
   },
 };
 

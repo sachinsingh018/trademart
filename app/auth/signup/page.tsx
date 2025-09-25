@@ -810,86 +810,49 @@ function SignUpForm() {
                 return (
                     <div className="space-y-6">
                         <div className="text-center mb-6">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Phone Number</h3>
-                            <p className="text-gray-600">Please verify your phone number to complete your account setup</p>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Welcome to TradeMart!</h3>
+                            <p className="text-gray-600">You're almost ready to start your trading journey</p>
                         </div>
 
-                        <div className="space-y-4">
-                            <div>
-                                <Label>Verification Method</Label>
-                                <div className="mt-2">
-                                    <div className="flex items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                        <input
-                                            type="radio"
-                                            name="verificationMethod"
-                                            value="phone"
-                                            checked={true}
-                                            readOnly
-                                            className="mr-3"
-                                        />
-                                        <div>
-                                            <div className="font-medium text-blue-900">Phone Verification</div>
-                                            <div className="text-sm text-blue-700">We&apos;ll send a verification code to {formData.phone}</div>
-                                        </div>
-                                    </div>
+                        <div className="space-y-6">
+                            <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 rounded-lg border border-blue-200">
+                                <div className="text-center">
+                                    <div className="text-4xl mb-4">🚀</div>
+                                    <h4 className="text-xl font-semibold text-gray-900 mb-2">Welcome to TradeMart!</h4>
+                                    <p className="text-gray-700 mb-4">
+                                        You're about to join the world's leading B2B trading platform.
+                                        Connect with thousands of verified suppliers and buyers worldwide.
+                                    </p>
                                 </div>
                             </div>
 
-                            {!otpSent ? (
-                                <Button
-                                    type="button"
-                                    onClick={sendOTP}
-                                    disabled={isLoading}
-                                    className="w-full"
-                                >
-                                    {isLoading ? "Sending..." : "Send OTP to Phone"}
-                                </Button>
-                            ) : (
-                                <div className="space-y-4">
-                                    <div>
-                                        <Label htmlFor="otpCode">Enter Verification Code</Label>
-                                        <Input
-                                            id="otpCode"
-                                            name="otpCode"
-                                            value={formData.otpCode}
-                                            onChange={handleInputChange}
-                                            placeholder="Enter 6-digit code"
-                                            maxLength={6}
-                                        />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <div className="flex items-center mb-3">
+                                        <div className="text-2xl mr-3">🛒</div>
+                                        <h5 className="font-semibold text-gray-900">For Buyers</h5>
                                     </div>
-
-                                    {!otpVerified ? (
-                                        <Button
-                                            type="button"
-                                            onClick={verifyOTP}
-                                            disabled={isLoading || formData.otpCode.length !== 6}
-                                            className="w-full"
-                                        >
-                                            {isLoading ? "Verifying..." : "Verify Code"}
-                                        </Button>
-                                    ) : (
-                                        <div className="text-center">
-                                            <Badge variant="default" className="bg-green-500">
-                                                ✓ Verified Successfully
-                                            </Badge>
-                                        </div>
-                                    )}
-
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={() => {
-                                            setOtpSent(false);
-                                            setOtpVerified(false);
-                                            setOtpRequestId(null);
-                                            setFormData(prev => ({ ...prev, otpCode: "" }));
-                                        }}
-                                        className="w-full"
-                                    >
-                                        Resend Code
-                                    </Button>
+                                    <ul className="text-sm text-gray-600 space-y-1">
+                                        <li>• Source products from verified suppliers</li>
+                                        <li>• Secure escrow payment system</li>
+                                        <li>• Quality assurance guarantees</li>
+                                        <li>• Global shipping options</li>
+                                    </ul>
                                 </div>
-                            )}
+
+                                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <div className="flex items-center mb-3">
+                                        <div className="text-2xl mr-3">🏭</div>
+                                        <h5 className="font-semibold text-gray-900">For Suppliers</h5>
+                                    </div>
+                                    <ul className="text-sm text-gray-600 space-y-1">
+                                        <li>• Reach global buyers instantly</li>
+                                        <li>• Showcase your products & services</li>
+                                        <li>• Secure payment processing</li>
+                                        <li>• Business growth tools</li>
+                                    </ul>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -929,7 +892,7 @@ function SignUpForm() {
                                         }
                                     />
                                     <label htmlFor="agreeToTerms" className="text-sm">
-                                        I agree to the <Link href="/terms" className="text-blue-600 hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link> *
+                                        I agree to the <Link href="/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Terms of Service</Link> and <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Privacy Policy</Link> *
                                     </label>
                                 </div>
 
@@ -991,7 +954,7 @@ function SignUpForm() {
                             {currentStep === 1 && "Basic Information"}
                             {currentStep === 2 && "Company Details"}
                             {currentStep === 3 && "Location"}
-                            {currentStep === 4 && "Verification (Optional)"}
+                            {currentStep === 4 && "Welcome to TradeMart"}
                             {currentStep === 5 && "Terms & Conditions"}
                         </CardTitle>
                     </CardHeader>
