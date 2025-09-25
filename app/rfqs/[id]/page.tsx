@@ -474,7 +474,14 @@ export default function RFQDetailPage() {
                                             <div key={quote.id} className="border border-gray-200 rounded-lg p-4">
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div>
-                                                        <div className="font-semibold">{quote.supplier.company}</div>
+                                                        <div className="font-semibold">
+                                                            <Link
+                                                                href={`/suppliers/${quote.supplierId}`}
+                                                                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                                                            >
+                                                                {quote.supplier.company}
+                                                            </Link>
+                                                        </div>
                                                         <div className="text-sm text-gray-600">
                                                             {quote.supplier.name} • {quote.supplier.country}
                                                             {quote.supplier.verified && <span className="text-green-600 ml-2">✓ Verified</span>}
@@ -520,6 +527,17 @@ export default function RFQDetailPage() {
                                                                 📱 WhatsApp Sent
                                                             </Badge>
                                                         )}
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <Link href={`/suppliers/${quote.supplierId}`}>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                                                            >
+                                                                👤 View Profile
+                                                            </Button>
+                                                        </Link>
                                                     </div>
                                                 </div>
                                             </div>

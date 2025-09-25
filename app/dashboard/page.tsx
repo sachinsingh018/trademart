@@ -250,6 +250,32 @@ export default function Dashboard() {
                             </Link>
                         </div>
 
+                        {/* Navigation Links */}
+                        <div className="hidden md:flex items-center space-x-8">
+                            <Link href="/suppliers" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+                                Suppliers
+                            </Link>
+                            <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+                                Products
+                            </Link>
+                            <Link href="/rfqs" className="text-blue-600 font-medium">
+                                RFQs
+                            </Link>
+                        </div>
+
+                        {/* Mobile Navigation */}
+                        <div className="md:hidden flex items-center space-x-4">
+                            <Link href="/suppliers" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
+                                Suppliers
+                            </Link>
+                            <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
+                                Products
+                            </Link>
+                            <Link href="/rfqs" className="text-blue-600 text-sm font-medium">
+                                RFQs
+                            </Link>
+                        </div>
+
                         {/* User Section */}
                         <div className="flex items-center space-x-6">
                             {/* Welcome Message */}
@@ -680,10 +706,25 @@ export default function Dashboard() {
                                             {/* Actions */}
                                             <div className="pt-6 border-t border-gray-200 flex justify-between items-center">
                                                 <div className="text-sm text-gray-600">
-                                                    <span className="font-medium">Tags:</span>
-                                                    {item.tags && item.tags.length > 0 ? item.tags.join(", ") : "No tags"}
+                                                    <span className="font-medium">Product ID:</span> {item.id}
                                                 </div>
                                                 <div className="flex gap-3">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => router.push(`/products/${item.id}`)}
+                                                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                                                    >
+                                                        👁️ View Details
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => router.push(`/products/${item.id}/edit`)}
+                                                        className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                    >
+                                                        ✏️ Edit Product
+                                                    </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
@@ -694,7 +735,7 @@ export default function Dashboard() {
                                                         {deleting === item.id ? (
                                                             <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
                                                         ) : (
-                                                            '🗑️'
+                                                            '🗑️ Delete'
                                                         )}
                                                     </Button>
                                                 </div>
@@ -713,53 +754,12 @@ export default function Dashboard() {
                                                         {item.description}
                                                     </p>
                                                 </div>
-                                                <div className="flex items-center gap-3">
-                                                    <Badge
-                                                        variant={item.status === "open" ? "default" : "secondary"}
-                                                        className={`${item.status === "open" ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
-                                                    >
-                                                        {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-                                                    </Badge>
-                                                    <div className="flex gap-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
-                                                            onClick={() => router.push(`/rfqs/${item.id}/edit`)}
-                                                        >
-                                                            ✏️ Edit
-                                                        </Button>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className={`${item.status === "open"
-                                                                ? "border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
-                                                                : "border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
-                                                                } disabled:opacity-50`}
-                                                            disabled={updatingStatus === item.id}
-                                                            onClick={() => handleStatusToggle(item.id, item.status)}
-                                                        >
-                                                            {updatingStatus === item.id ? (
-                                                                <div className="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
-                                                            ) : (
-                                                                item.status === "open" ? "🔒 Close" : "🔓 Reopen"
-                                                            )}
-                                                        </Button>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
-                                                            disabled={deleting === item.id}
-                                                            onClick={() => handleDeleteClick(item)}
-                                                        >
-                                                            {deleting === item.id ? (
-                                                                <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
-                                                            ) : (
-                                                                '🗑️ Delete'
-                                                            )}
-                                                        </Button>
-                                                    </div>
-                                                </div>
+                                                <Badge
+                                                    variant={item.status === "open" ? "default" : "secondary"}
+                                                    className={`${item.status === "open" ? "bg-green-100 text-green-800 border-green-200" : "bg-gray-100 text-gray-800 border-gray-200"} border`}
+                                                >
+                                                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                                                </Badge>
                                             </div>
 
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -914,43 +914,47 @@ export default function Dashboard() {
                                                     >
                                                         👁️ View Details
                                                     </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => router.push(`/rfqs/${item.id}/edit`)}
-                                                        className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
-                                                    >
-                                                        ✏️ Edit RFQ
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className={`${item.status === "open"
-                                                            ? "border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
-                                                            : "border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
-                                                            } disabled:opacity-50`}
-                                                        disabled={updatingStatus === item.id}
-                                                        onClick={() => handleStatusToggle(item.id, item.status)}
-                                                    >
-                                                        {updatingStatus === item.id ? (
-                                                            <div className="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
-                                                        ) : (
-                                                            item.status === "open" ? "🔒 Close RFQ" : "🔓 Reopen RFQ"
-                                                        )}
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
-                                                        disabled={deleting === item.id}
-                                                        onClick={() => handleDeleteClick(item)}
-                                                    >
-                                                        {deleting === item.id ? (
-                                                            <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
-                                                        ) : (
-                                                            '🗑️ Delete'
-                                                        )}
-                                                    </Button>
+                                                    {isBuyer && (
+                                                        <>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                onClick={() => router.push(`/rfqs/${item.id}/edit`)}
+                                                                className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                            >
+                                                                ✏️ Edit RFQ
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className={`${item.status === "open"
+                                                                    ? "border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
+                                                                    : "border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                                    } disabled:opacity-50`}
+                                                                disabled={updatingStatus === item.id}
+                                                                onClick={() => handleStatusToggle(item.id, item.status)}
+                                                            >
+                                                                {updatingStatus === item.id ? (
+                                                                    <div className="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
+                                                                ) : (
+                                                                    item.status === "open" ? "🔒 Close RFQ" : "🔓 Reopen RFQ"
+                                                                )}
+                                                            </Button>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
+                                                                disabled={deleting === item.id}
+                                                                onClick={() => handleDeleteClick(item)}
+                                                            >
+                                                                {deleting === item.id ? (
+                                                                    <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
+                                                                ) : (
+                                                                    '🗑️ Delete'
+                                                                )}
+                                                            </Button>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

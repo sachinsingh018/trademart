@@ -30,6 +30,7 @@ interface Product {
         rating: number;
         totalOrders: number;
         responseTime: string;
+        phone?: string;
     };
     images: string[];
     specifications: {
@@ -70,6 +71,26 @@ export default function ProductDetailPage() {
         color: "",
         size: "",
     });
+
+    const handleContactSupplier = () => {
+        console.log('Product supplier phone:', product?.supplier?.phone); // Debug log
+        if (!product?.supplier?.phone) {
+            alert("Supplier phone number not available");
+            return;
+        }
+
+        const message = `Hi! I'm interested in your product "${product.name}" (${product.currency} ${product.price} per ${product.unit}). Could you please provide more details about availability and pricing?`;
+
+        // Clean phone number but preserve + for international numbers
+        let cleanPhone = product.supplier.phone.replace(/[^0-9+]/g, '');
+        if (!cleanPhone.startsWith('+')) {
+            cleanPhone = '+' + cleanPhone;
+        }
+
+        const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+        console.log('WhatsApp URL:', whatsappUrl); // Debug log
+        window.open(whatsappUrl, '_blank');
+    };
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -381,8 +402,11 @@ export default function ProductDetailPage() {
                                                 View Supplier Profile
                                             </Button>
                                         </Link>
-                                        <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
-                                            Contact Supplier
+                                        <Button
+                                            className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
+                                            onClick={handleContactSupplier}
+                                        >
+                                            📱 Contact via WhatsApp
                                         </Button>
                                     </div>
                                 </div>

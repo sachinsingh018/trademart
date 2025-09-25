@@ -23,6 +23,8 @@ export async function GET(
                         rating: true,
                         totalOrders: true,
                         responseTime: true,
+                        phone: true,
+                        contactPhone: true,
                         user: {
                             select: {
                                 name: true,
@@ -72,6 +74,7 @@ export async function GET(
                 rating: product.supplier.rating,
                 totalOrders: product.supplier.totalOrders,
                 responseTime: product.supplier.responseTime,
+                phone: product.supplier.phone || product.supplier.contactPhone,
             },
             relatedProducts: relatedProducts.map(rp => ({
                 id: rp.id,
@@ -93,6 +96,101 @@ export async function GET(
             {
                 success: false,
                 error: "Failed to fetch product",
+                details: error instanceof Error ? error.message : "Unknown error"
+            },
+            { status: 500 }
+        );
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export async function PUT(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session?.user?.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const { id: productId } = await params;
+        const body = await request.json();
+
+        // Check if the product exists and belongs to the current supplier
+        const existingProduct = await prisma.product.findUnique({
+            where: { id: productId },
+            include: {
+                supplier: {
+                    select: { userId: true }
+                }
+            }
+        });
+
+        if (!existingProduct) {
+            return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
+        }
+
+        // Check if the user is the owner of the product
+        if (existingProduct.supplier.userId !== session.user.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized to edit this product' }, { status: 403 });
+        }
+
+        // Update the product
+        const updatedProduct = await prisma.product.update({
+            where: { id: productId },
+            data: {
+                name: body.name,
+                description: body.description,
+                category: body.category,
+                price: body.price,
+                currency: body.currency,
+                minOrderQuantity: body.minOrderQuantity,
+                unit: body.unit,
+                inStock: body.inStock,
+                stockQuantity: body.stockQuantity,
+                specifications: body.specifications,
+                certifications: body.certifications,
+                leadTime: body.leadTime,
+                origin: body.origin,
+                packaging: body.packaging,
+                images: body.images,
+                updatedAt: new Date()
+            },
+            include: {
+                supplier: {
+                    select: {
+                        id: true,
+                        companyName: true,
+                        country: true,
+                        verified: true,
+                        rating: true,
+                        totalOrders: true,
+                        responseTime: true,
+                        user: {
+                            select: {
+                                name: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        return NextResponse.json({
+            success: true,
+            data: updatedProduct,
+            message: 'Product updated successfully'
+        });
+
+    } catch (error) {
+        console.error("Product update error:", error);
+        return NextResponse.json(
+            {
+                success: false,
+                error: "Failed to update product",
                 details: error instanceof Error ? error.message : "Unknown error"
             },
             { status: 500 }

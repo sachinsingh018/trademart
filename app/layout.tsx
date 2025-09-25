@@ -54,11 +54,6 @@ export const metadata: Metadata = {
     { media: "(prefers-color-scheme: light)", color: "#2563eb" },
     { media: "(prefers-color-scheme: dark)", color: "#1d4ed8" }
   ],
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
   robots: {
     index: true,
     follow: true,
@@ -139,6 +134,12 @@ export const metadata: Metadata = {
     'msapplication-TileColor': '#2563eb',
     'msapplication-config': '/browserconfig.xml',
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

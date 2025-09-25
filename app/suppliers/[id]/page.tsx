@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -64,9 +65,37 @@ interface Product {
 }
 
 export default function SupplierDetailPage() {
-    const [supplier] = useState<Supplier | null>(null);
-    const [products] = useState<Product[]>([]);
-    const [loading] = useState(true);
+    const params = useParams();
+    const [supplier, setSupplier] = useState<Supplier | null>(null);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch supplier data
+    useEffect(() => {
+        const fetchSupplier = async () => {
+            if (!params?.id) return;
+
+            try {
+                const response = await fetch(`/api/suppliers/${params.id}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    setSupplier(result.data.supplier);
+                    setProducts(result.data.products || []);
+                } else {
+                    console.error("Failed to fetch supplier:", result.error);
+                    setSupplier(null);
+                }
+            } catch (error) {
+                console.error("Error fetching supplier:", error);
+                setSupplier(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSupplier();
+    }, [params?.id]);
 
 
     const formatDate = (dateString: string) => {
