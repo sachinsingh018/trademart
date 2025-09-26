@@ -27,6 +27,7 @@ interface Product {
         country: string;
         verified: boolean;
         rating: number;
+        phone?: string;
     };
     images: string[];
     specifications: {
@@ -504,7 +505,17 @@ export default function ProductsPage() {
                                                     View Details
                                                 </Button>
                                             </Link>
-                                            <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
+                                            <Button
+                                                size="sm"
+                                                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                                                onClick={() => {
+                                                    if (product.supplier.phone) {
+                                                        window.open(`https://wa.me/${product.supplier.phone.replace(/\D/g, '')}`, '_blank');
+                                                    } else {
+                                                        alert("Supplier contact information not available");
+                                                    }
+                                                }}
+                                            >
                                                 Contact Supplier
                                             </Button>
                                         </div>

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useSession } from "next-auth/react";
 
 interface Service {
     id: string;
@@ -69,6 +70,9 @@ export default function ServiceDetailPage() {
         requirements: "",
         contactInfo: "",
     });
+    const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+    const [quoteMessage, setQuoteMessage] = useState("");
+    const { data: session, status } = useSession();
 
     const formatPrice = (price: number | null, currency: string, pricingModel: string) => {
         if (price === null) return "Contact for pricing";
@@ -107,9 +111,62 @@ export default function ServiceDetailPage() {
 
     const handleQuoteSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Handle quote submission
-        console.log("Quote submitted:", quoteData);
-        setShowQuoteForm(false);
+
+        if (status === "loading") {
+            setQuoteMessage("Please wait...");
+            return;
+        }
+
+        if (!session) {
+            window.location.href = "/auth/signin";
+            return;
+        }
+
+        if (!quoteData.budget || !quoteData.timeline || !quoteData.requirements) {
+            setQuoteMessage("Please fill in all required fields");
+            return;
+        }
+
+        setIsSubmittingQuote(true);
+        setQuoteMessage("");
+
+        try {
+            const response = await fetch("/api/services/quote", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    serviceId: service?.id,
+                    supplierId: service?.supplier.id,
+                    budget: quoteData.budget,
+                    timeline: quoteData.timeline,
+                    requirements: quoteData.requirements,
+                    contactInfo: quoteData.contactInfo,
+                }),
+            });
+
+            if (response.ok) {
+                setQuoteMessage("Quote request submitted successfully!");
+                setQuoteData({
+                    budget: "",
+                    timeline: "",
+                    requirements: "",
+                    contactInfo: "",
+                });
+                setTimeout(() => {
+                    setShowQuoteForm(false);
+                    setQuoteMessage("");
+                }, 2000);
+            } else {
+                setQuoteMessage("Failed to submit quote request. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error submitting quote:", error);
+            setQuoteMessage("An error occurred. Please try again.");
+        } finally {
+            setIsSubmittingQuote(false);
+        }
     };
 
     if (loading) {
@@ -280,11 +337,33 @@ export default function ServiceDetailPage() {
                                         <div className="flex space-x-3">
                                             <Button
                                                 className="bg-blue-600 hover:bg-blue-700 flex-1"
-                                                onClick={() => setShowQuoteForm(true)}
+                                                onClick={() => {
+                                                    if (status === "loading") {
+                                                        setQuoteMessage("Please wait...");
+                                                        return;
+                                                    }
+
+                                                    if (!session) {
+                                                        window.location.href = "/auth/signin";
+                                                        return;
+                                                    }
+
+                                                    setShowQuoteForm(true);
+                                                }}
                                             >
                                                 Request Quote
                                             </Button>
-                                            <Button variant="outline" className="border-gray-300">
+                                            <Button
+                                                variant="outline"
+                                                className="border-gray-300"
+                                                onClick={() => {
+                                                    if (service?.supplier.phone) {
+                                                        window.open(`https://wa.me/${service.supplier.phone.replace(/\D/g, '')}`, '_blank');
+                                                    } else {
+                                                        alert("Supplier contact information not available");
+                                                    }
+                                                }}
+                                            >
                                                 Contact Supplier
                                             </Button>
                                         </div>
@@ -455,8 +534,16 @@ export default function ServiceDetailPage() {
                     <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
                         <h3 className="text-lg font-semibold mb-4">Request Quote</h3>
                         <form onSubmit={handleQuoteSubmit} className="space-y-4">
+                            {quoteMessage && (
+                                <div className={`p-4 rounded-lg ${quoteMessage.includes("successfully")
+                                    ? "bg-green-50 border border-green-200 text-green-700"
+                                    : "bg-red-50 border border-red-200 text-red-700"
+                                    }`}>
+                                    {quoteMessage}
+                                </div>
+                            )}
                             <div>
-                                <Label htmlFor="budget">Budget Range</Label>
+                                <Label htmlFor="budget">Budget Range *</Label>
                                 <Select value={quoteData.budget} onValueChange={(value) => setQuoteData({ ...quoteData, budget: value })}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select budget range" />
@@ -504,11 +591,11 @@ export default function ServiceDetailPage() {
                                 />
                             </div>
                             <div className="flex space-x-3">
-                                <Button type="button" variant="outline" onClick={() => setShowQuoteForm(false)} className="flex-1">
+                                <Button type="button" variant="outline" onClick={() => setShowQuoteForm(false)} className="flex-1" disabled={isSubmittingQuote}>
                                     Cancel
                                 </Button>
-                                <Button type="submit" className="flex-1">
-                                    Submit Quote Request
+                                <Button type="submit" className="flex-1" disabled={isSubmittingQuote}>
+                                    {isSubmittingQuote ? "Submitting..." : "Submit Quote Request"}
                                 </Button>
                             </div>
                         </form>

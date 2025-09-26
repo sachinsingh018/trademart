@@ -9,6 +9,7 @@ export async function GET(
 ) {
     try {
         const { id: productId } = await params;
+        console.log("API: Fetching product with ID:", productId);
 
         // Get the product with supplier information
         const product = await prisma.product.findUnique({
@@ -56,6 +57,7 @@ export async function GET(
         });
 
         if (!product) {
+            console.log("API: Product not found for ID:", productId);
             return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
         }
 
@@ -241,6 +243,7 @@ export async function DELETE(
         });
 
         if (!product) {
+            console.log("API: Product not found for ID:", productId);
             return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
         }
 

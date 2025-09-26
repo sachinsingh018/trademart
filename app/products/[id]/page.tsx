@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSession } from "next-auth/react";
 
 interface Product {
     id: string;
@@ -71,6 +72,11 @@ export default function ProductDetailPage() {
         color: "",
         size: "",
     });
+    const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+    const [quoteMessage, setQuoteMessage] = useState("");
+    const [fetchError, setFetchError] = useState<string | null>(null);
+    const [retryCount, setRetryCount] = useState(0);
+    const { data: session, status } = useSession();
 
     const handleContactSupplier = () => {
         console.log('Product supplier phone:', product?.supplier?.phone); // Debug log
@@ -92,41 +98,138 @@ export default function ProductDetailPage() {
         window.open(whatsappUrl, '_blank');
     };
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            if (!params?.id) return;
+    const fetchProduct = async (retryAttempt = 0) => {
+        if (!params?.id) {
+            console.log("No product ID in params");
+            return;
+        }
 
-            try {
-                setLoading(true);
-                const response = await fetch(`/api/products/${params.id}`);
-                const data = await response.json();
+        try {
+            console.log(`Fetching product with ID: ${params.id} (attempt ${retryAttempt + 1})`);
+            setLoading(true);
+            setFetchError(null);
 
-                if (data.success) {
-                    setProduct(data.data);
-                } else {
-                    console.error("Failed to fetch product:", data.error);
-                    setProduct(null);
-                }
-            } catch (error) {
-                console.error("Error fetching product:", error);
-                setProduct(null);
-            } finally {
-                setLoading(false);
+            const response = await fetch(`/api/products/${params.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                cache: 'no-cache'
+            });
+
+            console.log("Response status:", response.status);
+            console.log("Response ok:", response.ok);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
 
+            const data = await response.json();
+            console.log("Product API response:", data);
+
+            if (data.success) {
+                setProduct(data.data);
+                setFetchError(null);
+                setRetryCount(0);
+                console.log("Product loaded successfully:", data.data);
+            } else {
+                console.error("API returned error:", data.error);
+                setFetchError(data.error || "Failed to fetch product");
+                setProduct(null);
+            }
+        } catch (error) {
+            console.error("Error fetching product:", error);
+            console.error("Error details:", {
+                message: error.message,
+                stack: error.stack,
+                name: error.name
+            });
+
+            const errorMessage = error.message || "Failed to fetch product";
+            setFetchError(errorMessage);
+            setProduct(null);
+
+            // Retry logic - retry up to 2 times with exponential backoff
+            if (retryAttempt < 2) {
+                console.log(`Retrying in ${Math.pow(2, retryAttempt) * 1000}ms...`);
+                setTimeout(() => {
+                    setRetryCount(retryAttempt + 1);
+                    fetchProduct(retryAttempt + 1);
+                }, Math.pow(2, retryAttempt) * 1000);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         if (params?.id) {
             fetchProduct();
         }
     }, [params?.id]);
 
-    const handleQuoteRequest = () => {
-        // TODO: Implement quote request functionality
-        console.log("Quote request:", {
-            productId: product?.id,
-            quantity: quantity,
-            specifications: selectedSpecs,
-        });
+    const handleQuoteRequest = async () => {
+        console.log("Quote request clicked. Session status:", status, "Session:", session);
+
+        if (status === "loading") {
+            setQuoteMessage("Please wait...");
+            return;
+        }
+
+        if (!session) {
+            console.log("No session found, redirecting to login");
+            window.location.href = "/auth/signin";
+            return;
+        }
+
+        if (!quantity || parseInt(quantity) < product!.minOrderQuantity) {
+            setQuoteMessage(`Minimum order quantity is ${product!.minOrderQuantity} ${product!.unit}`);
+            return;
+        }
+
+        setIsSubmittingQuote(true);
+        setQuoteMessage("");
+
+        try {
+            console.log("Submitting quote request with data:", {
+                productId: product?.id,
+                supplierId: product?.supplier.id,
+                quantity: parseInt(quantity),
+                specifications: selectedSpecs,
+                notes: `Quote request for ${quantity} ${product?.unit} of ${product?.name}`,
+            });
+
+            const response = await fetch("/api/products/quote", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    productId: product?.id,
+                    supplierId: product?.supplier.id,
+                    quantity: parseInt(quantity),
+                    specifications: selectedSpecs,
+                    notes: `Quote request for ${quantity} ${product?.unit} of ${product?.name}`,
+                }),
+            });
+
+            const responseData = await response.json();
+            console.log("Quote submission response:", responseData);
+
+            if (response.ok) {
+                setQuoteMessage("Quote request submitted successfully!");
+                setTimeout(() => {
+                    setQuoteMessage("");
+                }, 3000);
+            } else {
+                setQuoteMessage(`Failed to submit quote request: ${responseData.error || 'Unknown error'}`);
+            }
+        } catch (error) {
+            console.error("Error submitting quote:", error);
+            setQuoteMessage("An error occurred. Please try again.");
+        } finally {
+            setIsSubmittingQuote(false);
+        }
     };
 
     const formatDate = (dateString: string) => {
@@ -150,6 +253,9 @@ export default function ProductDetailPage() {
                 <div className="text-center">
                     <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-gray-600 font-medium">Loading product details...</p>
+                    {retryCount > 0 && (
+                        <p className="text-sm text-gray-500 mt-2">Retry attempt {retryCount}/3</p>
+                    )}
                 </div>
             </div>
         );
@@ -160,11 +266,24 @@ export default function ProductDetailPage() {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center">
                 <div className="text-center">
                     <div className="text-gray-400 text-6xl mb-4">❌</div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Product Not Found</h3>
-                    <p className="text-gray-600 mb-4">The requested product could not be found.</p>
-                    <Link href="/products">
-                        <Button>Back to Products</Button>
-                    </Link>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                        {fetchError ? "Failed to Load Product" : "Product Not Found"}
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                        {fetchError || "The requested product could not be found."}
+                    </p>
+                    <div className="flex gap-4 justify-center">
+                        <Button
+                            onClick={() => fetchProduct()}
+                            variant="outline"
+                            disabled={loading}
+                        >
+                            {loading ? "Retrying..." : "Try Again"}
+                        </Button>
+                        <Link href="/products">
+                            <Button>Back to Products</Button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
@@ -447,6 +566,9 @@ export default function ProductDetailPage() {
                                             placeholder={`Min: ${product.minOrderQuantity}`}
                                             min={product.minOrderQuantity}
                                         />
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            Minimum order quantity: {product.minOrderQuantity} {product.unit}
+                                        </p>
                                     </div>
 
                                     {product.specifications.color && (
@@ -466,12 +588,23 @@ export default function ProductDetailPage() {
                                     )}
 
                                     <div className="pt-4 border-t border-gray-200">
+                                        {quoteMessage && (
+                                            <div className={`p-3 rounded-lg mb-3 ${quoteMessage.includes("successfully")
+                                                ? "bg-green-50 border border-green-200 text-green-700"
+                                                : "bg-red-50 border border-red-200 text-red-700"
+                                                }`}>
+                                                {quoteMessage}
+                                            </div>
+                                        )}
                                         <Button
                                             onClick={handleQuoteRequest}
                                             className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
-                                            disabled={!quantity || parseInt(quantity) < product.minOrderQuantity}
+                                            disabled={!quantity || parseInt(quantity) < product.minOrderQuantity || isSubmittingQuote}
                                         >
-                                            Request Quote
+                                            {isSubmittingQuote ? "Submitting..." :
+                                                !quantity ? "Enter Quantity" :
+                                                    parseInt(quantity) < product.minOrderQuantity ? `Min: ${product.minOrderQuantity} ${product.unit}` :
+                                                        "Request Quote"}
                                         </Button>
                                     </div>
                                 </div>
