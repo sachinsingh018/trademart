@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -101,7 +101,7 @@ export default function ServicesPage() {
         return `${currency} ${price}`;
     };
 
-    const fetchServices = async () => {
+    const fetchServices = useCallback(async () => {
         try {
             setLoading(true);
             const params = new URLSearchParams({
@@ -125,11 +125,11 @@ export default function ServicesPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [currentPage, searchTerm, selectedCategory, selectedSubcategory, sortBy]);
 
     useEffect(() => {
         fetchServices();
-    }, [currentPage, searchTerm, selectedCategory, selectedSubcategory, sortBy]);
+    }, [fetchServices]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -251,7 +251,7 @@ export default function ServicesPage() {
                                     <SelectContent>
                                         <SelectItem value="all">All Subcategories</SelectItem>
                                         {selectedCategory !== "all" &&
-                                            (subcategories as any)[selectedCategory]?.map((subcategory: string) => (
+                                            subcategories[selectedCategory as keyof typeof subcategories]?.map((subcategory: string) => (
                                                 <SelectItem key={subcategory} value={subcategory}>
                                                     {subcategory}
                                                 </SelectItem>

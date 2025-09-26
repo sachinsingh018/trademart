@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -186,7 +186,7 @@ export default function ServiceDetailPage() {
                 <div className="text-center">
                     <div className="text-gray-400 text-6xl mb-4">❌</div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Service Not Found</h1>
-                    <p className="text-gray-600 mb-4">The service you're looking for doesn't exist or has been removed.</p>
+                    <p className="text-gray-600 mb-4">The service you&apos;re looking for doesn&apos;t exist or has been removed.</p>
                     <Link href="/services">
                         <Button>Browse All Services</Button>
                     </Link>
