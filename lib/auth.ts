@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs"
 export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     adapter: PrismaAdapter(prisma),
+    debug: process.env.NODE_ENV === 'development',
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -27,7 +28,7 @@ export const authOptions: NextAuthOptions = {
 
                     // Check if input is email or phone
                     const isEmail = credentials.email.includes('@');
-                    
+
                     let user;
                     if (isEmail) {
                         // Login with email
@@ -76,17 +77,27 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         async jwt({ token, user }) {
-            if (user) {
-                token.role = user.role
+            try {
+                if (user) {
+                    token.role = user.role
+                }
+                return token
+            } catch (error) {
+                console.error("JWT callback error:", error);
+                return token;
             }
-            return token
         },
         async session({ session, token }) {
-            if (token) {
-                session.user.id = token.sub!
-                session.user.role = token.role as string
+            try {
+                if (token) {
+                    session.user.id = token.sub!
+                    session.user.role = token.role as string
+                }
+                return session
+            } catch (error) {
+                console.error("Session callback error:", error);
+                return session;
             }
-            return session
         }
     },
     pages: {
