@@ -8,11 +8,11 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const { id: productId } = await params;
+        const { id: serviceId } = await params;
 
-        // Get the product with supplier information
-        const product = await prisma.product.findUnique({
-            where: { id: productId },
+        // Get the service with supplier information
+        const service = await prisma.service.findUnique({
+            where: { id: serviceId },
             select: {
                 id: true,
                 name: true,
@@ -21,17 +21,24 @@ export async function GET(
                 subcategory: true,
                 price: true,
                 currency: true,
-                minOrderQuantity: true,
+                pricingModel: true,
+                minDuration: true,
+                maxDuration: true,
                 unit: true,
                 specifications: true,
                 features: true,
                 tags: true,
                 images: true,
-                inStock: true,
-                stockQuantity: true,
+                isAvailable: true,
                 leadTime: true,
                 views: true,
                 orders: true,
+                rating: true,
+                reviews: true,
+                deliveryMethod: true,
+                experience: true,
+                certifications: true,
+                portfolio: true,
                 createdAt: true,
                 updatedAt: true,
                 supplier: {
@@ -55,22 +62,22 @@ export async function GET(
             },
         });
 
-        if (!product) {
-            return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
+        if (!service) {
+            return NextResponse.json({ success: false, error: 'Service not found' }, { status: 404 });
         }
 
         // Increment view count
-        await prisma.product.update({
-            where: { id: productId },
+        await prisma.service.update({
+            where: { id: serviceId },
             data: { views: { increment: 1 } }
         });
 
-        // Get related products (same category, different product)
-        const relatedProducts = await prisma.product.findMany({
+        // Get related services (same category, different service)
+        const relatedServices = await prisma.service.findMany({
             where: {
-                category: product.category,
-                id: { not: productId },
-                inStock: true
+                category: service.category,
+                id: { not: serviceId },
+                isAvailable: true
             },
             take: 3,
             select: {
@@ -78,44 +85,46 @@ export async function GET(
                 name: true,
                 price: true,
                 currency: true,
+                pricingModel: true,
                 images: true
             }
         });
 
         // Transform the data to match the expected format
-        const transformedProduct = {
-            ...product,
+        const transformedService = {
+            ...service,
             supplier: {
-                id: product.supplier.id,
-                name: product.supplier.user.name,
-                company: product.supplier.companyName,
-                country: product.supplier.country,
-                verified: product.supplier.verified,
-                rating: product.supplier.rating,
-                totalOrders: product.supplier.totalOrders,
-                responseTime: product.supplier.responseTime,
-                phone: product.supplier.phone || product.supplier.contactPhone,
+                id: service.supplier.id,
+                name: service.supplier.user.name,
+                company: service.supplier.companyName,
+                country: service.supplier.country,
+                verified: service.supplier.verified,
+                rating: service.supplier.rating,
+                totalOrders: service.supplier.totalOrders,
+                responseTime: service.supplier.responseTime,
+                phone: service.supplier.phone || service.supplier.contactPhone,
             },
-            relatedProducts: relatedProducts.map(rp => ({
-                id: rp.id,
-                name: rp.name,
-                price: rp.price,
-                currency: rp.currency,
-                image: rp.images[0] || '/placeholder-product.jpg'
+            relatedServices: relatedServices.map(rs => ({
+                id: rs.id,
+                name: rs.name,
+                price: rs.price,
+                currency: rs.currency,
+                pricingModel: rs.pricingModel,
+                image: rs.images[0] || '/placeholder-service.jpg'
             }))
         };
 
         return NextResponse.json({
             success: true,
-            data: transformedProduct
+            data: transformedService
         });
 
     } catch (error) {
-        console.error("Product fetch error:", error);
+        console.error("Service fetch error:", error);
         return NextResponse.json(
             {
                 success: false,
-                error: "Failed to fetch product",
+                error: "Failed to fetch service",
                 details: error instanceof Error ? error.message : "Unknown error"
             },
             { status: 500 }
@@ -136,12 +145,12 @@ export async function PUT(
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id: productId } = await params;
+        const { id: serviceId } = await params;
         const body = await request.json();
 
-        // Check if the product exists and belongs to the current supplier
-        const existingProduct = await prisma.product.findUnique({
-            where: { id: productId },
+        // Check if the service exists and belongs to the current supplier
+        const existingService = await prisma.service.findUnique({
+            where: { id: serviceId },
             include: {
                 supplier: {
                     select: { userId: true }
@@ -149,31 +158,39 @@ export async function PUT(
             }
         });
 
-        if (!existingProduct) {
-            return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
+        if (!existingService) {
+            return NextResponse.json({ success: false, error: 'Service not found' }, { status: 404 });
         }
 
-        // Check if the user is the owner of the product
-        if (existingProduct.supplier.userId !== session.user.id) {
-            return NextResponse.json({ success: false, error: 'Unauthorized to edit this product' }, { status: 403 });
+        // Check if the user is the owner of the service
+        if (existingService.supplier.userId !== session.user.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized to edit this service' }, { status: 403 });
         }
 
-        // Update the product
-        const updatedProduct = await prisma.product.update({
-            where: { id: productId },
+        // Update the service
+        const updatedService = await prisma.service.update({
+            where: { id: serviceId },
             data: {
                 name: body.name,
                 description: body.description,
                 category: body.category,
+                subcategory: body.subcategory,
                 price: body.price,
                 currency: body.currency,
-                minOrderQuantity: body.minOrderQuantity,
+                pricingModel: body.pricingModel,
+                minDuration: body.minDuration,
+                maxDuration: body.maxDuration,
                 unit: body.unit,
-                inStock: body.inStock,
-                stockQuantity: body.stockQuantity,
-                specifications: body.specifications,
+                isAvailable: body.isAvailable,
                 leadTime: body.leadTime,
+                specifications: body.specifications,
+                features: body.features,
+                tags: body.tags,
                 images: body.images,
+                deliveryMethod: body.deliveryMethod,
+                experience: body.experience,
+                certifications: body.certifications,
+                portfolio: body.portfolio,
                 updatedAt: new Date()
             },
             include: {
@@ -198,16 +215,16 @@ export async function PUT(
 
         return NextResponse.json({
             success: true,
-            data: updatedProduct,
-            message: 'Product updated successfully'
+            data: updatedService,
+            message: 'Service updated successfully'
         });
 
     } catch (error) {
-        console.error("Product update error:", error);
+        console.error("Service update error:", error);
         return NextResponse.json(
             {
                 success: false,
-                error: "Failed to update product",
+                error: "Failed to update service",
                 details: error instanceof Error ? error.message : "Unknown error"
             },
             { status: 500 }
@@ -228,11 +245,11 @@ export async function DELETE(
             return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id: productId } = await params;
+        const { id: serviceId } = await params;
 
-        // Check if the product exists and belongs to the current supplier
-        const product = await prisma.product.findUnique({
-            where: { id: productId },
+        // Check if the service exists and belongs to the current supplier
+        const service = await prisma.service.findUnique({
+            where: { id: serviceId },
             include: {
                 supplier: {
                     select: { userId: true }
@@ -240,31 +257,31 @@ export async function DELETE(
             }
         });
 
-        if (!product) {
-            return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
+        if (!service) {
+            return NextResponse.json({ success: false, error: 'Service not found' }, { status: 404 });
         }
 
-        // Check if the user is the owner of the product
-        if (product.supplier.userId !== session.user.id) {
-            return NextResponse.json({ success: false, error: 'Unauthorized to delete this product' }, { status: 403 });
+        // Check if the user is the owner of the service
+        if (service.supplier.userId !== session.user.id) {
+            return NextResponse.json({ success: false, error: 'Unauthorized to delete this service' }, { status: 403 });
         }
 
-        // Delete the product
-        await prisma.product.delete({
-            where: { id: productId }
+        // Delete the service
+        await prisma.service.delete({
+            where: { id: serviceId }
         });
 
         return NextResponse.json({
             success: true,
-            message: 'Product deleted successfully'
+            message: 'Service deleted successfully'
         });
 
     } catch (error) {
-        console.error("Product delete error:", error);
+        console.error("Service delete error:", error);
         return NextResponse.json(
             {
                 success: false,
-                error: "Failed to delete product",
+                error: "Failed to delete service",
                 details: error instanceof Error ? error.message : "Unknown error"
             },
             { status: 500 }

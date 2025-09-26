@@ -245,18 +245,34 @@ export default function ProductDetailPage() {
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
-                                            <div className="text-gray-400 text-6xl">📱</div>
+                                        <div className="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                                            {product.images && product.images.length > 0 ? (
+                                                <Image
+                                                    src={product.images[selectedImage] || product.images[0]}
+                                                    alt={product.name}
+                                                    width={400}
+                                                    height={400}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="text-gray-400 text-6xl">📱</div>
+                                            )}
                                         </div>
                                         <div className="flex space-x-2">
-                                            {product.images.map((_, index) => (
+                                            {product.images && product.images.map((image, index) => (
                                                 <button
                                                     key={index}
                                                     onClick={() => setSelectedImage(index)}
-                                                    className={`w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center ${selectedImage === index ? 'ring-2 ring-blue-500' : ''
+                                                    className={`w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden ${selectedImage === index ? 'ring-2 ring-blue-500' : ''
                                                         }`}
                                                 >
-                                                    <div className="text-gray-400 text-lg">📱</div>
+                                                    <Image
+                                                        src={image}
+                                                        alt={`${product.name} ${index + 1}`}
+                                                        width={64}
+                                                        height={64}
+                                                        className="w-full h-full object-cover"
+                                                    />
                                                 </button>
                                             ))}
                                         </div>

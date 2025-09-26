@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
@@ -49,8 +48,8 @@ export async function GET(request: NextRequest) {
             case "popular":
                 orderBy = { views: "desc" };
                 break;
-            case "orders":
-                orderBy = { orders: "desc" };
+            case "rating":
+                orderBy = { rating: "desc" };
                 break;
             case "price-low":
                 orderBy = { price: "asc" };
@@ -68,9 +67,9 @@ export async function GET(request: NextRequest) {
                 orderBy = { views: "desc" };
         }
 
-        // Get products with pagination
-        const [products, total] = await Promise.all([
-            prisma.product.findMany({
+        // Get services with pagination
+        const [services, total] = await Promise.all([
+            prisma.service.findMany({
                 where,
                 orderBy,
                 skip,
@@ -83,21 +82,29 @@ export async function GET(request: NextRequest) {
                     subcategory: true,
                     price: true,
                     currency: true,
-                    minOrderQuantity: true,
+                    pricingModel: true,
+                    minDuration: true,
+                    maxDuration: true,
                     unit: true,
                     specifications: true,
                     features: true,
                     tags: true,
                     images: true,
-                    inStock: true,
-                    stockQuantity: true,
+                    isAvailable: true,
                     leadTime: true,
                     views: true,
                     orders: true,
+                    rating: true,
+                    reviews: true,
+                    deliveryMethod: true,
+                    experience: true,
+                    certifications: true,
+                    portfolio: true,
                     createdAt: true,
                     updatedAt: true,
                     supplier: {
                         select: {
+                            id: true,
                             companyName: true,
                             country: true,
                             verified: true,
@@ -113,23 +120,23 @@ export async function GET(request: NextRequest) {
                     },
                 },
             }),
-            prisma.product.count({ where }),
+            prisma.service.count({ where }),
         ]);
 
         // Calculate statistics
-        const stats = await prisma.product.aggregate({
+        const stats = await prisma.service.aggregate({
             _count: { id: true },
             _sum: { views: true, orders: true },
         });
 
-        const inStockCount = await prisma.product.count({
-            where: { inStock: true },
+        const availableCount = await prisma.service.count({
+            where: { isAvailable: true },
         });
 
         return NextResponse.json({
             success: true,
             data: {
-                products,
+                services,
                 pagination: {
                     page,
                     limit,
@@ -137,19 +144,19 @@ export async function GET(request: NextRequest) {
                     totalPages: Math.ceil(total / limit),
                 },
                 stats: {
-                    totalProducts: stats._count.id,
+                    totalServices: stats._count.id,
                     totalViews: stats._sum.views || 0,
                     totalOrders: stats._sum.orders || 0,
-                    inStockProducts: inStockCount,
+                    availableServices: availableCount,
                 },
             },
         });
     } catch (error) {
-        console.error("Products fetch error:", error);
+        console.error("Services fetch error:", error);
         return NextResponse.json(
             {
                 success: false,
-                error: "Failed to fetch products",
+                error: "Failed to fetch services",
                 details: error instanceof Error ? error.message : "Unknown error"
             },
             { status: 500 }

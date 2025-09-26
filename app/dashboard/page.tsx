@@ -258,6 +258,9 @@ export default function Dashboard() {
                             <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
                                 Products
                             </Link>
+                            <Link href="/services" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+                                Services
+                            </Link>
                             <Link href="/rfqs" className="text-blue-600 font-medium">
                                 RFQs
                             </Link>
@@ -270,6 +273,9 @@ export default function Dashboard() {
                             </Link>
                             <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
                                 Products
+                            </Link>
+                            <Link href="/services" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
+                                Services
                             </Link>
                             <Link href="/rfqs" className="text-blue-600 text-sm font-medium">
                                 RFQs

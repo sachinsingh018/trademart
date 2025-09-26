@@ -3,19 +3,90 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
-// Sample product images (we'll use placeholder URLs for now)
-const productImages = [
-  'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop',
-  'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop',
-];
+// High-quality product images with professional graphics
+const productImages = {
+  'Electronics': [
+    'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop', // MacBook Pro
+    'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop', // iPhone
+    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop', // Headphones
+    'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=300&fit=crop', // Smartwatch
+    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop', // Camera
+    'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=400&h=300&fit=crop', // Laptop
+    'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop', // Power Bank
+  ],
+  'Textiles': [
+    'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400&h=300&fit=crop', // Cotton fabric
+    'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop', // Silk
+    'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=300&fit=crop', // Denim
+    'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop', // Wool
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop', // Leather
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Canvas
+  ],
+  'Machinery': [
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop', // CNC Machine
+    'https://images.unsplash.com/photo-1565813240240-4b8a0b8b8b8b?w=400&h=300&fit=crop', // Hydraulic Press
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop', // Conveyor Belt
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop', // Welding Equipment
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop', // Packaging Machine
+    'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=400&h=300&fit=crop', // Drill Press
+  ],
+  'Chemicals': [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Chemical Bottles
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Cleaning Products
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Adhesives
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Paints
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Lubricating Oil
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Fertilizer
+  ],
+  'Automotive': [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Brake Pads
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Oil Filter
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // LED Headlights
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Car Battery
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Seat Covers
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Dash Cam
+  ],
+  'Food & Beverage': [
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop', // Coffee Beans - Premium Roasted
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Olive Oil
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Chocolate
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Craft Beer
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Spices
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Cheese
+  ],
+  'Construction': [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Steel Rebar
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Cement
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Safety Helmet
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Power Drill
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Concrete Mixer
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Safety Harness
+  ],
+  'Medical': [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Surgical Instruments
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Medical Gloves
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop', // Stethoscope - Professional Medical
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // PPE Kit
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Blood Pressure Monitor
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // First Aid Kit
+  ],
+  'Sports': [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Treadmill
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Hiking Backpack
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Basketball
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop', // Kayak Paddle - Cataract Oars
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Ski Boots
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Dumbbells
+  ],
+  'Home & Garden': [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Dining Table
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Wall Art
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Garden Tools
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Cookware
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // LED Lights
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', // Sofa
+  ]
+};
 
 const categories = [
   'Electronics',
@@ -62,29 +133,64 @@ const businessTypes = [
 
 const productNames = {
   'Electronics': [
-    'Wireless Bluetooth Headphones', 'Smart LED TV 55"', 'Gaming Laptop', 'Smartphone Case',
-    'Wireless Charging Pad', 'Bluetooth Speaker', 'Smart Watch', 'Tablet Stand',
-    'USB-C Cable', 'Power Bank 20000mAh'
+    'MacBook Pro 16" M3 Max Laptop', 'iPhone 15 Pro Max 256GB', 'Sony WH-1000XM5 Noise Cancelling Headphones',
+    'Samsung 65" QLED 4K Smart TV', 'Apple Watch Series 9 GPS', 'Canon EOS R5 Mirrorless Camera',
+    'Dell XPS 13 Ultrabook', 'Bose QuietComfort 45 Headphones', 'iPad Pro 12.9" M2 Chip',
+    'Anker PowerCore 20000mAh Power Bank'
   ],
   'Textiles': [
-    'Premium Cotton T-Shirt', 'Silk Scarf', 'Denim Jeans', 'Wool Sweater',
-    'Linen Tablecloth', 'Cotton Bed Sheets', 'Polyester Fabric', 'Leather Jacket',
-    'Canvas Tote Bag', 'Cashmere Scarf'
+    'Premium Egyptian Cotton Bed Sheets Set', 'Italian Silk Scarf Collection', 'Raw Denim Jeans - Selvedge',
+    'Cashmere Wool Sweater - Hand Knit', 'Linen Tablecloth Set - 8 Piece', 'Organic Cotton T-Shirt - Bulk Pack',
+    'Genuine Leather Jacket - Full Grain', 'Canvas Tote Bag - Eco Friendly', 'Wool Blanket - Alpaca Blend',
+    'Silk Pillowcase Set - Mulberry Silk'
   ],
   'Machinery': [
-    'Industrial Drill Machine', 'CNC Milling Machine', 'Hydraulic Press',
-    'Conveyor Belt System', 'Packaging Machine', 'Welding Equipment',
-    'Cutting Machine', 'Assembly Line Equipment', 'Quality Control Machine'
+    'CNC Milling Machine - 3-Axis', 'Industrial Hydraulic Press - 100 Ton', 'Conveyor Belt System - Automated',
+    'Packaging Machine - Multi-Head', 'Welding Equipment - TIG/MIG', 'Precision Cutting Machine - Laser',
+    'Assembly Line Equipment - Modular', 'Quality Control Machine - Vision System', 'Drill Press - Industrial Grade',
+    'Material Handling Equipment - Forklift'
   ],
   'Chemicals': [
-    'Industrial Solvent', 'Cleaning Chemical', 'Adhesive Glue', 'Paint Thinner',
-    'Lubricating Oil', 'Detergent Powder', 'Disinfectant', 'Fertilizer',
-    'Cosmetic Ingredient', 'Pharmaceutical Raw Material'
+    'Industrial Solvent - Isopropyl Alcohol 99%', 'Cleaning Chemical - Multi-Purpose', 'Epoxy Adhesive - High Strength',
+    'Paint Thinner - Mineral Spirits', 'Synthetic Lubricating Oil - 10W-30', 'Laundry Detergent - Concentrated',
+    'Surface Disinfectant - Hospital Grade', 'NPK Fertilizer - 20-20-20', 'Cosmetic Ingredient - Hyaluronic Acid',
+    'Pharmaceutical Raw Material - API Grade'
   ],
   'Automotive': [
-    'Car Brake Pads', 'Engine Oil Filter', 'LED Headlights', 'Car Battery',
-    'Tire Pressure Sensor', 'Car Seat Cover', 'Dashboard Camera', 'Car Charger',
-    'Windshield Wiper', 'Air Filter'
+    'Ceramic Brake Pads - Performance Grade', 'Engine Oil Filter - OEM Quality', 'LED Headlight Assembly - H7',
+    'Car Battery - AGM Technology', 'TPMS Sensor - Universal Fit', 'Leather Car Seat Covers - Custom Fit',
+    'Dash Cam - 4K Recording', 'Wireless Car Charger - Fast Charge', 'Windshield Wiper Blades - All Weather',
+    'Engine Air Filter - High Flow'
+  ],
+  'Food & Beverage': [
+    'Organic Coffee Beans - Single Origin', 'Premium Olive Oil - Extra Virgin', 'Artisan Chocolate - Dark 70%',
+    'Craft Beer - IPA Selection', 'Organic Spices - Turmeric Powder', 'Gourmet Cheese - Aged Cheddar',
+    'Natural Honey - Raw & Unfiltered', 'Tea Leaves - Premium Blend', 'Organic Nuts - Mixed Variety',
+    'Craft Spirits - Small Batch Whiskey'
+  ],
+  'Construction': [
+    'Steel Rebar - Grade 60', 'Portland Cement - Type I', 'Insulation Board - R-Value 20',
+    'Safety Helmet - ANSI Z89.1', 'Power Drill - Cordless 20V', 'Concrete Mixer - 3.5 Cubic Feet',
+    'Scaffolding System - Modular', 'Safety Harness - Full Body', 'Hard Hat - High Visibility',
+    'Construction Gloves - Cut Resistant'
+  ],
+  'Medical': [
+    'Surgical Instruments - Stainless Steel', 'Medical Gloves - Nitrile Exam', 'Diagnostic Stethoscope - Digital',
+    'PPE Kit - Complete Set', 'Pharmaceutical Tablets - Generic', 'Medical Device - Blood Pressure Monitor',
+    'Surgical Masks - N95 Grade', 'Disposable Syringes - Sterile', 'Medical Bandages - Adhesive',
+    'First Aid Kit - Comprehensive'
+  ],
+  'Sports': [
+    'Fitness Equipment - Treadmill Pro', 'Outdoor Gear - Hiking Backpack', 'Team Sports - Basketball',
+    'Water Sports - Kayak Paddle', 'Winter Sports - Ski Boots', 'Gym Equipment - Dumbbell Set',
+    'Outdoor Camping - Tent 4-Person', 'Water Sports - Surfboard', 'Team Sports - Soccer Ball',
+    'Fitness Equipment - Yoga Mat'
+  ],
+  'Home & Garden': [
+    'Furniture - Solid Wood Dining Table', 'Home Decor - Wall Art Canvas', 'Garden Tools - Spade Set',
+    'Kitchenware - Stainless Steel Cookware', 'Lighting - LED Pendant Lights', 'Furniture - Sectional Sofa',
+    'Garden Tools - Pruning Shears', 'Kitchenware - Ceramic Dinnerware', 'Home Decor - Throw Pillows',
+    'Lighting - Table Lamp - Modern'
   ]
 };
 
@@ -134,7 +240,7 @@ async function main() {
     const industry = industries[Math.floor(Math.random() * industries.length)];
     const businessType = businessTypes[Math.floor(Math.random() * businessTypes.length)];
     const companyName = companyNames[i];
-    
+
     const user = await prisma.user.create({
       data: {
         name: `Supplier ${i + 1}`,
@@ -209,12 +315,16 @@ async function main() {
     const category = categories[Math.floor(Math.random() * categories.length)];
     const subcategory = (subcategories as any)[category]?.[Math.floor(Math.random() * ((subcategories as any)[category]?.length || 1))] || 'General';
     const productName = (productNames as any)[category]?.[Math.floor(Math.random() * ((productNames as any)[category]?.length || 1))] || `${category} Product ${i + 1}`;
-    
+
+    // Get category-specific images
+    const categoryImages = (productImages as any)[category] || productImages['Electronics'];
+    const selectedImages = categoryImages.slice(0, Math.floor(Math.random() * 3) + 1);
+
     const product = await prisma.product.create({
       data: {
         supplierId: supplier.id,
         name: productName,
-        description: `High-quality ${productName.toLowerCase()} manufactured with precision and attention to detail. Perfect for commercial and industrial use.`,
+        description: `Professional-grade ${productName.toLowerCase()} designed for commercial and industrial applications. Manufactured to the highest standards with premium materials and advanced technology. Features excellent durability, superior performance, and competitive pricing. Ideal for bulk orders and long-term business partnerships.`,
         category,
         subcategory,
         price: Number((Math.random() * 1000 + 10).toFixed(2)),
@@ -235,7 +345,7 @@ async function main() {
           'Environmentally Friendly'
         ].slice(0, Math.floor(Math.random() * 3) + 2),
         tags: [category, subcategory, 'Premium', 'Quality', 'Reliable'],
-        images: productImages.slice(0, Math.floor(Math.random() * 3) + 1),
+        images: selectedImages,
         inStock: Math.random() > 0.2, // 80% in stock
         stockQuantity: Math.floor(Math.random() * 1000) + 100,
         leadTime: `${Math.floor(Math.random() * 30) + 7} days`, // 7-37 days
@@ -253,7 +363,7 @@ async function main() {
   for (let i = 0; i < 50; i++) {
     const supplier = suppliers[Math.floor(Math.random() * suppliers.length)];
     const buyer = buyers[i];
-    
+
     await prisma.supplierReview.create({
       data: {
         supplierId: supplier.id,
@@ -271,7 +381,7 @@ async function main() {
   for (let i = 0; i < 80; i++) {
     const product = products[Math.floor(Math.random() * products.length)];
     const buyer = buyers[Math.floor(Math.random() * buyers.length)];
-    
+
     await prisma.productReview.create({
       data: {
         productId: product.id,
@@ -289,11 +399,11 @@ async function main() {
     const reviews = await prisma.supplierReview.findMany({
       where: { supplierId: supplier.id }
     });
-    
+
     if (reviews.length > 0) {
       const avgRating = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
       const totalOrders = reviews.reduce((sum, review) => sum + 1, 0) + Math.floor(Math.random() * 50);
-      
+
       await prisma.supplier.update({
         where: { id: supplier.id },
         data: {
