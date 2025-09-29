@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import WhatsAppButton from "@/components/ui/whatsapp-button";
 import { LoanFormProvider } from "@/contexts/LoanFormContext";
+import { PopupProvider } from "@/contexts/PopupContext";
+import NavbarWrapper from "@/components/ui/navbar-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -165,7 +167,10 @@ export default function RootLayout({
       >
         <Providers>
           <LoanFormProvider>
-            {children}
+            <PopupProvider>
+              <NavbarWrapper />
+              {children}
+            </PopupProvider>
           </LoanFormProvider>
         </Providers>
         <WhatsAppButton />

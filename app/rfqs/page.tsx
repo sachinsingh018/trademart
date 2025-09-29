@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { usePopup } from "@/contexts/PopupContext";
 
 interface RFQ {
     id: string;
@@ -39,6 +41,8 @@ interface RFQ {
 }
 
 export default function RFQsPage() {
+    const { data: session } = useSession();
+    const { setIsPopupActive } = usePopup();
     const [rfqs, setRfqs] = useState<RFQ[]>([]);
     const [filteredRfqs, setFilteredRfqs] = useState<RFQ[]>([]);
     const [loading, setLoading] = useState(true);
@@ -46,6 +50,8 @@ export default function RFQsPage() {
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedStatus, setSelectedStatus] = useState("all");
     const [sortBy, setSortBy] = useState("newest");
+    const [showOverlay, setShowOverlay] = useState(false);
+    const [timeRemaining, setTimeRemaining] = useState(10);
 
     // Fetch RFQs from database
     useEffect(() => {
@@ -170,6 +176,32 @@ export default function RFQsPage() {
         setFilteredRfqs(filtered);
     }, [rfqs, searchTerm, selectedCategory, selectedStatus, sortBy]);
 
+    // Timer effect for overlay - only for non-logged-in users
+    useEffect(() => {
+        if (session) {
+            setShowOverlay(false);
+            setIsPopupActive(false);
+            return;
+        }
+
+        const timer = setInterval(() => {
+            setTimeRemaining((prev) => {
+                if (prev <= 1) {
+                    // Defer state updates to avoid setState during render
+                    setTimeout(() => {
+                        setShowOverlay(true);
+                        setIsPopupActive(true);
+                    }, 0);
+                    clearInterval(timer);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [session, setIsPopupActive]);
+
     const getStatusColor = (status: string) => {
         switch (status) {
             case "open":
@@ -219,49 +251,42 @@ export default function RFQsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-            {/* Navigation */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center">
-                            <Link href="/" className="flex items-center">
-                                <Image
-                                    src="/logofinal.png"
-                                    alt="TradeMart Logo"
-                                    width={160}
-                                    height={160}
-                                    className="w-40 h-40 hover:scale-120 transition-transform duration-300 drop-shadow-2xl"
-                                />
-                            </Link>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative">
+
+            {/* Auth overlay - only for non-logged-in users */}
+            {!session && showOverlay && (
+                <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-white/20 animate-in fade-in-0 zoom-in-95 duration-300">
+                        <div className="text-center mb-6">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
+                            <p className="text-gray-600 text-sm">
+                                Sign in to view detailed RFQ information and submit quotes.
+                            </p>
                         </div>
-                        <div className="flex items-center space-x-6">
-                            <div className="hidden md:flex items-center space-x-6">
-                                <Link href="/suppliers" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                    Suppliers
-                                </Link>
-                                <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                    Products
-                                </Link>
-                                <Link href="/rfqs" className="text-blue-600 font-medium">
-                                    RFQs
-                                </Link>
-                            </div>
-                            <div className="flex items-center space-x-4">
-                                <Link href="/auth/signin">
-                                    <Button variant="outline" className="border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors">Sign In</Button>
-                                </Link>
-                                <Link href="/auth/signup">
-                                    <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300">Get Started</Button>
-                                </Link>
-                            </div>
+
+                        <div className="space-y-3">
+                            <Link href="/auth/signin" className="block">
+                                <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg">
+                                    Sign In
+                                </Button>
+                            </Link>
+                            <Link href="/auth/signup" className="block">
+                                <Button variant="outline" className="w-full border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-3 font-semibold transition-all duration-300 rounded-lg">
+                                    Create Account
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
-            </nav>
+            )}
 
             {/* Header */}
-            <div className="bg-white border-b border-gray-200">
+            <div className={`bg-white border-b border-gray-200 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="text-center">
                         <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -271,6 +296,16 @@ export default function RFQsPage() {
                             Discover business opportunities and connect with buyers worldwide.
                             Submit competitive quotes and grow your business.
                         </p>
+
+                        {/* Timer display - only for non-logged-in users */}
+                        {!session && !showOverlay && timeRemaining > 0 && (
+                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Free preview ends in {timeRemaining} seconds
+                            </div>
+                        )}
 
                         {/* Stats */}
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
@@ -302,7 +337,7 @@ export default function RFQsPage() {
             </div>
 
             {/* Filters */}
-            <div className="bg-white border-b border-gray-200 sticky top-16 z-40">
+            <div className={`bg-white border-b border-gray-200 sticky top-16 z-40 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     <div className="flex flex-col lg:flex-row gap-4">
                         <div className="flex-1">
@@ -357,7 +392,7 @@ export default function RFQsPage() {
             </div>
 
             {/* RFQs List */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
                 <div className="space-y-6">
                     {filteredRfqs.length === 0 ? (
                         <div className="text-center py-12">
