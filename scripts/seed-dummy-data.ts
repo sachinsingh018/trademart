@@ -115,9 +115,9 @@ const subcategories = {
 };
 
 const countries = [
-  'United States', 'China', 'India', 'Germany', 'Japan', 'South Korea',
-  'United Kingdom', 'France', 'Italy', 'Canada', 'Australia', 'Brazil',
-  'Mexico', 'Spain', 'Netherlands', 'Singapore', 'Thailand', 'Vietnam'
+  'Brazil', 'Russia', 'India', 'China', 'South Africa', 'Argentina',
+  'Bangladesh', 'Egypt', 'Ethiopia', 'Indonesia', 'Iran', 'Mexico',
+  'Nigeria', 'Pakistan', 'Saudi Arabia', 'Turkey', 'Thailand', 'Vietnam'
 ];
 
 const industries = [
