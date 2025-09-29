@@ -60,6 +60,7 @@ model Supplier {
   businessInfo         Json?            @map("business_info")
   companyLogo          String?          @map("company_logo")
   lastActive           DateTime?        @map("last_active")
+  viewCount            Int              @default(0) @map("view_count")
   createdAt            DateTime         @default(now()) @map("created_at")
   updatedAt            DateTime         @updatedAt @map("updated_at")
   products             Product[]
@@ -157,6 +158,7 @@ model Rfq {
   attachments    String[]      @default([])
   additionalInfo String?       @map("additional_info")
   expiresAt      DateTime?     @map("expires_at")
+  viewCount      Int           @default(0) @map("view_count")
   createdAt      DateTime      @default(now()) @map("created_at")
   updatedAt      DateTime      @updatedAt @map("updated_at")
   quotes         Quote[]

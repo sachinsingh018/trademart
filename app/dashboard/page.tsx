@@ -310,6 +310,18 @@ export default function Dashboard() {
                                 </Badge>
                             </div>
 
+                            {/* Edit Profile Button */}
+                            <Link href="/dashboard/profile">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="group border-gray-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 font-medium"
+                                >
+                                    <span className="group-hover:scale-110 transition-transform duration-200">👤</span>
+                                    <span className="ml-2 hidden sm:inline">Edit Profile</span>
+                                </Button>
+                            </Link>
+
                             {/* Sign Out Button */}
                             <Link href="/auth/signout">
                                 <Button

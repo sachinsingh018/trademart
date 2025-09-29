@@ -19,6 +19,7 @@ interface RFQ {
     budget: number;
     currency: string;
     status: "open" | "quoted" | "closed";
+    viewCount: number;
     buyer: {
         name: string;
         company: string;
@@ -74,6 +75,7 @@ export default function RFQsPage() {
                         budget: number;
                         currency: string;
                         status: string;
+                        viewCount?: number;
                         requirements: string[];
                         createdAt: string;
                         expiresAt: string;
@@ -96,6 +98,7 @@ export default function RFQsPage() {
                             country: "Unknown", // This would need to be added to the database
                             verified: true, // This would need to be added to the database
                         },
+                        viewCount: rfq.viewCount || 0,
                         quotesCount: rfq.quotes?.length || 0,
                         createdAt: rfq.createdAt,
                         expiresAt: rfq.expiresAt || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // Default 30 days
@@ -395,6 +398,10 @@ export default function RFQsPage() {
                                                 <div className="flex justify-between">
                                                     <span className="text-gray-600">Budget:</span>
                                                     <span className="font-medium">{rfq.currency} {rfq.budget}</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-gray-600">Views:</span>
+                                                    <span className="font-medium">{rfq.viewCount || 0}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-gray-600">Quotes:</span>

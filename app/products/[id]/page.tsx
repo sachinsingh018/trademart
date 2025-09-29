@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSession } from "next-auth/react";
+import { useViewTracker } from "@/hooks/useViewTracker";
 
 interface Product {
     id: string;
@@ -73,6 +74,9 @@ export default function ProductDetailPage() {
         size: "",
     });
     const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
+
+    // Track page views
+    useViewTracker({ type: 'product', id: params?.id as string });
     const [quoteMessage, setQuoteMessage] = useState("");
     const [fetchError, setFetchError] = useState<string | null>(null);
     const [retryCount, setRetryCount] = useState(0);

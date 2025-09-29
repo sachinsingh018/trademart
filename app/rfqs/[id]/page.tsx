@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useViewTracker } from "@/hooks/useViewTracker";
 // import { MessageSquare, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 interface RFQ {
@@ -71,6 +72,9 @@ export default function RFQDetailPage() {
     const [loading, setLoading] = useState(true);
     const [showQuoteForm, setShowQuoteForm] = useState(false);
     const [submittingQuote, setSubmittingQuote] = useState(false);
+
+    // Track page views
+    useViewTracker({ type: 'rfq', id: params?.id as string });
     const [quoteForm, setQuoteForm] = useState({
         price: "",
         currency: "USD",

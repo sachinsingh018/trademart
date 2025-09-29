@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import WhatsAppButton from "@/components/ui/whatsapp-button";
+import { LoanFormProvider } from "@/contexts/LoanFormContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -161,7 +163,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <LoanFormProvider>
+            {children}
+          </LoanFormProvider>
+        </Providers>
+        <WhatsAppButton />
       </body>
     </html>
   );

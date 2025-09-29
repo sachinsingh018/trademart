@@ -414,6 +414,17 @@ export default function ServicesPage() {
                                                 </div>
                                             </div>
 
+                                            <div className="flex items-center justify-between mb-3">
+                                                <div className="flex items-center space-x-2">
+                                                    <span className="text-sm text-gray-600">Views:</span>
+                                                    <span className="text-sm font-medium">{service.views.toLocaleString()}</span>
+                                                </div>
+                                                <div className="flex items-center space-x-2">
+                                                    <span className="text-sm text-gray-600">Orders:</span>
+                                                    <span className="text-sm font-medium">{service.orders.toLocaleString()}</span>
+                                                </div>
+                                            </div>
+
                                             {service.experience && (
                                                 <div className="text-sm text-gray-600 mb-2">
                                                     Experience: {service.experience}

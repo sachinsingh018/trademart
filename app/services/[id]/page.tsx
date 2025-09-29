@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
+import { useViewTracker } from "@/hooks/useViewTracker";
 
 interface Service {
     id: string;
@@ -64,6 +65,9 @@ export default function ServiceDetailPage() {
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(0);
     const [showQuoteForm, setShowQuoteForm] = useState(false);
+
+    // Track page views
+    useViewTracker({ type: 'service', id: params?.id as string });
     const [quoteData, setQuoteData] = useState({
         budget: "",
         timeline: "",

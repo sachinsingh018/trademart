@@ -61,6 +61,7 @@ function SignUpForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const roleParam = searchParams?.get("role");
+    const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
 
     const [formData, setFormData] = useState<FormData>({
         name: "",
@@ -293,7 +294,8 @@ function SignUpForm() {
             if (response.ok) {
                 setSuccess("Account created successfully!");
                 setTimeout(() => {
-                    router.push("/auth/signin?message=Account created successfully. Please sign in.");
+                    const callbackParam = callbackUrl ? `&callbackUrl=${encodeURIComponent(callbackUrl)}` : '';
+                    router.push(`/auth/signin?message=Account created successfully. Please sign in.${callbackParam}`);
                 }, 2000);
             } else {
                 setError(data.error || "An error occurred. Please try again.");

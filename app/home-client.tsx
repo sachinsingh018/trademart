@@ -148,6 +148,9 @@ export default function HomeClient() {
                 <Link href="/rfqs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
                   RFQs
                 </Link>
+                <Link href="/loans" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
+                  Business Loans
+                </Link>
               </div>
 
               {/* Auth Buttons */}
@@ -167,6 +170,47 @@ export default function HomeClient() {
       {/* Country Flags Bar */}
       <CountryFlagsBar />
 
+      {/* Government Initiatives Section */}
+      <section className="py-12 bg-gradient-to-r from-slate-50 to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h3 className="text-sm font-medium text-gray-700 mb-1">Supported by</h3>
+            <p className="text-xs text-gray-500">Government initiatives empowering Indian businesses</p>
+          </div>
+          <div className="flex justify-center items-center space-x-12 opacity-90 hover:opacity-100 transition-opacity duration-300">
+            <div className="flex items-center space-x-10">
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png"
+                  alt="Make in India"
+                  width={150}
+                  height={60}
+                  className="h-16 w-auto object-contain"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Digital_India_logo.svg/1200px-Digital_India_logo.svg.png"
+                  alt="Digital India"
+                  width={150}
+                  height={60}
+                  className="h-16 w-auto object-contain"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://pbs.twimg.com/profile_images/1840626562082676736/QB8mg12l_400x400.jpg"
+                  alt="Startup India"
+                  width={150}
+                  height={60}
+                  className="h-16 w-16 object-contain rounded-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="relative py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto">
@@ -181,46 +225,74 @@ export default function HomeClient() {
               Connect with verified suppliers worldwide. Find products, submit RFQs, and grow your business with secure transactions and trusted partnerships.
             </p>
 
-            {/* Enhanced Search Bar */}
-            <div className="max-w-4xl mx-auto mb-8">
-              <div className="relative bg-white rounded-2xl shadow-2xl p-2">
-                <div className="flex flex-col md:flex-row gap-2">
-                  <div className="flex-1">
+            {/* Modern Levelled Search Bar */}
+            <div className="max-w-5xl mx-auto mb-8">
+              <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-2 hover:shadow-3xl transition-all duration-500">
+                <div className="flex flex-col lg:flex-row items-center">
+                  {/* Search Input with Icon */}
+                  <div className="flex-1 relative flex items-center">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
                     <input
                       type="text"
                       placeholder="Search products, suppliers, or categories..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      className="w-full px-6 py-4 text-lg border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-12 pr-6 py-4 text-lg border-0 bg-transparent focus:outline-none transition-all duration-300 placeholder:text-gray-400"
                     />
                   </div>
-                  <div className="flex gap-2">
-                    <select className="px-4 py-4 border-0 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                  {/* Category Filter */}
+                  <div className="relative flex items-center px-4">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <select className="pl-10 pr-8 py-4 border-0 bg-transparent focus:outline-none transition-all duration-300 text-gray-700 font-medium appearance-none cursor-pointer min-w-[180px]">
                       <option value="">All Categories</option>
                       <option value="electronics">Electronics</option>
                       <option value="textiles">Textiles</option>
                       <option value="machinery">Machinery</option>
                       <option value="chemicals">Chemicals</option>
                     </select>
-                    <Button
-                      onClick={handleSearch}
-                      className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      Search
-                    </Button>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
                   </div>
+
+                  {/* Search Button - Levelled */}
+                  <button
+                    onClick={handleSearch}
+                    className="px-6 py-4 bg-transparent text-blue-600 font-semibold hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 flex items-center gap-2 rounded-2xl"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Search
+                  </button>
                 </div>
               </div>
 
-              {/* Popular Searches */}
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
-                <span className="text-sm text-gray-600">Popular:</span>
+              {/* Modern Popular Searches */}
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <span className="text-sm font-medium text-gray-500 flex items-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Popular searches:
+                </span>
                 {['Smartphones', 'Textiles', 'Machinery', 'Electronics', 'Chemicals'].map((term) => (
                   <button
                     key={term}
                     onClick={() => setSearchTerm(term)}
-                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline px-2"
+                    className="text-sm text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full border border-blue-200 hover:border-blue-300 transition-all duration-200 font-medium"
                   >
                     {term}
                   </button>
@@ -693,11 +765,13 @@ export default function HomeClient() {
             </div>
           </div>
 
+
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
             <p>&copy; 2024 TradeMart. All rights reserved. | Global B2B Marketplace</p>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }

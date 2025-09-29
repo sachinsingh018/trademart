@@ -20,6 +20,7 @@ interface Supplier {
     verified: boolean;
     rating: number;
     totalOrders: number;
+    viewCount: number;
     responseTime: string;
     minOrderValue: number;
     currency: string;
@@ -91,6 +92,7 @@ export default function SuppliersPage() {
                         verified: supplier.verified,
                         rating: parseFloat(supplier.rating.toString()),
                         totalOrders: supplier.totalOrders,
+                        viewCount: 'viewCount' in supplier ? (supplier as { viewCount: number }).viewCount : 0,
                         responseTime: supplier.responseTime || "N/A",
                         minOrderValue: supplier.minOrderValue ? parseFloat(supplier.minOrderValue.toString()) : 0,
                         currency: supplier.currency || "USD",
@@ -423,6 +425,10 @@ export default function SuppliersPage() {
                                             <div>
                                                 <span className="text-gray-600">Orders:</span>
                                                 <div className="font-medium">{supplier.totalOrders.toLocaleString()}</div>
+                                            </div>
+                                            <div>
+                                                <span className="text-gray-600">Views:</span>
+                                                <div className="font-medium">{supplier.viewCount.toLocaleString()}</div>
                                             </div>
                                             <div>
                                                 <span className="text-gray-600">Response:</span>
