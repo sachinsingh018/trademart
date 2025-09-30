@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -33,6 +32,7 @@ interface Supplier {
     employees: string;
     website?: string;
     logo?: string;
+    phone?: string;
     joinedDate: string;
     lastActive: string;
 }
