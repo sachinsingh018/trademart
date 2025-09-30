@@ -14,7 +14,7 @@ interface NavbarProps {
 export default function Navbar({ isPopupActive = false }: NavbarProps) {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
 
     const isActive = (path: string) => {
         return pathname === path;
