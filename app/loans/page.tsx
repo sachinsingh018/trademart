@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -576,7 +575,7 @@ export default function LoansPage() {
                             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
-                                        <Label className="text-xs sm:text-sm" htmlFor="fullName" className="text-xs sm:text-sm">Full Name *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="fullName">Full Name *</Label>
                                         <Input
                                             id="fullName"
                                             value={formData.fullName}
