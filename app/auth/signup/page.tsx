@@ -893,13 +893,13 @@ function SignUpForm() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-2xl w-full space-y-8">
                 <div className="text-center">
-                    <Link href="/" className="flex items-center justify-center mb-8">
+                    <Link href="/" className="hidden sm:flex items-center justify-center mb-8">
                         <Image
                             src="/logofinal.png"
                             alt="TradeMart Logo"
                             width={200}
                             height={200}
-                            className="w-48 h-48 hover:scale-120 transition-transform duration-300 drop-shadow-2xl"
+                            className="w-48 h-48 hover:scale-105 transition-transform duration-300 drop-shadow-xl"
                         />
                     </Link>
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">

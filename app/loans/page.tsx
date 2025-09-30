@@ -34,6 +34,7 @@ export default function LoansPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [showAllBanks, setShowAllBanks] = useState(false);
 
     const handleInputChange = (field: string, value: string) => {
         updateFormData({ [field]: value });
@@ -178,31 +179,31 @@ export default function LoansPage() {
 
             {/* Hero Section */}
             <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
                     <div className="text-center">
-                        <Badge className="bg-white/20 text-white border-white/30 mb-4">
-                            <Building2 className="w-4 h-4 mr-2" />
+                        <Badge className="bg-white/20 text-white border-white/30 mb-3 sm:mb-4 text-xs sm:text-sm">
+                            <Building2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                             Partnered with Leading Banks
                         </Badge>
-                        <h1 className="text-5xl font-bold mb-6">
+                        <h1 className="text-3xl sm:text-5xl font-bold mb-4 sm:mb-6">
                             Get Approved for Business Loans
                             <span className="block text-green-200">Easily & Quickly</span>
                         </h1>
-                        <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                        <p className="text-base sm:text-xl text-blue-100 mb-6 sm:mb-8 max-w-3xl mx-auto">
                             Access funding for your business growth with our trusted banking partners.
                             Fast approval, competitive rates, and dedicated support.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4">
-                            <div className="flex items-center bg-white/10 rounded-lg px-4 py-2">
-                                <CheckCircle className="w-5 h-5 mr-2" />
+                        <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
+                            <div className="flex items-center bg-white/10 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base">
+                                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                                 <span>Quick Approval</span>
                             </div>
-                            <div className="flex items-center bg-white/10 rounded-lg px-4 py-2">
-                                <Shield className="w-5 h-5 mr-2" />
+                            <div className="flex items-center bg-white/10 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base">
+                                <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                                 <span>Secure Process</span>
                             </div>
-                            <div className="flex items-center bg-white/10 rounded-lg px-4 py-2">
-                                <Users className="w-5 h-5 mr-2" />
+                            <div className="flex items-center bg-white/10 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base">
+                                <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                                 <span>Expert Support</span>
                             </div>
                         </div>
@@ -211,15 +212,15 @@ export default function LoansPage() {
             </div>
 
             {/* Partners Section */}
-            <div className="py-16 bg-gray-50">
+            <div className="py-8 sm:py-16 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Trusted by Leading Financial Partners</h2>
-                        <p className="text-xl text-gray-600">We&apos;ve partnered with India&apos;s top banks and financial institutions to bring you the best loan options</p>
+                    <div className="text-center mb-6 sm:mb-12">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Trusted by Leading Financial Partners</h2>
+                        <p className="text-sm sm:text-xl text-gray-600">We&apos;ve partnered with India&apos;s top banks and financial institutions to bring you the best loan options</p>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 items-center">
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-6 items-center">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/kotak.jpg"
                                 alt="Kotak Mahindra Bank"
@@ -228,7 +229,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/axis.jpg"
                                 alt="Axis Bank"
@@ -237,7 +238,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/induslnd.jpg"
                                 alt="IndusInd Bank"
@@ -246,7 +247,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/copri.jpg"
                                 alt="Co-operative Bank"
@@ -255,7 +256,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/PNB-logo.jpg"
                                 alt="Punjab National Bank"
@@ -264,7 +265,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/icici-bank.jpg"
                                 alt="ICICI Bank"
@@ -273,7 +274,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/standard.jpg"
                                 alt="Standard Chartered Bank"
@@ -282,7 +283,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20">
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/yes-bank.jpg"
                                 alt="YES Bank"
@@ -291,7 +292,8 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        {/* Hidden banks on mobile - shown when expanded */}
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/icici-bank-loan.jpg"
                                 alt="ICICI Bank Loans"
@@ -300,7 +302,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/tata.jpg"
                                 alt="Tata Capital"
@@ -309,7 +311,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/Au-small-finance-bank.jpg"
                                 alt="AU Small Finance Bank"
@@ -318,7 +320,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/DCB.jpg"
                                 alt="DCB Bank"
@@ -327,7 +329,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/Pheonix-ARC.jpg"
                                 alt="Phoenix ARC"
@@ -336,7 +338,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/SNGC-Bank.jpg"
                                 alt="SNGC Bank"
@@ -345,7 +347,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/Encore-ARC.jpg"
                                 alt="Encore ARC"
@@ -354,7 +356,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/State-Bank-of-India.jpg"
                                 alt="State Bank of India"
@@ -363,7 +365,7 @@ export default function LoansPage() {
                                 className="object-contain max-h-12"
                             />
                         </div>
-                        <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-20">
+                        <div className={`${showAllBanks ? '' : 'hidden'} md:block bg-white rounded-lg p-3 sm:p-4 shadow-md hover:shadow-lg transition-shadow flex items-center justify-center h-16 sm:h-20`}>
                             <Image
                                 src="https://www.rhomboidfinguru.com/images/logo-Alliances/LIC.jpg"
                                 alt="Life Insurance Corporation"
@@ -373,55 +375,110 @@ export default function LoansPage() {
                             />
                         </div>
                     </div>
+
+                    {/* Show More Button - Mobile Only */}
+                    <div className="text-center mt-6 md:hidden">
+                        <Button
+                            onClick={() => setShowAllBanks(!showAllBanks)}
+                            variant="outline"
+                            className="border-gray-300 text-gray-700 hover:bg-gray-50"
+                        >
+                            {showAllBanks ? 'Show Less Partners' : 'Show All Partners (10 more)'}
+                        </Button>
+                    </div>
                 </div>
             </div>
 
             {/* Features Section */}
-            <div className="py-16 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Our Loan Partners?</h2>
-                        <p className="text-xl text-gray-600">We&apos;ve partnered with leading financial institutions to bring you the best loan options</p>
+            <div className="py-8 sm:py-16 bg-white">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-6 sm:mb-12 px-4 sm:px-6 lg:px-8">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Why Choose Our Loan Partners?</h2>
+                        <p className="text-sm sm:text-xl text-gray-600">We&apos;ve partnered with leading financial institutions to bring you the best loan options</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
-                            <CardContent className="p-6">
-                                <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Clock className="w-8 h-8 text-green-600" />
+                    {/* Horizontal Scrollable on Mobile, Grid on Desktop */}
+                    <div className="flex overflow-x-auto gap-4 px-4 pb-4 md:hidden scrollbar-hide snap-x snap-mandatory" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow flex-shrink-0 w-[280px] snap-center">
+                            <CardContent className="p-4">
+                                <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <Clock className="w-6 h-6 text-green-600" />
                                 </div>
-                                <h3 className="text-xl font-semibold mb-2">Fast Approval</h3>
-                                <p className="text-gray-600">Get approved in as little as 24 hours with our streamlined process</p>
+                                <h3 className="text-base font-semibold mb-1">Fast Approval</h3>
+                                <p className="text-gray-600 text-sm">Get approved in as little as 24 hours with our streamlined process</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow flex-shrink-0 w-[280px] snap-center">
+                            <CardContent className="p-4">
+                                <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <DollarSign className="w-6 h-6 text-blue-600" />
+                                </div>
+                                <h3 className="text-base font-semibold mb-1">Competitive Rates</h3>
+                                <p className="text-gray-600 text-sm">Access competitive interest rates from our trusted banking partners</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow flex-shrink-0 w-[280px] snap-center">
+                            <CardContent className="p-4">
+                                <div className="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <FileText className="w-6 h-6 text-purple-600" />
+                                </div>
+                                <h3 className="text-base font-semibold mb-1">Minimal Documentation</h3>
+                                <p className="text-gray-600 text-sm">Simple application process with minimal paperwork required</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow flex-shrink-0 w-[280px] snap-center">
+                            <CardContent className="p-4">
+                                <div className="bg-orange-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <TrendingUp className="w-6 h-6 text-orange-600" />
+                                </div>
+                                <h3 className="text-base font-semibold mb-1">Business Growth</h3>
+                                <p className="text-gray-600 text-sm">Fuel your business expansion with flexible loan terms</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Desktop Grid */}
+                    <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 px-4 sm:px-6 lg:px-8">
+                        <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
+                            <CardContent className="p-4 sm:p-6">
+                                <div className="bg-green-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                    <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+                                </div>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Fast Approval</h3>
+                                <p className="text-gray-600 text-sm sm:text-base">Get approved in as little as 24 hours with our streamlined process</p>
                             </CardContent>
                         </Card>
 
                         <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
-                            <CardContent className="p-6">
-                                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <DollarSign className="w-8 h-8 text-blue-600" />
+                            <CardContent className="p-4 sm:p-6">
+                                <div className="bg-blue-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                    <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
                                 </div>
-                                <h3 className="text-xl font-semibold mb-2">Competitive Rates</h3>
-                                <p className="text-gray-600">Access competitive interest rates from our trusted banking partners</p>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Competitive Rates</h3>
+                                <p className="text-gray-600 text-sm sm:text-base">Access competitive interest rates from our trusted banking partners</p>
                             </CardContent>
                         </Card>
 
                         <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
-                            <CardContent className="p-6">
-                                <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <FileText className="w-8 h-8 text-purple-600" />
+                            <CardContent className="p-4 sm:p-6">
+                                <div className="bg-purple-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                    <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
                                 </div>
-                                <h3 className="text-xl font-semibold mb-2">Minimal Documentation</h3>
-                                <p className="text-gray-600">Simple application process with minimal paperwork required</p>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Minimal Documentation</h3>
+                                <p className="text-gray-600 text-sm sm:text-base">Simple application process with minimal paperwork required</p>
                             </CardContent>
                         </Card>
 
                         <Card className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
-                            <CardContent className="p-6">
-                                <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <TrendingUp className="w-8 h-8 text-orange-600" />
+                            <CardContent className="p-4 sm:p-6">
+                                <div className="bg-orange-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                    <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
                                 </div>
-                                <h3 className="text-xl font-semibold mb-2">Business Growth</h3>
-                                <p className="text-gray-600">Fuel your business expansion with flexible loan terms</p>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Business Growth</h3>
+                                <p className="text-gray-600 text-sm sm:text-base">Fuel your business expansion with flexible loan terms</p>
                             </CardContent>
                         </Card>
                     </div>
@@ -429,24 +486,24 @@ export default function LoansPage() {
             </div>
 
             {/* Loan Application Form */}
-            <div className="py-16 bg-gray-50">
+            <div className="py-8 sm:py-16 bg-gray-50">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-4">Apply for Your Business Loan</h2>
-                        <p className="text-xl text-gray-600">Fill out the form below and our partners will contact you within 24 hours</p>
+                    <div className="text-center mb-6 sm:mb-12">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Apply for Your Business Loan</h2>
+                        <p className="text-sm sm:text-xl text-gray-600">Fill out the form below and our partners will contact you within 24 hours</p>
                     </div>
 
                     <Card className="border-0 shadow-xl">
-                        <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
-                            <CardTitle className="flex items-center">
-                                <CreditCard className="w-6 h-6 mr-2" />
+                        <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-4 sm:px-6 py-4 sm:py-6">
+                            <CardTitle className="flex items-center text-base sm:text-lg">
+                                <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
                                 Loan Application Form
                             </CardTitle>
-                            <CardDescription className="text-green-100">
+                            <CardDescription className="text-green-100 text-xs sm:text-sm">
                                 All information is secure and will only be shared with our banking partners
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="p-8 relative">
+                        <CardContent className="p-4 sm:p-8 relative">
                             {submitStatus === 'success' && (
                                 <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                                     <div className="flex items-center">
@@ -516,10 +573,10 @@ export default function LoansPage() {
                                 </div>
                             )}
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
-                                        <Label htmlFor="fullName">Full Name *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="fullName" className="text-xs sm:text-sm">Full Name *</Label>
                                         <Input
                                             id="fullName"
                                             value={formData.fullName}
@@ -534,7 +591,7 @@ export default function LoansPage() {
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor="email">Email Address *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="email">Email Address *</Label>
                                         <Input
                                             id="email"
                                             type="email"
@@ -551,9 +608,9 @@ export default function LoansPage() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
-                                        <Label htmlFor="phone">Phone Number *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="phone">Phone Number *</Label>
                                         <Input
                                             id="phone"
                                             type="tel"
@@ -569,7 +626,7 @@ export default function LoansPage() {
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor="company">Company Name *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="company">Company Name *</Label>
                                         <Input
                                             id="company"
                                             value={formData.company}
@@ -585,9 +642,9 @@ export default function LoansPage() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
-                                        <Label htmlFor="businessType">Business Type *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="businessType">Business Type *</Label>
                                         <Select value={formData.businessType} onValueChange={(value) => handleInputChange('businessType', value)} disabled={!session}>
                                             <SelectTrigger className={`${getInputClassName()} ${errors.businessType ? 'border-red-500 focus:border-red-500' : ''}`}>
                                                 <SelectValue placeholder="Select business type" />
@@ -610,7 +667,7 @@ export default function LoansPage() {
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor="loanAmount">Loan Amount Required *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="loanAmount">Loan Amount Required *</Label>
                                         <Select value={formData.loanAmount} onValueChange={(value) => handleInputChange('loanAmount', value)} disabled={!session}>
                                             <SelectTrigger className={`${getInputClassName()} ${errors.loanAmount ? 'border-red-500 focus:border-red-500' : ''}`}>
                                                 <SelectValue placeholder="Select loan amount" />
@@ -662,7 +719,6 @@ export default function LoansPage() {
                                             <SelectItem value="DZD">🇩🇿 DZD - Algerian Dinar</SelectItem>
                                             <SelectItem value="LYD">🇱🇾 LYD - Libyan Dinar</SelectItem>
                                             <SelectItem value="SDG">🇸🇩 SDG - Sudanese Pound</SelectItem>
-                                            <SelectItem value="INR">🇮🇳 INR - Indian Rupee</SelectItem>
                                             <SelectItem value="PKR">🇵🇰 PKR - Pakistani Rupee</SelectItem>
                                             <SelectItem value="BDT">🇧🇩 BDT - Bangladeshi Taka</SelectItem>
                                             <SelectItem value="LKR">🇱🇰 LKR - Sri Lankan Rupee</SelectItem>
@@ -706,9 +762,9 @@ export default function LoansPage() {
                                     )}
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
-                                        <Label htmlFor="monthlyRevenue">Monthly Revenue *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="monthlyRevenue">Monthly Revenue *</Label>
                                         <Select value={formData.monthlyRevenue} onValueChange={(value) => handleInputChange('monthlyRevenue', value)} disabled={!session}>
                                             <SelectTrigger className={getInputClassName()}>
                                                 <SelectValue placeholder="Select monthly revenue" />
@@ -724,7 +780,7 @@ export default function LoansPage() {
                                         </Select>
                                     </div>
                                     <div>
-                                        <Label htmlFor="businessAge">Business Age *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="businessAge">Business Age *</Label>
                                         <Select value={formData.businessAge} onValueChange={(value) => handleInputChange('businessAge', value)} disabled={!session}>
                                             <SelectTrigger className={getInputClassName()}>
                                                 <SelectValue placeholder="Select business age" />
@@ -740,9 +796,9 @@ export default function LoansPage() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                     <div>
-                                        <Label htmlFor="country">Country *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="country">Country *</Label>
                                         <Input
                                             id="country"
                                             value={formData.country}
@@ -757,7 +813,7 @@ export default function LoansPage() {
                                         )}
                                     </div>
                                     <div>
-                                        <Label htmlFor="city">City *</Label>
+                                        <Label className="text-xs sm:text-sm" htmlFor="city">City *</Label>
                                         <Input
                                             id="city"
                                             value={formData.city}
@@ -789,20 +845,25 @@ export default function LoansPage() {
                                 <Button
                                     type="submit"
                                     disabled={isSubmitting || !session}
-                                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-3 text-lg font-semibold disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed"
+                                    className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white py-2.5 sm:py-3 text-base sm:text-lg font-semibold disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed"
                                 >
                                     {isSubmitting ? (
                                         <div className="flex items-center gap-2">
-                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                            Submitting Application...
+                                            <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                            <span className="hidden sm:inline">Submitting Application...</span>
+                                            <span className="sm:hidden">Submitting...</span>
                                         </div>
                                     ) : !session ? (
                                         <div className="flex items-center gap-2">
-                                            <LogIn className="w-5 h-5" />
-                                            Sign In to Continue
+                                            <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
+                                            <span className="hidden sm:inline">Sign In to Continue</span>
+                                            <span className="sm:hidden">Sign In</span>
                                         </div>
                                     ) : (
-                                        'Submit Loan Application'
+                                        <>
+                                            <span className="hidden sm:inline">Submit Loan Application</span>
+                                            <span className="sm:hidden">Submit Application</span>
+                                        </>
                                     )}
                                 </Button>
                             </form>
@@ -812,10 +873,10 @@ export default function LoansPage() {
             </div>
 
             {/* Footer */}
-            <footer className="bg-gray-900 text-white py-12">
+            <footer className="bg-gray-900 text-white py-8 sm:py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <p className="text-gray-400">&copy; 2024 TradeMart. All rights reserved. | Global B2B Marketplace</p>
+                        <p className="text-gray-400 text-sm sm:text-base">&copy; 2024 TradeMart. All rights reserved. | Global B2B Marketplace</p>
                     </div>
                 </div>
             </footer>

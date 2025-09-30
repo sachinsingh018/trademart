@@ -37,6 +37,135 @@ interface Supplier {
     lastActive: string;
 }
 
+// Supplier Card Component with expand/collapse functionality
+function SupplierCard({ supplier, getRatingColor }: { supplier: Supplier, getRatingColor: (rating: number) => string }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    return (
+        <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
+            <CardHeader className="pb-3">
+                <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                        <CardTitle className="text-base sm:text-lg mb-1 line-clamp-1">{supplier.company}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm line-clamp-2">
+                            {supplier.name} • {supplier.country}
+                        </CardDescription>
+                    </div>
+                    <div className="flex flex-col items-end space-y-1">
+                        {supplier.verified && (
+                            <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                                ✓ Verified
+                            </Badge>
+                        )}
+                        <div className={`text-xs sm:text-sm font-semibold ${getRatingColor(supplier.rating)}`}>
+                            ⭐ {supplier.rating}
+                        </div>
+                    </div>
+                </div>
+            </CardHeader>
+
+            <CardContent className="flex flex-col flex-grow pt-0">
+                {/* Always visible - Compact view */}
+                <div className="space-y-3 flex-grow">
+                    <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
+                        {supplier.description}
+                    </p>
+
+                    {/* Essential info - Always visible */}
+                    <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                        <div>
+                            <span className="text-gray-600">Industry:</span>
+                            <div className="font-medium truncate">{supplier.industry}</div>
+                        </div>
+                        <div>
+                            <span className="text-gray-600">Orders:</span>
+                            <div className="font-medium">{supplier.totalOrders.toLocaleString()}</div>
+                        </div>
+                    </div>
+
+                    {/* Expandable content */}
+                    {isExpanded && (
+                        <div className="space-y-3 border-t pt-3">
+                            <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                                <div>
+                                    <span className="text-gray-600">Established:</span>
+                                    <div className="font-medium">{supplier.establishedYear}</div>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Response:</span>
+                                    <div className="font-medium">{supplier.responseTime}</div>
+                                </div>
+                            </div>
+
+                            {supplier.website && (
+                                <div className="text-xs sm:text-sm">
+                                    <span className="text-gray-600">Website:</span>
+                                    <div className="font-medium truncate">{supplier.website}</div>
+                                </div>
+                            )}
+
+                            {supplier.specialties && supplier.specialties.length > 0 && (
+                                <div>
+                                    <span className="text-xs sm:text-sm text-gray-600 mb-2 block">Specialties:</span>
+                                    <div className="flex flex-wrap gap-1">
+                                        {supplier.specialties.slice(0, 3).map((specialty, index) => (
+                                            <Badge key={index} variant="outline" className="text-xs">
+                                                {specialty}
+                                            </Badge>
+                                        ))}
+                                        {supplier.specialties.length > 3 && (
+                                            <Badge variant="outline" className="text-xs">
+                                                +{supplier.specialties.length - 3} more
+                                            </Badge>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Actions - Always at bottom */}
+                <div className="pt-3 border-t border-gray-200 flex justify-between items-center mt-auto">
+                    <div className="flex items-center space-x-2">
+                        <div className="text-xs sm:text-sm text-gray-600">
+                            {supplier.totalOrders} orders
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs h-6 px-2 text-blue-600 hover:text-blue-700"
+                            onClick={() => setIsExpanded(!isExpanded)}
+                        >
+                            {isExpanded ? 'Less' : 'More'}
+                        </Button>
+                    </div>
+                    <div className="flex space-x-1 sm:space-x-2">
+                        <Link href={`/suppliers/${supplier.id}`}>
+                            <Button variant="outline" size="sm" className="text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+                                View
+                            </Button>
+                        </Link>
+                        <Button
+                            size="sm"
+                            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3"
+                            onClick={() => {
+                                if (supplier.phone) {
+                                    window.open(`https://wa.me/${supplier.phone.replace(/\D/g, '')}`, '_blank');
+                                } else {
+                                    alert("Supplier contact information not available");
+                                }
+                            }}
+                        >
+                            Contact
+                        </Button>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
 export default function SuppliersPage() {
     const { data: session } = useSession();
     const { setIsPopupActive } = usePopup();
@@ -187,25 +316,43 @@ export default function SuppliersPage() {
 
     // Timer effect for overlay - only for non-logged-in users
     useEffect(() => {
+        console.log('Timer effect running, session:', !!session);
+
         if (session) {
             setShowOverlay(false);
             setIsPopupActive(false);
+            setTimeRemaining(10); // Reset timer
             return;
         }
 
-        const timer = setInterval(() => {
-            setTimeRemaining((prev) => {
-                if (prev <= 1) {
-                    setShowOverlay(true);
-                    setIsPopupActive(true);
-                    clearInterval(timer);
-                    return 0;
+        // Reset timer when component mounts
+        setTimeRemaining(10);
+        setShowOverlay(false);
+        console.log('Starting 10-second timer...');
+
+        // Use setTimeout instead of setInterval for more reliability
+        const timer = setTimeout(() => {
+            console.log('Timer completed, showing overlay');
+            setShowOverlay(true);
+            setIsPopupActive(true);
+            setTimeRemaining(0);
+        }, 10000); // Exactly 10 seconds
+
+        // Optional: Update countdown every second for visual feedback
+        const countdownTimer = setInterval(() => {
+            setTimeRemaining(prev => {
+                const newValue = prev - 1;
+                if (newValue <= 0) {
+                    clearInterval(countdownTimer);
                 }
-                return prev - 1;
+                return newValue;
             });
         }, 1000);
 
-        return () => clearInterval(timer);
+        return () => {
+            clearTimeout(timer);
+            clearInterval(countdownTimer);
+        };
     }, [session, setIsPopupActive]);
 
     const getRatingColor = (rating: number) => {
@@ -238,7 +385,9 @@ export default function SuppliersPage() {
             {/* Auth overlay - only for non-logged-in users */}
             {!session && showOverlay && (
                 <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-white/20 animate-in fade-in-0 zoom-in-95 duration-300">
+                    {/* Mobile-optimized overlay with stronger blur */}
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" style={{ backdropFilter: 'blur(4px)' }}></div>
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-white/20 animate-in fade-in-0 zoom-in-95 duration-300">
                         <div className="text-center mb-6">
                             <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -269,49 +418,49 @@ export default function SuppliersPage() {
 
             {/* Header */}
             <div className={`bg-white border-b border-gray-200 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
                             Verified Suppliers
                         </h1>
-                        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                        <p className="text-sm sm:text-base lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 max-w-3xl mx-auto px-4">
                             Connect with trusted suppliers worldwide. Find verified manufacturers,
                             wholesalers, and service providers for your business needs.
                         </p>
 
                         {/* Timer display - only for non-logged-in users */}
                         {!session && !showOverlay && timeRemaining > 0 && (
-                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+                                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                Free preview ends in {timeRemaining} seconds
+                                Free preview ends in {timeRemaining}s
                             </div>
                         )}
 
-                        {/* Stats */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-                            <div className="bg-blue-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-blue-600 mb-2">{suppliers.length}</div>
-                                <div className="text-gray-600">Total Suppliers</div>
+                        {/* Stats - Compact on mobile */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-4xl mx-auto">
+                            <div className="bg-blue-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">{suppliers.length}</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Suppliers</div>
                             </div>
-                            <div className="bg-green-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-green-600 mb-2">
+                            <div className="bg-green-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1 sm:mb-2">
                                     {suppliers.filter(s => s.verified).length}
                                 </div>
-                                <div className="text-gray-600">Verified Suppliers</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Verified</div>
                             </div>
-                            <div className="bg-purple-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-purple-600 mb-2">
+                            <div className="bg-purple-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">
                                     {suppliers.reduce((sum, s) => sum + s.totalOrders, 0).toLocaleString()}
                                 </div>
-                                <div className="text-gray-600">Total Orders</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Orders</div>
                             </div>
-                            <div className="bg-orange-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-orange-600 mb-2">
-                                    {(suppliers.reduce((sum, s) => sum + s.rating, 0) / suppliers.length).toFixed(1)}
+                            <div className="bg-orange-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1 sm:mb-2">
+                                    {(suppliers.reduce((sum, s) => sum + s.rating, 0) / suppliers.length || 0).toFixed(1)}
                                 </div>
-                                <div className="text-gray-600">Avg Rating</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Avg Rating</div>
                             </div>
                         </div>
                     </div>
@@ -346,8 +495,8 @@ export default function SuppliersPage() {
 
             {/* Filters */}
             <div className={`bg-white border-b border-gray-200 sticky top-16 z-40 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex flex-col lg:flex-row gap-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6">
+                    <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
                         <div className="flex-1">
                             <Input
                                 placeholder="Search suppliers by company, name, industry, or specialties..."
@@ -409,8 +558,8 @@ export default function SuppliersPage() {
             </div>
 
             {/* Suppliers List */}
-            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                     {filteredSuppliers.length === 0 ? (
                         <div className="col-span-full text-center py-12">
                             <div className="text-gray-400 text-6xl mb-4">🔍</div>
@@ -419,106 +568,7 @@ export default function SuppliersPage() {
                         </div>
                     ) : (
                         filteredSuppliers.map((supplier) => (
-                            <Card key={supplier.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
-                                <CardHeader>
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-1">
-                                            <CardTitle className="text-lg mb-1">{supplier.company}</CardTitle>
-                                            <CardDescription className="text-sm">
-                                                {supplier.name} • {supplier.country}
-                                            </CardDescription>
-                                        </div>
-                                        <div className="flex flex-col items-end space-y-1">
-                                            {supplier.verified && (
-                                                <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-                                                    ✓ Verified
-                                                </Badge>
-                                            )}
-                                            <div className={`text-sm font-semibold ${getRatingColor(supplier.rating)}`}>
-                                                ⭐ {supplier.rating}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="flex flex-col flex-grow">
-                                    <div className="space-y-4 flex-grow">
-                                        <p className="text-sm text-gray-600 line-clamp-2">
-                                            {supplier.description}
-                                        </p>
-
-                                        <div className="grid grid-cols-2 gap-4 text-sm">
-                                            <div>
-                                                <span className="text-gray-600">Industry:</span>
-                                                <div className="font-medium">{supplier.industry}</div>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600">Established:</span>
-                                                <div className="font-medium">{supplier.establishedYear}</div>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600">Orders:</span>
-                                                <div className="font-medium">{supplier.totalOrders.toLocaleString()}</div>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600">Views:</span>
-                                                <div className="font-medium">{supplier.viewCount.toLocaleString()}</div>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600">Response:</span>
-                                                <div className="font-medium">{supplier.responseTime}</div>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <span className="text-sm text-gray-600 mb-2 block">Specialties:</span>
-                                            <div className="flex flex-wrap gap-1">
-                                                {supplier.specialties.slice(0, 3).map((specialty, index) => (
-                                                    <Badge key={index} variant="outline" className="text-xs">
-                                                        {specialty}
-                                                    </Badge>
-                                                ))}
-                                                {supplier.specialties.length > 3 && (
-                                                    <Badge variant="outline" className="text-xs">
-                                                        +{supplier.specialties.length - 3} more
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <span className="text-sm text-gray-600 mb-2 block">Certifications:</span>
-                                            <div className="flex flex-wrap gap-1">
-                                                {supplier.certifications.slice(0, 2).map((cert, index) => (
-                                                    <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
-                                                        {cert}
-                                                    </Badge>
-                                                ))}
-                                                {supplier.certifications.length > 2 && (
-                                                    <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
-                                                        +{supplier.certifications.length - 2}
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div className="pt-4 border-t border-gray-200 mt-auto">
-                                            <div className="text-sm text-gray-600 mb-3">
-                                                Min Order: {supplier.currency} {supplier.minOrderValue.toLocaleString()}
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <Link href={`/suppliers/${supplier.id}`} className="flex-1">
-                                                    <Button variant="outline" size="sm" className="w-full">
-                                                        View Profile
-                                                    </Button>
-                                                </Link>
-                                                <Button size="sm" className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
-                                                    Contact
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <SupplierCard key={supplier.id} supplier={supplier} getRatingColor={getRatingColor} />
                         ))
                     )}
                 </div>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import CountryFlagsBar from "@/components/ui/country-flags-bar";
+import { useSession } from "next-auth/react";
 
 interface Product {
   id: string;
@@ -46,6 +47,7 @@ interface Stats {
 
 export default function HomeClient() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [topSuppliers, setTopSuppliers] = useState<Supplier[]>([]);
@@ -123,59 +125,97 @@ export default function HomeClient() {
       <CountryFlagsBar />
 
       {/* Government Initiatives Section */}
-      <section className="py-12 bg-gradient-to-r from-slate-50 to-gray-50">
+      <section className="py-8 bg-gradient-to-r from-slate-50 to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h3 className="text-sm font-medium text-gray-700 mb-1">Supported by</h3>
             <p className="text-xs text-gray-500">Government initiatives empowering Indian businesses</p>
           </div>
-          <div className="flex justify-center items-center space-x-12 opacity-90 hover:opacity-100 transition-opacity duration-300">
-            <div className="flex items-center space-x-10">
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+
+          {/* Horizontal Scrollable Cards */}
+          <div className="relative">
+            <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
                 <Image
                   src="https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png"
                   alt="Make in India"
-                  width={150}
+                  width={120}
                   height={60}
-                  className="h-16 w-auto object-contain"
+                  className="h-12 w-auto object-contain mx-auto"
                 />
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
                 <Image
                   src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Digital_India_logo.svg/1200px-Digital_India_logo.svg.png"
                   alt="Digital India"
-                  width={150}
+                  width={120}
                   height={60}
-                  className="h-16 w-auto object-contain"
+                  className="h-12 w-auto object-contain mx-auto"
                 />
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
                 <Image
                   src="https://pbs.twimg.com/profile_images/1840626562082676736/QB8mg12l_400x400.jpg"
                   alt="Startup India"
-                  width={150}
+                  width={120}
                   height={60}
-                  className="h-16 w-16 object-contain rounded-full"
+                  className="h-12 w-12 object-contain rounded-full mx-auto"
                 />
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
                 <Image
                   src="/brics-logo.png"
                   alt="BRICS"
-                  width={150}
+                  width={120}
                   height={60}
-                  className="h-16 w-auto object-contain"
+                  className="h-12 w-auto object-contain mx-auto"
                 />
               </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
                 <Image
                   src="/sme-chamber-logo.svg"
                   alt="SME Chamber of India"
-                  width={150}
+                  width={120}
                   height={60}
-                  className="h-16 w-auto object-contain"
+                  className="h-12 w-auto object-contain mx-auto"
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Call-to-Action Section */}
+          <div className="text-center mt-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+              Ready to Start Trading?
+            </h2>
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 px-4">
+              {session ? (
+                <>
+                  <Link href="/dashboard" className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signout" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto border-2 border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 px-8 py-4 text-lg font-semibold transition-all duration-300">
+                      Sign Out
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/signup" className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                      Get Started Free
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signin" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 px-8 py-4 text-lg font-semibold transition-all duration-300">
+                      Sign In
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -186,38 +226,38 @@ export default function HomeClient() {
         <div className="max-w-7xl mx-auto">
           {/* Main Hero Content */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               <span className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 bg-clip-text text-transparent">
                 Global B2B Marketplace
               </span>
             </h1>
-            <p className="text-xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed px-4">
               Connect with verified suppliers worldwide. Find products, submit RFQs, and grow your business with secure transactions and trusted partnerships.
             </p>
 
             {/* Modern Levelled Search Bar */}
-            <div className="max-w-5xl mx-auto mb-8">
-              <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-2 hover:shadow-3xl transition-all duration-500">
+            <div className="max-w-5xl mx-auto mb-8 px-4">
+              <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 p-2 hover:shadow-3xl transition-all duration-500">
                 <div className="flex flex-col lg:flex-row items-center">
                   {/* Search Input with Icon */}
-                  <div className="flex-1 relative flex items-center">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <svg className="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="flex-1 relative flex items-center w-full">
+                    <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       </svg>
                     </div>
                     <input
                       type="text"
-                      placeholder="Search products, suppliers, or categories..."
+                      placeholder="Search products, suppliers..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      className="w-full pl-12 pr-6 py-4 text-lg border-0 bg-transparent focus:outline-none transition-all duration-300 placeholder:text-gray-400"
+                      className="w-full pl-10 sm:pl-12 pr-6 py-3 sm:py-4 text-base sm:text-lg border-0 bg-transparent focus:outline-none transition-all duration-300 placeholder:text-gray-400"
                     />
                   </div>
 
-                  {/* Category Filter */}
-                  <div className="relative flex items-center px-4">
+                  {/* Category Filter - Hidden on mobile */}
+                  <div className="hidden md:relative md:flex items-center px-4">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -237,10 +277,10 @@ export default function HomeClient() {
                     </div>
                   </div>
 
-                  {/* Search Button - Levelled */}
+                  {/* Search Button - Responsive */}
                   <button
                     onClick={handleSearch}
-                    className="px-6 py-4 bg-transparent text-blue-600 font-semibold hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 flex items-center gap-2 rounded-2xl"
+                    className="w-full md:w-auto mt-2 md:mt-0 px-6 py-3 sm:py-4 bg-transparent text-blue-600 font-semibold hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl sm:rounded-2xl"
                   >
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -271,43 +311,60 @@ export default function HomeClient() {
             </div>
 
             {/* Quick Actions */}
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              <Link href="/auth/signup?role=buyer">
-                <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                  Start Buying
-                </Button>
-              </Link>
-              <Link href="/auth/signup?role=supplier">
-                <Button variant="outline" className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-8 py-4 text-lg font-semibold transition-all duration-300">
-                  Start Selling
-                </Button>
-              </Link>
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mb-8 px-4">
+              {session ? (
+                <>
+                  <Link href="/dashboard" className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                      Go to Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signout" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
+                      Sign Out
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/signup?role=buyer" className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                      Start Buying
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup?role=supplier" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
+                      Start Selling
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
           {/* Real-time Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            <div className="text-center bg-white rounded-xl p-6 shadow-lg">
-              <div className="text-3xl font-bold text-blue-600 mb-2">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto px-4">
+            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
+              <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">
                 {loading ? '...' : stats.totalSuppliers.toLocaleString()}+
               </div>
-              <div className="text-gray-600 font-medium">Verified Suppliers</div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Verified Suppliers</div>
             </div>
-            <div className="text-center bg-white rounded-xl p-6 shadow-lg">
-              <div className="text-3xl font-bold text-green-600 mb-2">
+            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
+              <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">
                 {loading ? '...' : stats.totalProducts.toLocaleString()}+
               </div>
-              <div className="text-gray-600 font-medium">Products Listed</div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Products Listed</div>
             </div>
-            <div className="text-center bg-white rounded-xl p-6 shadow-lg">
-              <div className="text-3xl font-bold text-purple-600 mb-2">
+            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
+              <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-2">
                 {loading ? '...' : stats.totalOrders.toLocaleString()}+
               </div>
-              <div className="text-gray-600 font-medium">Orders Completed</div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Orders Completed</div>
             </div>
-            <div className="text-center bg-white rounded-xl p-6 shadow-lg">
-              <div className="text-3xl font-bold text-orange-600 mb-2">100+</div>
-              <div className="text-gray-600 font-medium">Countries</div>
+            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
+              <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">100+</div>
+              <div className="text-sm sm:text-base text-gray-600 font-medium">Countries</div>
             </div>
           </div>
         </div>
@@ -620,16 +677,33 @@ export default function HomeClient() {
             Join thousands of businesses already growing on TradeMart
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/auth/signup?role=buyer">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
-                Start Buying
-              </Button>
-            </Link>
-            <Link href="/auth/signup?role=supplier">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
-                Start Selling
-              </Button>
-            </Link>
+            {session ? (
+              <>
+                <Link href="/dashboard">
+                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                    Go to Dashboard
+                  </Button>
+                </Link>
+                <Link href="/auth/signout">
+                  <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                    Sign Out
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/signup?role=buyer">
+                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                    Start Buying
+                  </Button>
+                </Link>
+                <Link href="/auth/signup?role=supplier">
+                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                    Start Selling
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>

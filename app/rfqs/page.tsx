@@ -40,6 +40,193 @@ interface RFQ {
     };
 }
 
+// RFQ Card Component with expand/collapse functionality
+function RFQCard({ rfq }: { rfq: RFQ }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "open":
+                return "bg-green-100 text-green-800 border-green-200";
+            case "quoted":
+                return "bg-blue-100 text-blue-800 border-blue-200";
+            case "closed":
+                return "bg-gray-100 text-gray-800 border-gray-200";
+            default:
+                return "bg-gray-100 text-gray-800 border-gray-200";
+        }
+    };
+
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString();
+    };
+
+    const daysUntilExpiry = () => {
+        const expiry = new Date(rfq.expiresAt);
+        const today = new Date();
+        const diffTime = expiry.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    };
+
+    return (
+        <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
+            <CardHeader className="pb-3">
+                <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                        <CardTitle className="text-base sm:text-lg mb-1 line-clamp-1">{rfq.title}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm line-clamp-2">
+                            {rfq.description}
+                        </CardDescription>
+                    </div>
+                    <div className="flex flex-col items-end space-y-1">
+                        <Badge variant="outline" className="text-xs">
+                            {rfq.category}
+                        </Badge>
+                        <Badge className={`text-xs ${getStatusColor(rfq.status)}`}>
+                            {rfq.status.charAt(0).toUpperCase() + rfq.status.slice(1)}
+                        </Badge>
+                    </div>
+                </div>
+            </CardHeader>
+
+            <CardContent className="flex flex-col flex-grow pt-0">
+                {/* Always visible - Compact view */}
+                <div className="space-y-3 flex-grow">
+                    {/* Budget and Quantity - Always visible */}
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="text-lg sm:text-xl font-bold text-green-600">
+                                {rfq.currency} {rfq.budget.toLocaleString()}
+                            </div>
+                            <div className="text-xs sm:text-sm text-gray-600">
+                                Budget Range
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-lg sm:text-xl font-bold text-blue-600">
+                                {rfq.quantity.toLocaleString()}
+                            </div>
+                            <div className="text-xs sm:text-sm text-gray-600">
+                                {rfq.unit}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Buyer info and expiry - Always visible */}
+                    <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                        <div>
+                            <span className="text-gray-600">Buyer:</span>
+                            <div className="font-medium truncate">{rfq.buyer.company}</div>
+                        </div>
+                        <div>
+                            <span className="text-gray-600">Expires:</span>
+                            <div className="font-medium">
+                                {daysUntilExpiry() > 0 ? `${daysUntilExpiry()} days` : 'Expired'}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Expandable content */}
+                    {isExpanded && (
+                        <div className="space-y-3 border-t pt-3">
+                            {/* Specifications */}
+                            <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                                {rfq.specifications.material && (
+                                    <div>
+                                        <span className="text-gray-600">Material:</span>
+                                        <div className="font-medium truncate">{rfq.specifications.material}</div>
+                                    </div>
+                                )}
+                                {rfq.specifications.color && (
+                                    <div>
+                                        <span className="text-gray-600">Color:</span>
+                                        <div className="font-medium truncate">{rfq.specifications.color}</div>
+                                    </div>
+                                )}
+                                {rfq.specifications.size && (
+                                    <div>
+                                        <span className="text-gray-600">Size:</span>
+                                        <div className="font-medium truncate">{rfq.specifications.size}</div>
+                                    </div>
+                                )}
+                                <div>
+                                    <span className="text-gray-600">Views:</span>
+                                    <div className="font-medium">{rfq.viewCount.toLocaleString()}</div>
+                                </div>
+                            </div>
+
+                            {/* Requirements */}
+                            {rfq.requirements && rfq.requirements.length > 0 && (
+                                <div>
+                                    <span className="text-xs sm:text-sm text-gray-600 mb-2 block">Requirements:</span>
+                                    <div className="flex flex-wrap gap-1">
+                                        {rfq.requirements.slice(0, 3).map((req, index) => (
+                                            <Badge key={index} variant="outline" className="text-xs">
+                                                {req}
+                                            </Badge>
+                                        ))}
+                                        {rfq.requirements.length > 3 && (
+                                            <Badge variant="outline" className="text-xs">
+                                                +{rfq.requirements.length - 3} more
+                                            </Badge>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Dates */}
+                            <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                                <div>
+                                    <span className="text-gray-600">Posted:</span>
+                                    <div className="font-medium">{formatDate(rfq.createdAt)}</div>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Expires:</span>
+                                    <div className="font-medium">{formatDate(rfq.expiresAt)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Actions - Always at bottom */}
+                <div className="pt-3 border-t border-gray-200 flex justify-between items-center mt-auto">
+                    <div className="flex items-center space-x-2">
+                        <div className="text-xs sm:text-sm text-gray-600">
+                            {rfq.quotesCount} quotes
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs h-6 px-2 text-blue-600 hover:text-blue-700"
+                            onClick={() => setIsExpanded(!isExpanded)}
+                        >
+                            {isExpanded ? 'Less' : 'More'}
+                        </Button>
+                    </div>
+                    <div className="flex space-x-1 sm:space-x-2">
+                        <Link href={`/rfqs/${rfq.id}`}>
+                            <Button variant="outline" size="sm" className="text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+                                View
+                            </Button>
+                        </Link>
+                        <Button
+                            size="sm"
+                            className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3"
+                            onClick={() => {
+                                alert("Quote submission functionality would be implemented here");
+                            }}
+                        >
+                            Quote
+                        </Button>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
 export default function RFQsPage() {
     const { data: session } = useSession();
     const { setIsPopupActive } = usePopup();
@@ -178,28 +365,42 @@ export default function RFQsPage() {
 
     // Timer effect for overlay - only for non-logged-in users
     useEffect(() => {
+        console.log('Timer effect running, session:', !!session);
+
         if (session) {
             setShowOverlay(false);
             setIsPopupActive(false);
             return;
         }
 
-        const timer = setInterval(() => {
-            setTimeRemaining((prev) => {
-                if (prev <= 1) {
-                    // Defer state updates to avoid setState during render
-                    setTimeout(() => {
-                        setShowOverlay(true);
-                        setIsPopupActive(true);
-                    }, 0);
-                    clearInterval(timer);
-                    return 0;
+        // Reset timer when component mounts
+        setTimeRemaining(10);
+        setShowOverlay(false);
+        console.log('Starting 10-second timer...');
+
+        // Use setTimeout instead of setInterval for more reliability
+        const timer = setTimeout(() => {
+            console.log('Timer completed, showing overlay');
+            setShowOverlay(true);
+            setIsPopupActive(true);
+            setTimeRemaining(0);
+        }, 10000); // Exactly 10 seconds
+
+        // Optional: Update countdown every second for visual feedback
+        const countdownTimer = setInterval(() => {
+            setTimeRemaining(prev => {
+                const newValue = prev - 1;
+                if (newValue <= 0) {
+                    clearInterval(countdownTimer);
                 }
-                return prev - 1;
+                return newValue;
             });
         }, 1000);
 
-        return () => clearInterval(timer);
+        return () => {
+            clearTimeout(timer);
+            clearInterval(countdownTimer);
+        };
     }, [session, setIsPopupActive]);
 
     const getStatusColor = (status: string) => {
@@ -256,7 +457,9 @@ export default function RFQsPage() {
             {/* Auth overlay - only for non-logged-in users */}
             {!session && showOverlay && (
                 <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-white/20 animate-in fade-in-0 zoom-in-95 duration-300">
+                    {/* Mobile-optimized overlay with stronger blur */}
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" style={{ backdropFilter: 'blur(4px)' }}></div>
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-white/20 animate-in fade-in-0 zoom-in-95 duration-300">
                         <div className="text-center mb-6">
                             <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,49 +490,49 @@ export default function RFQsPage() {
 
             {/* Header */}
             <div className={`bg-white border-b border-gray-200 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
                             Request for Quotations
                         </h1>
-                        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                        <p className="text-sm sm:text-base lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 max-w-3xl mx-auto px-4">
                             Discover business opportunities and connect with buyers worldwide.
                             Submit competitive quotes and grow your business.
                         </p>
 
                         {/* Timer display - only for non-logged-in users */}
                         {!session && !showOverlay && timeRemaining > 0 && (
-                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+                                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                Free preview ends in {timeRemaining} seconds
+                                Free preview ends in {timeRemaining}s
                             </div>
                         )}
 
-                        {/* Stats */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-                            <div className="bg-blue-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-blue-600 mb-2">{rfqs.length}</div>
-                                <div className="text-gray-600">Active RFQs</div>
+                        {/* Stats - Compact on mobile */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-4xl mx-auto">
+                            <div className="bg-blue-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">{rfqs.length}</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Active RFQs</div>
                             </div>
-                            <div className="bg-green-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-green-600 mb-2">
+                            <div className="bg-green-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1 sm:mb-2">
                                     {rfqs.filter(rfq => rfq.status === "open").length}
                                 </div>
-                                <div className="text-gray-600">Open for Quotes</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Open for Quotes</div>
                             </div>
-                            <div className="bg-purple-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-purple-600 mb-2">
+                            <div className="bg-purple-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">
                                     {rfqs.reduce((sum, rfq) => sum + rfq.quotesCount, 0)}
                                 </div>
-                                <div className="text-gray-600">Total Quotes</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Quotes</div>
                             </div>
-                            <div className="bg-orange-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-orange-600 mb-2">
-                                    ${rfqs.reduce((sum, rfq) => sum + Number(rfq.budget || 0), 0)}
+                            <div className="bg-orange-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1 sm:mb-2">
+                                    ${rfqs.reduce((sum, rfq) => sum + Number(rfq.budget || 0), 0).toLocaleString()}
                                 </div>
-                                <div className="text-gray-600">Total Budget</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Budget</div>
                             </div>
                         </div>
                     </div>
@@ -338,8 +541,8 @@ export default function RFQsPage() {
 
             {/* Filters */}
             <div className={`bg-white border-b border-gray-200 sticky top-16 z-40 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex flex-col lg:flex-row gap-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6">
+                    <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
                         <div className="flex-1">
                             <Input
                                 placeholder="Search RFQs by title, description, or category..."
@@ -392,136 +595,17 @@ export default function RFQsPage() {
             </div>
 
             {/* RFQs List */}
-            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="space-y-6">
+            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                     {filteredRfqs.length === 0 ? (
-                        <div className="text-center py-12">
+                        <div className="col-span-full text-center py-12">
                             <div className="text-gray-400 text-6xl mb-4">🔍</div>
                             <h3 className="text-xl font-semibold text-gray-900 mb-2">No RFQs Found</h3>
                             <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
                         </div>
                     ) : (
                         filteredRfqs.map((rfq) => (
-                            <Card key={rfq.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-                                <CardHeader>
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-1">
-                                            <CardTitle className="text-xl mb-2">{rfq.title}</CardTitle>
-                                            <CardDescription className="text-gray-600 mb-4">
-                                                {rfq.description}
-                                            </CardDescription>
-                                        </div>
-                                        <Badge className={`${getStatusColor(rfq.status)} border`}>
-                                            {rfq.status.charAt(0).toUpperCase() + rfq.status.slice(1)}
-                                        </Badge>
-                                    </div>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        {/* RFQ Details */}
-                                        <div className="space-y-4">
-                                            <h4 className="font-semibold text-gray-900">RFQ Details</h4>
-                                            <div className="space-y-2 text-sm">
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Category:</span>
-                                                    <span className="font-medium">{rfq.category}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Quantity:</span>
-                                                    <span className="font-medium">{rfq.quantity.toLocaleString()} {rfq.unit}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Budget:</span>
-                                                    <span className="font-medium">{rfq.currency} {rfq.budget}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Views:</span>
-                                                    <span className="font-medium">{rfq.viewCount || 0}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Quotes:</span>
-                                                    <span className="font-medium">{rfq.quotesCount} received</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Buyer Information */}
-                                        <div className="space-y-4">
-                                            <h4 className="font-semibold text-gray-900">Buyer Information</h4>
-                                            <div className="space-y-2 text-sm">
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Company:</span>
-                                                    <span className="font-medium">{rfq.buyer.company}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Contact:</span>
-                                                    <span className="font-medium">{rfq.buyer.name}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Country:</span>
-                                                    <span className="font-medium">{rfq.buyer.country}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Verified:</span>
-                                                    <span className={`font-medium ${rfq.buyer.verified ? 'text-green-600' : 'text-gray-500'}`}>
-                                                        {rfq.buyer.verified ? '✓ Verified' : 'Not Verified'}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Timeline */}
-                                        <div className="space-y-4">
-                                            <h4 className="font-semibold text-gray-900">Timeline</h4>
-                                            <div className="space-y-2 text-sm">
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Posted:</span>
-                                                    <span className="font-medium">{formatDate(rfq.createdAt)}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Expires:</span>
-                                                    <span className="font-medium">{formatDate(rfq.expiresAt)}</span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-gray-600">Time Left:</span>
-                                                    <span className={`font-medium ${getTimeRemaining(rfq.expiresAt).includes('Expired') ? 'text-red-600' : 'text-green-600'}`}>
-                                                        {getTimeRemaining(rfq.expiresAt)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Requirements */}
-                                    <div className="mt-6 pt-6 border-t border-gray-200">
-                                        <h4 className="font-semibold text-gray-900 mb-3">Key Requirements</h4>
-                                        <div className="flex flex-wrap gap-2">
-                                            {rfq.requirements.map((req, index) => (
-                                                <Badge key={index} variant="outline" className="text-xs">
-                                                    {req}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="mt-6 pt-6 border-t border-gray-200 flex justify-between items-center">
-                                        <div className="text-sm text-gray-600">
-                                            <span className="font-medium">Specifications:</span> {Object.entries(rfq.specifications)
-                                                .filter(([, value]) => value)
-                                                .map(([key, value]) => `${key}: ${value}`)
-                                                .join(", ")}
-                                        </div>
-                                        <div className="flex gap-3">
-                                            <Link href={`/rfqs/${rfq.id}`}>
-                                                <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
-                                                    View Details
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <RFQCard key={rfq.id} rfq={rfq} />
                         ))
                     )}
                 </div>

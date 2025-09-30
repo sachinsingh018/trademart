@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -226,78 +225,24 @@ export default function Dashboard() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
             {/* Navigation */}
             <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200/60 shadow-lg shadow-gray-900/5">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-20">
-                        {/* Logo Section */}
-                        <div className="flex items-center">
-                            <Link href="/" className="flex items-center group">
-                                <div className="relative">
-                                    <Image
-                                        src="/logofinal.png"
-                                        alt="TradeMart Logo"
-                                        width={160}
-                                        height={160}
-                                        className="w-12 h-12 group-hover:scale-105 transition-all duration-300 drop-shadow-sm"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-green-500/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                </div>
-                                <div className="ml-3 hidden sm:block">
-                                    <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                                        TradeMart
-                                    </h1>
-                                    <p className="text-xs text-gray-500 font-medium">B2B Marketplace</p>
-                                </div>
-                            </Link>
-                        </div>
-
-                        {/* Navigation Links */}
-                        <div className="hidden md:flex items-center space-x-8">
-                            <Link href="/suppliers" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                Suppliers
-                            </Link>
-                            <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                Products
-                            </Link>
-                            <Link href="/services" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                Services
-                            </Link>
-                            <Link href="/rfqs" className="text-blue-600 font-medium">
-                                RFQs
-                            </Link>
-                        </div>
-
-                        {/* Mobile Navigation */}
-                        <div className="md:hidden flex items-center space-x-4">
-                            <Link href="/suppliers" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
-                                Suppliers
-                            </Link>
-                            <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
-                                Products
-                            </Link>
-                            <Link href="/services" className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium">
-                                Services
-                            </Link>
-                            <Link href="/rfqs" className="text-blue-600 text-sm font-medium">
-                                RFQs
-                            </Link>
+                <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-16 sm:h-20">
+                        {/* Welcome Message - Desktop */}
+                        <div className="hidden md:flex items-center space-x-3">
+                            <div className="text-right">
+                                <p className="text-sm font-semibold text-gray-900">
+                                    Welcome back, {session.user.name?.split(' ')[0]}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                    {isBuyer ? 'Buyer Dashboard' : 'Supplier Dashboard'}
+                                </p>
+                            </div>
                         </div>
 
                         {/* User Section */}
-                        <div className="flex items-center space-x-6">
-                            {/* Welcome Message */}
-                            <div className="hidden md:flex items-center space-x-3">
-                                <div className="text-right">
-                                    <p className="text-sm font-semibold text-gray-900">
-                                        Welcome back, {session.user.name?.split(' ')[0]}
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        {isBuyer ? 'Buyer Dashboard' : 'Supplier Dashboard'}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Role Badge */}
-                            <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3 sm:space-x-6 ml-auto">
+                            {/* Role Badge - Desktop only */}
+                            <div className="hidden md:flex items-center space-x-2">
                                 <div className={`w-2 h-2 rounded-full ${isBuyer ? 'bg-blue-500' : 'bg-green-500'} animate-pulse`}></div>
                                 <Badge
                                     variant="outline"
@@ -315,22 +260,10 @@ export default function Dashboard() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="group border-gray-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 font-medium"
+                                    className="group border-gray-300 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 font-medium px-3 sm:px-4"
                                 >
                                     <span className="group-hover:scale-110 transition-transform duration-200">👤</span>
-                                    <span className="ml-2 hidden sm:inline">Edit Profile</span>
-                                </Button>
-                            </Link>
-
-                            {/* Sign Out Button */}
-                            <Link href="/auth/signout">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="group border-gray-300 hover:border-red-400 hover:bg-red-50 hover:text-red-600 transition-all duration-200 font-medium"
-                                >
-                                    <span className="group-hover:scale-110 transition-transform duration-200">🚪</span>
-                                    <span className="ml-2 hidden sm:inline">Sign Out</span>
+                                    <span className="ml-2">Edit Profile</span>
                                 </Button>
                             </Link>
                         </div>
@@ -338,53 +271,43 @@ export default function Dashboard() {
                 </div>
             </nav>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="mb-8">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">
-                                {isBuyer ? "B" : "S"}
-                            </span>
-                        </div>
-                        <div>
-                            <h1 className="text-3xl font-bold text-gray-900">
-                                {isBuyer ? "Buyer Dashboard" : "Supplier Dashboard"}
-                            </h1>
-                            <p className="text-gray-600 mt-1">
-                                Welcome back, {session.user.name}
-                            </p>
-                        </div>
+            <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+                <div className="mb-4 sm:mb-8">
+                    <div className="mb-2 sm:mb-4">
+                        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                            Welcome back, {session.user.name?.split(' ')[0]}
+                        </h1>
+                        <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">
+                            {isBuyer
+                                ? "Manage your RFQs and review quotes from suppliers"
+                                : "Browse open RFQs and submit competitive quotes"
+                            }
+                        </p>
                     </div>
-                    <p className="text-gray-600 text-lg">
-                        {isBuyer
-                            ? "Manage your RFQs and review quotes from suppliers"
-                            : "Browse open RFQs and submit competitive quotes"
-                        }
-                    </p>
                 </div>
 
                 {/* Toggle for Suppliers */}
                 {!isBuyer && (
-                    <div className="mb-8">
+                    <div className="mb-4 sm:mb-8">
                         <div className="flex items-center justify-center">
                             <div className="bg-gray-100 rounded-lg p-1 flex">
                                 <button
                                     onClick={() => setViewMode('rfqs')}
-                                    className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${viewMode === 'rfqs'
+                                    className={`px-4 sm:px-6 py-2 sm:py-3 rounded-md font-medium transition-all duration-200 text-sm sm:text-base ${viewMode === 'rfqs'
                                         ? 'bg-white text-blue-600 shadow-sm'
                                         : 'text-gray-600 hover:text-gray-900'
                                         }`}
                                 >
-                                    📋 RFQs
+                                    📋 <span className="hidden sm:inline">RFQs</span>
                                 </button>
                                 <button
                                     onClick={() => setViewMode('products')}
-                                    className={`px-6 py-3 rounded-md font-medium transition-all duration-200 ${viewMode === 'products'
+                                    className={`px-4 sm:px-6 py-2 sm:py-3 rounded-md font-medium transition-all duration-200 text-sm sm:text-base ${viewMode === 'products'
                                         ? 'bg-white text-green-600 shadow-sm'
                                         : 'text-gray-600 hover:text-gray-900'
                                         }`}
                                 >
-                                    🏭 My Products
+                                    🏭 <span className="hidden sm:inline">My Products</span>
                                 </button>
                             </div>
                         </div>
@@ -420,22 +343,22 @@ export default function Dashboard() {
                 )} */}
 
                 {isBuyer && (
-                    <div className="mb-8">
-                        <Card className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                                        <span className="text-white font-bold text-lg">+</span>
+                    <div className="mb-4 sm:mb-8">
+                        <Card className="p-4 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-lg">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                                <div className="flex items-center gap-3 sm:gap-4">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <span className="text-white font-bold text-base sm:text-lg">+</span>
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-900">Create New RFQ</h3>
-                                        <p className="text-gray-600">
-                                            Post a new request for quotation to get competitive quotes from suppliers
+                                        <h3 className="text-base sm:text-xl font-semibold text-gray-900">Create New RFQ</h3>
+                                        <p className="text-gray-600 text-xs sm:text-sm">
+                                            Post a new request for quotation
                                         </p>
                                     </div>
                                 </div>
-                                <Link href="/rfqs/create">
-                                    <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                <Link href="/rfqs/create" className="w-full sm:w-auto">
+                                    <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 sm:px-6 py-2 sm:py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
                                         Create RFQ
                                     </Button>
                                 </Link>
@@ -445,22 +368,22 @@ export default function Dashboard() {
                 )}
 
                 {!isBuyer && (
-                    <div className="mb-8">
-                        <Card className="p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                                        <Package className="w-6 h-6 text-white" />
+                    <div className="mb-4 sm:mb-8">
+                        <Card className="p-4 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 shadow-lg">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+                                <div className="flex items-center gap-3 sm:gap-4">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <Package className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xl font-semibold text-gray-900">Create New Product</h3>
-                                        <p className="text-gray-600">
-                                            Add a new product to your catalog and start attracting buyers worldwide
+                                        <h3 className="text-base sm:text-xl font-semibold text-gray-900">Create New Product</h3>
+                                        <p className="text-gray-600 text-xs sm:text-sm">
+                                            Add a new product to your catalog
                                         </p>
                                     </div>
                                 </div>
-                                <Link href="/products/create">
-                                    <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                                <Link href="/products/create" className="w-full sm:w-auto">
+                                    <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 sm:px-6 py-2 sm:py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
                                         Add Product
                                     </Button>
                                 </Link>
@@ -471,28 +394,28 @@ export default function Dashboard() {
 
                 {/* Stats for Buyers - RFQs */}
                 {isBuyer && rfqs.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        <div className="bg-blue-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-blue-600 mb-2">{rfqs.length}</div>
-                            <div className="text-gray-600">Your RFQs</div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
+                        <div className="bg-blue-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">{rfqs.length}</div>
+                            <div className="text-gray-600 text-xs sm:text-base">Your RFQs</div>
                         </div>
-                        <div className="bg-green-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-green-600 mb-2">
+                        <div className="bg-green-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-1 sm:mb-2">
                                 {rfqs.filter((rfq: RFQ) => rfq.status === "open").length}
                             </div>
-                            <div className="text-gray-600">Open for Quotes</div>
+                            <div className="text-gray-600 text-xs sm:text-base">Open</div>
                         </div>
-                        <div className="bg-purple-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-purple-600 mb-2">
+                        <div className="bg-purple-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">
                                 {rfqs.reduce((sum: number, rfq: RFQ) => sum + (rfq.quotes?.length || 0), 0)}
                             </div>
-                            <div className="text-gray-600">Total Quotes</div>
+                            <div className="text-gray-600 text-xs sm:text-base">Quotes</div>
                         </div>
-                        <div className="bg-orange-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-orange-600 mb-2">
+                        <div className="bg-orange-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-1 sm:mb-2">
                                 ${rfqs.reduce((sum: number, rfq: RFQ) => sum + Number(rfq.budget || 0), 0)}
                             </div>
-                            <div className="text-gray-600">Total Budget</div>
+                            <div className="text-gray-600 text-xs sm:text-base">Budget</div>
                         </div>
                     </div>
                 )}
@@ -527,45 +450,45 @@ export default function Dashboard() {
 
                 {/* Stats for Suppliers - Products */}
                 {!isBuyer && viewMode === 'products' && products.length > 0 && (
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                        <div className="bg-green-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-green-600 mb-2">{products.length}</div>
-                            <div className="text-gray-600">Your Products</div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-4 sm:mb-8">
+                        <div className="bg-green-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-1 sm:mb-2">{products.length}</div>
+                            <div className="text-gray-600 text-xs sm:text-base">Products</div>
                         </div>
-                        <div className="bg-blue-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-blue-600 mb-2">
+                        <div className="bg-blue-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">
                                 {products.filter((product: Product) => product.inStock).length}
                             </div>
-                            <div className="text-gray-600">In Stock</div>
+                            <div className="text-gray-600 text-xs sm:text-base">In Stock</div>
                         </div>
-                        <div className="bg-orange-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-orange-600 mb-2">
+                        <div className="bg-orange-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-1 sm:mb-2">
                                 {products.filter((product: Product) => !product.inStock).length}
                             </div>
-                            <div className="text-gray-600">Out of Stock</div>
+                            <div className="text-gray-600 text-xs sm:text-base">Out</div>
                         </div>
-                        <div className="bg-purple-50 rounded-lg p-6">
-                            <div className="text-3xl font-bold text-purple-600 mb-2">
+                        <div className="bg-purple-50 rounded-lg p-3 sm:p-6">
+                            <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">
                                 ${products.reduce((sum: number, product: Product) => sum + Number(product.price || 0), 0)}
                             </div>
-                            <div className="text-gray-600">Total Value</div>
+                            <div className="text-gray-600 text-xs sm:text-base">Value</div>
                         </div>
                     </div>
                 )}
 
-                <div className="grid gap-6">
-                    <Card className="p-6 shadow-lg border-0">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                <div className="grid gap-4 sm:gap-6">
+                    <Card className="p-4 sm:p-6 shadow-lg border-0">
+                        <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                                 <span className="text-white font-bold text-sm">
                                     {!isBuyer && viewMode === 'products' ? '🏭' : '📋'}
                                 </span>
                             </div>
                             <div>
-                                <h2 className="text-2xl font-bold text-gray-900">
+                                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">
                                     {isBuyer ? "Your RFQs" : (viewMode === 'products' ? "Your Products" : "Open RFQs")}
                                 </h2>
-                                <p className="text-gray-600">
+                                <p className="text-gray-600 text-xs sm:text-base">
                                     {isBuyer
                                         ? "Track the status of your requests for quotation"
                                         : viewMode === 'products'
@@ -614,13 +537,13 @@ export default function Dashboard() {
                             <div className="space-y-6">
                                 {!isBuyer && viewMode === 'products' ? (
                                     products.map((item: Product) => (
-                                        <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-                                            <div className="flex justify-between items-start mb-4">
+                                        <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
+                                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-2">
                                                 <div className="flex-1">
-                                                    <h3 className="font-semibold text-gray-900 text-xl mb-2">
+                                                    <h3 className="font-semibold text-gray-900 text-lg sm:text-xl mb-2">
                                                         {item.name}
                                                     </h3>
-                                                    <p className="text-gray-600 mb-4 line-clamp-2">
+                                                    <p className="text-gray-600 mb-2 sm:mb-4 line-clamp-2 text-sm sm:text-base">
                                                         {item.description}
                                                     </p>
                                                 </div>
@@ -632,10 +555,10 @@ export default function Dashboard() {
                                                 </Badge>
                                             </div>
 
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
                                                 {/* Product/RFQ Details */}
-                                                <div className="space-y-4">
-                                                    <h4 className="font-semibold text-gray-900">
+                                                <div className="space-y-2 sm:space-y-4">
+                                                    <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
                                                         Product Details
                                                     </h4>
                                                     <div className="space-y-2 text-sm">
@@ -722,38 +645,38 @@ export default function Dashboard() {
                                             )}
 
                                             {/* Actions */}
-                                            <div className="pt-6 border-t border-gray-200 flex justify-between items-center">
-                                                <div className="text-sm text-gray-600">
-                                                    <span className="font-medium">Product ID:</span> {item.id}
+                                            <div className="pt-4 sm:pt-6 border-t border-gray-200">
+                                                <div className="text-xs sm:text-sm text-gray-600 mb-3">
+                                                    <span className="font-medium">ID:</span> {item.id.slice(0, 8)}...
                                                 </div>
-                                                <div className="flex gap-3">
+                                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         onClick={() => router.push(`/products/${item.id}`)}
-                                                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                                                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 w-full sm:w-auto text-xs sm:text-sm"
                                                     >
-                                                        👁️ View Details
+                                                        👁️ <span className="hidden sm:inline">View Details</span><span className="sm:hidden">View</span>
                                                     </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         onClick={() => router.push(`/products/${item.id}/edit`)}
-                                                        className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                        className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300 w-full sm:w-auto text-xs sm:text-sm"
                                                     >
-                                                        ✏️ Edit Product
+                                                        ✏️ <span className="hidden sm:inline">Edit Product</span><span className="sm:hidden">Edit</span>
                                                     </Button>
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
+                                                        className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50 w-full sm:w-auto text-xs sm:text-sm"
                                                         disabled={deleting === item.id}
                                                         onClick={() => handleDeleteClick(item)}
                                                     >
                                                         {deleting === item.id ? (
                                                             <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
                                                         ) : (
-                                                            '🗑️ Delete'
+                                                            <>🗑️ Delete</>
                                                         )}
                                                     </Button>
                                                 </div>
@@ -762,13 +685,13 @@ export default function Dashboard() {
                                     ))
                                 ) : (
                                     rfqs.map((item: RFQ) => (
-                                        <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-                                            <div className="flex justify-between items-start mb-4">
+                                        <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-all duration-300">
+                                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-2">
                                                 <div className="flex-1">
-                                                    <h3 className="font-semibold text-gray-900 text-xl mb-2">
+                                                    <h3 className="font-semibold text-gray-900 text-lg sm:text-xl mb-2">
                                                         {item.title}
                                                     </h3>
-                                                    <p className="text-gray-600 mb-4 line-clamp-2">
+                                                    <p className="text-gray-600 mb-2 sm:mb-4 line-clamp-2 text-sm sm:text-base">
                                                         {item.description}
                                                     </p>
                                                 </div>
@@ -780,10 +703,10 @@ export default function Dashboard() {
                                                 </Badge>
                                             </div>
 
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
                                                 {/* RFQ Details */}
-                                                <div className="space-y-4">
-                                                    <h4 className="font-semibold text-gray-900">
+                                                <div className="space-y-2 sm:space-y-4">
+                                                    <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
                                                         RFQ Details
                                                     </h4>
                                                     <div className="space-y-2 text-sm">
@@ -919,18 +842,18 @@ export default function Dashboard() {
                                             )}
 
                                             {/* Actions */}
-                                            <div className="pt-6 border-t border-gray-200 flex justify-between items-center">
-                                                <div className="text-sm text-gray-600">
-                                                    <span className="font-medium">RFQ ID:</span> {item.id}
+                                            <div className="pt-4 sm:pt-6 border-t border-gray-200">
+                                                <div className="text-xs sm:text-sm text-gray-600 mb-3">
+                                                    <span className="font-medium">ID:</span> {item.id.slice(0, 8)}...
                                                 </div>
-                                                <div className="flex gap-3">
+                                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
                                                         onClick={() => router.push(`/rfqs/${item.id}`)}
-                                                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                                                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 w-full sm:w-auto text-xs sm:text-sm"
                                                     >
-                                                        👁️ View Details
+                                                        👁️ <span className="hidden sm:inline">View Details</span><span className="sm:hidden">View</span>
                                                     </Button>
                                                     {isBuyer && (
                                                         <>
@@ -938,9 +861,9 @@ export default function Dashboard() {
                                                                 variant="outline"
                                                                 size="sm"
                                                                 onClick={() => router.push(`/rfqs/${item.id}/edit`)}
-                                                                className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                                                                className="border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300 w-full sm:w-auto text-xs sm:text-sm"
                                                             >
-                                                                ✏️ Edit RFQ
+                                                                ✏️ <span className="hidden sm:inline">Edit RFQ</span><span className="sm:hidden">Edit</span>
                                                             </Button>
                                                             <Button
                                                                 variant="outline"
@@ -948,27 +871,27 @@ export default function Dashboard() {
                                                                 className={`${item.status === "open"
                                                                     ? "border-orange-200 text-orange-600 hover:bg-orange-50 hover:border-orange-300"
                                                                     : "border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
-                                                                    } disabled:opacity-50`}
+                                                                    } disabled:opacity-50 w-full sm:w-auto text-xs sm:text-sm`}
                                                                 disabled={updatingStatus === item.id}
                                                                 onClick={() => handleStatusToggle(item.id, item.status)}
                                                             >
                                                                 {updatingStatus === item.id ? (
                                                                     <div className="w-4 h-4 border-2 border-gray-200 border-t-gray-600 rounded-full animate-spin"></div>
                                                                 ) : (
-                                                                    item.status === "open" ? "🔒 Close RFQ" : "🔓 Reopen RFQ"
+                                                                    item.status === "open" ? <><span className="hidden sm:inline">🔒 Close RFQ</span><span className="sm:hidden">🔒 Close</span></> : <><span className="hidden sm:inline">🔓 Reopen RFQ</span><span className="sm:hidden">🔓 Reopen</span></>
                                                                 )}
                                                             </Button>
                                                             <Button
                                                                 variant="outline"
                                                                 size="sm"
-                                                                className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50"
+                                                                className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 disabled:opacity-50 w-full sm:w-auto text-xs sm:text-sm"
                                                                 disabled={deleting === item.id}
                                                                 onClick={() => handleDeleteClick(item)}
                                                             >
                                                                 {deleting === item.id ? (
                                                                     <div className="w-4 h-4 border-2 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
                                                                 ) : (
-                                                                    '🗑️ Delete'
+                                                                    <>🗑️ Delete</>
                                                                 )}
                                                             </Button>
                                                         </>

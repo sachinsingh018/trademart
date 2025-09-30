@@ -178,60 +178,61 @@ export default function CreateProductPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="max-w-4xl mx-auto px-4 py-8">
+            <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
                 {/* Header */}
-                <div className="flex items-center gap-4 mb-8">
-                    <Link href="/dashboard">
-                        <Button variant="outline" size="sm">
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back to Dashboard
+                <div className="mb-4 sm:mb-8">
+                    <Link href="/dashboard" className="inline-block mb-3 sm:mb-4">
+                        <Button variant="outline" size="sm" className="text-xs sm:text-sm">
+                            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                            Back
                         </Button>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                            <Package className="w-5 h-5 text-white" />
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <Package className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Create New Product</h1>
-                            <p className="text-gray-600">Add a new product to your catalog</p>
+                            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">Create New Product</h1>
+                            <p className="text-xs sm:text-base text-gray-600">Add a new product to your catalog</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Error Message */}
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-red-600">{error}</p>
+                    <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-red-600 text-sm sm:text-base">{error}</p>
                     </div>
                 )}
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-8">
                     {/* Basic Information */}
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Basic Information</CardTitle>
-                            <CardDescription>
+                        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+                            <CardTitle className="text-base sm:text-lg">Basic Information</CardTitle>
+                            <CardDescription className="text-xs sm:text-sm">
                                 Provide the essential details about your product
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Product Name *</Label>
+                        <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="name" className="text-xs sm:text-sm">Product Name *</Label>
                                     <Input
                                         id="name"
                                         value={formData.name}
                                         onChange={(e) => handleInputChange("name", e.target.value)}
                                         placeholder="Enter product name"
                                         required
+                                        className="h-9 sm:h-10 text-sm sm:text-base"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="category">Category *</Label>
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="category" className="text-xs sm:text-sm">Category *</Label>
                                     <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="h-9 sm:h-10 text-sm sm:text-base">
                                             <SelectValue placeholder="Select category" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -249,21 +250,22 @@ export default function CreateProductPage() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="description">Description *</Label>
+                            <div className="space-y-1 sm:space-y-2">
+                                <Label htmlFor="description" className="text-xs sm:text-sm">Description *</Label>
                                 <Textarea
                                     id="description"
                                     value={formData.description}
                                     onChange={(e) => handleInputChange("description", e.target.value)}
                                     placeholder="Describe your product in detail"
-                                    rows={4}
+                                    rows={3}
                                     required
+                                    className="text-sm sm:text-base"
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="price">Price (USD) *</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="price" className="text-xs sm:text-sm">Price (USD) *</Label>
                                     <Input
                                         id="price"
                                         type="number"
@@ -272,24 +274,26 @@ export default function CreateProductPage() {
                                         onChange={(e) => handleInputChange("price", e.target.value)}
                                         placeholder="0.00"
                                         required
+                                        className="h-9 sm:h-10 text-sm sm:text-base"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="minOrderQuantity">Minimum Order Quantity</Label>
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="minOrderQuantity" className="text-xs sm:text-sm">Min Order Qty</Label>
                                     <Input
                                         id="minOrderQuantity"
                                         type="number"
                                         value={formData.minOrderQuantity}
                                         onChange={(e) => handleInputChange("minOrderQuantity", e.target.value)}
                                         placeholder="1"
+                                        className="h-9 sm:h-10 text-sm sm:text-base"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="unit">Unit</Label>
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="unit" className="text-xs sm:text-sm">Unit</Label>
                                     <Select value={formData.unit} onValueChange={(value) => handleInputChange("unit", value)}>
-                                        <SelectTrigger>
+                                        <SelectTrigger className="h-9 sm:h-10 text-sm sm:text-base">
                                             <SelectValue placeholder="Select unit" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -312,13 +316,13 @@ export default function CreateProductPage() {
 
                     {/* Product Images */}
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Product Images</CardTitle>
-                            <CardDescription>
-                                Upload high-quality images of your product
+                        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+                            <CardTitle className="text-base sm:text-lg">Product Images</CardTitle>
+                            <CardDescription className="text-xs sm:text-sm">
+                                Upload high-quality images
                             </CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 sm:px-6">
                             <ImageUpload
                                 onUpload={handleImageUpload}
                                 onRemove={handleImageRemove}
@@ -335,65 +339,70 @@ export default function CreateProductPage() {
 
                     {/* Additional Details */}
                     <Card>
-                        <CardHeader>
-                            <CardTitle>Additional Details</CardTitle>
-                            <CardDescription>
-                                Provide additional information about your product
+                        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+                            <CardTitle className="text-base sm:text-lg">Additional Details</CardTitle>
+                            <CardDescription className="text-xs sm:text-sm">
+                                Provide additional information (optional)
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="specifications">Specifications</Label>
+                        <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="specifications" className="text-xs sm:text-sm">Specifications</Label>
                                     <Textarea
                                         id="specifications"
                                         value={formData.specifications}
                                         onChange={(e) => handleInputChange("specifications", e.target.value)}
                                         placeholder="Technical specifications, dimensions, etc."
-                                        rows={3}
+                                        rows={2}
+                                        className="text-sm sm:text-base"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="certifications">Certifications</Label>
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="certifications" className="text-xs sm:text-sm">Certifications</Label>
                                     <Textarea
                                         id="certifications"
                                         value={formData.certifications}
                                         onChange={(e) => handleInputChange("certifications", e.target.value)}
                                         placeholder="ISO, CE, FDA, etc."
-                                        rows={3}
+                                        rows={2}
+                                        className="text-sm sm:text-base"
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="leadTime">Lead Time</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="leadTime" className="text-xs sm:text-sm">Lead Time</Label>
                                     <Input
                                         id="leadTime"
                                         value={formData.leadTime}
                                         onChange={(e) => handleInputChange("leadTime", e.target.value)}
                                         placeholder="e.g., 7-14 days"
+                                        className="h-9 sm:h-10 text-sm sm:text-base"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="origin">Country of Origin</Label>
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="origin" className="text-xs sm:text-sm">Origin Country</Label>
                                     <Input
                                         id="origin"
                                         value={formData.origin}
                                         onChange={(e) => handleInputChange("origin", e.target.value)}
                                         placeholder="e.g., China, India, USA"
+                                        className="h-9 sm:h-10 text-sm sm:text-base"
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="packaging">Packaging</Label>
+                                <div className="space-y-1 sm:space-y-2">
+                                    <Label htmlFor="packaging" className="text-xs sm:text-sm">Packaging</Label>
                                     <Input
                                         id="packaging"
                                         value={formData.packaging}
                                         onChange={(e) => handleInputChange("packaging", e.target.value)}
                                         placeholder="e.g., Carton, Pallet, Bulk"
+                                        className="h-9 sm:h-10 text-sm sm:text-base"
                                     />
                                 </div>
                             </div>
@@ -401,17 +410,18 @@ export default function CreateProductPage() {
                     </Card>
 
                     {/* Submit Button */}
-                    <div className="flex justify-end gap-4">
-                        <Link href="/dashboard">
-                            <Button type="button" variant="outline">
+                    <div className="flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
+                        <Link href="/dashboard" className="w-full sm:w-auto">
+                            <Button type="button" variant="outline" className="w-full sm:w-auto text-sm sm:text-base h-9 sm:h-10">
                                 Cancel
                             </Button>
                         </Link>
-                        <Button type="submit" disabled={saving}>
+                        <Button type="submit" disabled={saving} className="w-full sm:w-auto text-sm sm:text-base h-9 sm:h-10">
                             {saving ? (
                                 <>
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                    Creating Product...
+                                    <span className="hidden sm:inline">Creating Product...</span>
+                                    <span className="sm:hidden">Creating...</span>
                                 </>
                             ) : (
                                 <>

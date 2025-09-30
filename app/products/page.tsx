@@ -50,6 +50,164 @@ interface Product {
     orders: number;
 }
 
+// Product Card Component with expand/collapse functionality
+function ProductCard({ product }: { product: Product }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    return (
+        <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
+            <CardHeader className="pb-3">
+                <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                        <CardTitle className="text-base sm:text-lg mb-1 line-clamp-1">{product.name}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm line-clamp-2">
+                            {product.description}
+                        </CardDescription>
+                    </div>
+                    <div className="flex flex-col items-end space-y-1">
+                        <Badge variant="outline" className="text-xs">
+                            {product.category}
+                        </Badge>
+                        {product.inStock ? (
+                            <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                                In Stock
+                            </Badge>
+                        ) : (
+                            <Badge className="bg-red-100 text-red-800 border-red-200 text-xs">
+                                Out of Stock
+                            </Badge>
+                        )}
+                    </div>
+                </div>
+            </CardHeader>
+
+            <CardContent className="flex flex-col flex-grow pt-0">
+                {/* Always visible - Compact view */}
+                <div className="space-y-3 flex-grow">
+                    {/* Price and Supplier - Always visible */}
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <div className="text-lg sm:text-xl font-bold text-green-600">
+                                {product.currency} {Number(product.price).toFixed(2)}
+                            </div>
+                            <div className="text-xs sm:text-sm text-gray-600">
+                                Min: {product.minOrderQuantity} {product.unit}
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-xs sm:text-sm font-medium">{product.supplier.company}</div>
+                            <div className="text-xs text-gray-600">
+                                {product.supplier.country}
+                                {product.supplier.verified && <span className="text-green-600 ml-1">✓</span>}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Lead Time - Always visible */}
+                    <div className="text-xs sm:text-sm text-gray-600">
+                        <span className="font-medium">Lead Time:</span> {product.leadTime}
+                    </div>
+
+                    {/* Expandable content */}
+                    {isExpanded && (
+                        <div className="space-y-3 border-t pt-3">
+                            {/* Features */}
+                            <div>
+                                <span className="text-xs sm:text-sm text-gray-600 mb-2 block">Key Features:</span>
+                                <div className="flex flex-wrap gap-1">
+                                    {product.features.slice(0, 3).map((feature, index) => (
+                                        <Badge key={index} variant="outline" className="text-xs">
+                                            {feature}
+                                        </Badge>
+                                    ))}
+                                    {product.features.length > 3 && (
+                                        <Badge variant="outline" className="text-xs">
+                                            +{product.features.length - 3} more
+                                        </Badge>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Specifications */}
+                            <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                                {product.specifications.material && (
+                                    <div>
+                                        <span className="text-gray-600">Material:</span>
+                                        <div className="font-medium truncate">{product.specifications.material}</div>
+                                    </div>
+                                )}
+                                {product.specifications.color && (
+                                    <div>
+                                        <span className="text-gray-600">Color:</span>
+                                        <div className="font-medium truncate">{product.specifications.color}</div>
+                                    </div>
+                                )}
+                                <div>
+                                    <span className="text-gray-600">Views:</span>
+                                    <div className="font-medium">{product.views.toLocaleString()}</div>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Orders:</span>
+                                    <div className="font-medium">{product.orders.toLocaleString()}</div>
+                                </div>
+                            </div>
+
+                            {/* Tags */}
+                            <div>
+                                <span className="text-xs sm:text-sm text-gray-600 mb-2 block">Tags:</span>
+                                <div className="flex flex-wrap gap-1">
+                                    {product.tags.slice(0, 4).map((tag, index) => (
+                                        <Badge key={index} variant="outline" className="text-xs bg-gray-50 text-gray-700">
+                                            #{tag}
+                                        </Badge>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Actions - Always at bottom */}
+                <div className="pt-3 border-t border-gray-200 flex justify-between items-center mt-auto">
+                    <div className="flex items-center space-x-2">
+                        <div className="text-xs sm:text-sm text-gray-600">
+                            {product.orders} orders
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-xs h-6 px-2 text-blue-600 hover:text-blue-700"
+                            onClick={() => setIsExpanded(!isExpanded)}
+                        >
+                            {isExpanded ? 'Less' : 'More'}
+                        </Button>
+                    </div>
+                    <div className="flex space-x-1 sm:space-x-2">
+                        <Link href={`/products/${product.id}`}>
+                            <Button variant="outline" size="sm" className="text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+                                View
+                            </Button>
+                        </Link>
+                        <Button
+                            size="sm"
+                            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3"
+                            onClick={() => {
+                                if (product.supplier.phone) {
+                                    window.open(`https://wa.me/${product.supplier.phone.replace(/\D/g, '')}`, '_blank');
+                                } else {
+                                    alert("Supplier contact information not available");
+                                }
+                            }}
+                        >
+                            Contact
+                        </Button>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
 export default function ProductsPage() {
     const { data: session } = useSession();
     const { setIsPopupActive } = usePopup();
@@ -213,25 +371,43 @@ export default function ProductsPage() {
 
     // Timer effect for overlay - only for non-logged-in users
     useEffect(() => {
+        console.log('Timer effect running, session:', !!session);
+
         if (session) {
             setShowOverlay(false);
             setIsPopupActive(false);
+            setTimeRemaining(10); // Reset timer
             return;
         }
 
-        const timer = setInterval(() => {
-            setTimeRemaining((prev) => {
-                if (prev <= 1) {
-                    setShowOverlay(true);
-                    setIsPopupActive(true);
-                    clearInterval(timer);
-                    return 0;
+        // Reset timer when component mounts
+        setTimeRemaining(10);
+        setShowOverlay(false);
+        console.log('Starting 10-second timer...');
+
+        // Use setTimeout instead of setInterval for more reliability
+        const timer = setTimeout(() => {
+            console.log('Timer completed, showing overlay');
+            setShowOverlay(true);
+            setIsPopupActive(true);
+            setTimeRemaining(0);
+        }, 10000); // Exactly 10 seconds
+
+        // Optional: Update countdown every second for visual feedback
+        const countdownTimer = setInterval(() => {
+            setTimeRemaining(prev => {
+                const newValue = prev - 1;
+                if (newValue <= 0) {
+                    clearInterval(countdownTimer);
                 }
-                return prev - 1;
+                return newValue;
             });
         }, 1000);
 
-        return () => clearInterval(timer);
+        return () => {
+            clearTimeout(timer);
+            clearInterval(countdownTimer);
+        };
     }, [session, setIsPopupActive]);
 
     const getSubcategories = (category: string) => {
@@ -270,7 +446,9 @@ export default function ProductsPage() {
             {/* Auth overlay - only for non-logged-in users */}
             {!session && showOverlay && (
                 <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-white/20 animate-in fade-in-0 zoom-in-95 duration-300">
+                    {/* Mobile-optimized overlay with stronger blur */}
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" style={{ backdropFilter: 'blur(4px)' }}></div>
+                    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 max-w-sm w-full border border-white/20 animate-in fade-in-0 zoom-in-95 duration-300">
                         <div className="text-center mb-6">
                             <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -301,49 +479,49 @@ export default function ProductsPage() {
 
             {/* Header */}
             <div className={`bg-white border-b border-gray-200 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
                             Product Catalog
                         </h1>
-                        <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                        <p className="text-sm sm:text-base lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 max-w-3xl mx-auto px-4">
                             Discover high-quality products from verified suppliers worldwide.
                             Browse our extensive catalog of B2B products across various industries.
                         </p>
 
                         {/* Timer display - only for non-logged-in users */}
                         {!session && !showOverlay && timeRemaining > 0 && (
-                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
-                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+                                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                Free preview ends in {timeRemaining} seconds
+                                Free preview ends in {timeRemaining}s
                             </div>
                         )}
 
-                        {/* Stats */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-                            <div className="bg-blue-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-blue-600 mb-2">{products.length}</div>
-                                <div className="text-gray-600">Total Products</div>
+                        {/* Stats - Compact on mobile */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-4xl mx-auto">
+                            <div className="bg-blue-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">{products.length}</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Products</div>
                             </div>
-                            <div className="bg-green-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-green-600 mb-2">
+                            <div className="bg-green-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1 sm:mb-2">
                                     {products.filter(p => p.inStock).length}
                                 </div>
-                                <div className="text-gray-600">In Stock</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">In Stock</div>
                             </div>
-                            <div className="bg-purple-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-purple-600 mb-2">
+                            <div className="bg-purple-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">
                                     {products.reduce((sum, p) => sum + p.views, 0).toLocaleString()}
                                 </div>
-                                <div className="text-gray-600">Total Views</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Views</div>
                             </div>
-                            <div className="bg-orange-50 rounded-lg p-6">
-                                <div className="text-3xl font-bold text-orange-600 mb-2">
+                            <div className="bg-orange-50 rounded-lg p-3 sm:p-4 lg:p-6">
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1 sm:mb-2">
                                     {products.reduce((sum, p) => sum + p.orders, 0).toLocaleString()}
                                 </div>
-                                <div className="text-gray-600">Total Orders</div>
+                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Orders</div>
                             </div>
                         </div>
                     </div>
@@ -352,8 +530,8 @@ export default function ProductsPage() {
 
             {/* Filters */}
             <div className={`bg-white border-b border-gray-200 sticky top-16 z-40 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex flex-col lg:flex-row gap-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-6">
+                    <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
                         <div className="flex-1">
                             <Input
                                 placeholder="Search products by name, description, category, or tags..."
@@ -416,8 +594,8 @@ export default function ProductsPage() {
             </div>
 
             {/* Products List */}
-            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                     {filteredProducts.length === 0 ? (
                         <div className="col-span-full text-center py-12">
                             <div className="text-gray-400 text-6xl mb-4">🔍</div>
@@ -426,134 +604,7 @@ export default function ProductsPage() {
                         </div>
                     ) : (
                         filteredProducts.map((product) => (
-                            <Card key={product.id} className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
-                                <CardHeader>
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-1">
-                                            <CardTitle className="text-lg mb-1 line-clamp-1">{product.name}</CardTitle>
-                                            <CardDescription className="text-sm line-clamp-2">
-                                                {product.description}
-                                            </CardDescription>
-                                        </div>
-                                        <div className="flex flex-col items-end space-y-1">
-                                            <Badge variant="outline" className="text-xs">
-                                                {product.category}
-                                            </Badge>
-                                            {product.inStock ? (
-                                                <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-                                                    In Stock
-                                                </Badge>
-                                            ) : (
-                                                <Badge className="bg-red-100 text-red-800 border-red-200 text-xs">
-                                                    Out of Stock
-                                                </Badge>
-                                            )}
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="flex flex-col flex-grow">
-                                    <div className="space-y-4 flex-grow">
-                                        {/* Price and Supplier */}
-                                        <div className="flex justify-between items-center">
-                                            <div>
-                                                <div className="text-xl font-bold text-green-600">
-                                                    {product.currency} {product.price.toFixed(2)}
-                                                </div>
-                                                <div className="text-sm text-gray-600">
-                                                    Min Order: {product.minOrderQuantity} {product.unit}
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="text-sm font-medium">{product.supplier.company}</div>
-                                                <div className="text-xs text-gray-600">
-                                                    {product.supplier.country}
-                                                    {product.supplier.verified && <span className="text-green-600 ml-1">✓</span>}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Features */}
-                                        <div>
-                                            <span className="text-sm text-gray-600 mb-2 block">Key Features:</span>
-                                            <div className="flex flex-wrap gap-1">
-                                                {product.features.slice(0, 3).map((feature, index) => (
-                                                    <Badge key={index} variant="outline" className="text-xs">
-                                                        {feature}
-                                                    </Badge>
-                                                ))}
-                                                {product.features.length > 3 && (
-                                                    <Badge variant="outline" className="text-xs">
-                                                        +{product.features.length - 3} more
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Specifications */}
-                                        <div className="grid grid-cols-2 gap-2 text-sm">
-                                            {product.specifications.material && (
-                                                <div>
-                                                    <span className="text-gray-600">Material:</span>
-                                                    <div className="font-medium truncate">{product.specifications.material}</div>
-                                                </div>
-                                            )}
-                                            {product.specifications.color && (
-                                                <div>
-                                                    <span className="text-gray-600">Color:</span>
-                                                    <div className="font-medium truncate">{product.specifications.color}</div>
-                                                </div>
-                                            )}
-                                            <div>
-                                                <span className="text-gray-600">Lead Time:</span>
-                                                <div className="font-medium">{product.leadTime}</div>
-                                            </div>
-                                            <div>
-                                                <span className="text-gray-600">Views:</span>
-                                                <div className="font-medium">{product.views.toLocaleString()}</div>
-                                            </div>
-                                        </div>
-
-                                        {/* Tags */}
-                                        <div>
-                                            <span className="text-sm text-gray-600 mb-2 block">Tags:</span>
-                                            <div className="flex flex-wrap gap-1">
-                                                {product.tags.slice(0, 4).map((tag, index) => (
-                                                    <Badge key={index} variant="outline" className="text-xs bg-gray-50 text-gray-700">
-                                                        #{tag}
-                                                    </Badge>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Actions - Always at bottom */}
-                                    <div className="pt-4 border-t border-gray-200 flex justify-between items-center mt-auto">
-                                        <div className="text-sm text-gray-600">
-                                            {product.orders} orders
-                                        </div>
-                                        <div className="flex space-x-2">
-                                            <Link href={`/products/${product.id}`}>
-                                                <Button variant="outline" size="sm">
-                                                    View Details
-                                                </Button>
-                                            </Link>
-                                            <Button
-                                                size="sm"
-                                                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-                                                onClick={() => {
-                                                    if (product.supplier.phone) {
-                                                        window.open(`https://wa.me/${product.supplier.phone.replace(/\D/g, '')}`, '_blank');
-                                                    } else {
-                                                        alert("Supplier contact information not available");
-                                                    }
-                                                }}
-                                            >
-                                                Contact Supplier
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <ProductCard key={product.id} product={product} />
                         ))
                     )}
                 </div>

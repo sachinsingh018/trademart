@@ -70,41 +70,41 @@ function SignInForm() {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center py-4 sm:py-12 px-4 sm:px-6 lg:px-8">
             {/* Background Elements */}
             <div className="absolute inset-0 -z-10">
                 <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
                 <div className="absolute top-0 right-1/4 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
             </div>
 
-            <div className="max-w-md w-full space-y-8 relative">
+            <div className="max-w-md w-full space-y-4 sm:space-y-8 relative">
                 <div className="text-center">
-                    <Link href="/" className="flex items-center justify-center mb-12">
+                    <Link href="/" className="hidden sm:flex items-center justify-center mb-6">
                         <Image
                             src="/logofinal.png"
                             alt="TradeMart Logo"
                             width={300}
                             height={300}
-                            className="w-72 h-72 hover:scale-120 transition-transform duration-300 drop-shadow-2xl"
+                            className="w-48 h-48 lg:w-60 lg:h-60 hover:scale-105 transition-transform duration-300 drop-shadow-xl"
                         />
                     </Link>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
                         Welcome back
                     </h2>
-                    <p className="text-gray-600">
+                    <p className="text-sm sm:text-base text-gray-600">
                         Sign in to your account to continue
                     </p>
                 </div>
 
                 <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-                    <CardHeader className="text-center pb-6">
-                        <CardTitle className="text-2xl font-bold text-gray-900">Sign In</CardTitle>
-                        <CardDescription className="text-gray-600">
+                    <CardHeader className="text-center pb-4 sm:pb-6">
+                        <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">Sign In</CardTitle>
+                        <CardDescription className="text-sm sm:text-base text-gray-600">
                             Enter your credentials to access your account
                         </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                    <CardContent className="px-4 sm:px-6">
+                        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                             {error && (
                                 <div className="bg-red-50 border border-red-200 text-red-700 text-sm p-4 rounded-lg">
                                     {error}
@@ -112,11 +112,11 @@ function SignInForm() {
                             )}
 
                             {/* Login Method Toggle */}
-                            <div className="space-y-3">
-                                <label className="block text-sm font-medium text-gray-700">
+                            <div className="space-y-2 sm:space-y-3">
+                                <label className="block text-xs sm:text-sm font-medium text-gray-700">
                                     Sign in with
                                 </label>
-                                <div className="flex space-x-4">
+                                <div className="flex space-x-2 sm:space-x-4">
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -124,7 +124,7 @@ function SignInForm() {
                                             setPhone(""); // Clear phone when switching to email
                                             setError("");
                                         }}
-                                        className={`flex-1 py-2 px-4 rounded-lg border-2 transition-all duration-200 ${loginMethod === "email"
+                                        className={`flex-1 py-2 px-3 sm:px-4 rounded-lg border-2 transition-all duration-200 text-sm sm:text-base ${loginMethod === "email"
                                             ? "border-blue-500 bg-blue-50 text-blue-700"
                                             : "border-gray-200 hover:border-gray-300 text-gray-600"
                                             }`}
@@ -138,7 +138,7 @@ function SignInForm() {
                                             setEmail(""); // Clear email when switching to phone
                                             setError("");
                                         }}
-                                        className={`flex-1 py-2 px-4 rounded-lg border-2 transition-all duration-200 ${loginMethod === "phone"
+                                        className={`flex-1 py-2 px-3 sm:px-4 rounded-lg border-2 transition-all duration-200 text-sm sm:text-base ${loginMethod === "phone"
                                             ? "border-blue-500 bg-blue-50 text-blue-700"
                                             : "border-gray-200 hover:border-gray-300 text-gray-600"
                                             }`}
@@ -149,8 +149,8 @@ function SignInForm() {
                             </div>
 
                             {/* Email or Phone Input */}
-                            <div className="space-y-2">
-                                <label htmlFor={loginMethod} className="block text-sm font-medium text-gray-700">
+                            <div className="space-y-1 sm:space-y-2">
+                                <label htmlFor={loginMethod} className="block text-xs sm:text-sm font-medium text-gray-700">
                                     {loginMethod === "email" ? "Email address" : "Phone number"}
                                 </label>
                                 {loginMethod === "email" ? (
@@ -160,7 +160,7 @@ function SignInForm() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="Enter your email"
-                                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                        className="h-10 sm:h-12 text-sm sm:text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                     />
                                 ) : (
                                     <div className="space-y-1">
@@ -170,7 +170,7 @@ function SignInForm() {
                                             value={phone}
                                             onChange={(e) => setPhone(e.target.value)}
                                             placeholder="Enter your phone number"
-                                            className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                            className="h-10 sm:h-12 text-sm sm:text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                         />
                                         <p className="text-xs text-gray-500">
                                             Enter the phone number you used during registration
@@ -179,8 +179,8 @@ function SignInForm() {
                                 )}
                             </div>
 
-                            <div className="space-y-2">
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            <div className="space-y-1 sm:space-y-2">
+                                <label htmlFor="password" className="block text-xs sm:text-sm font-medium text-gray-700">
                                     Password
                                 </label>
                                 <Input
@@ -190,13 +190,13 @@ function SignInForm() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     placeholder="Enter your password"
-                                    className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                                    className="h-10 sm:h-12 text-sm sm:text-base border-gray-200 focus:border-blue-500 focus:ring-blue-500"
                                 />
                             </div>
 
                             <Button
                                 type="submit"
-                                className="w-full h-12 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                                className="w-full h-10 sm:h-12 text-sm sm:text-base bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                                 disabled={isLoading}
                             >
                                 {isLoading ? (
@@ -213,7 +213,7 @@ function SignInForm() {
                 </Card>
 
                 <div className="text-center">
-                    <p className="text-gray-600">
+                    <p className="text-sm sm:text-base text-gray-600">
                         Don&apos;t have an account?{" "}
                         <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-700 transition-colors">
                             Sign up here
