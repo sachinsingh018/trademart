@@ -85,18 +85,6 @@ export default function EditSupplier() {
         mainProducts: '',
     });
 
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/auth/signin");
-        }
-    }, [status, router]);
-
-    useEffect(() => {
-        if (session && session.user.role === "supplier") {
-            fetchSupplierProfile();
-        }
-    }, [session, fetchSupplierProfile]);
-
     const fetchSupplierProfile = useCallback(async () => {
         try {
             console.log("Fetching supplier profile for user:", session?.user?.id);
@@ -143,6 +131,18 @@ export default function EditSupplier() {
             setLoading(false);
         }
     }, [session?.user?.id]);
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/auth/signin");
+        }
+    }, [status, router]);
+
+    useEffect(() => {
+        if (session && session.user.role === "supplier") {
+            fetchSupplierProfile();
+        }
+    }, [session, fetchSupplierProfile]);
 
     const handleInputChange = (field: string, value: string) => {
         setFormData(prev => ({
