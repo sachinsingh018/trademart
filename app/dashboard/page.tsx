@@ -266,6 +266,20 @@ export default function Dashboard() {
                                     <span className="ml-2">Edit Profile</span>
                                 </Button>
                             </Link>
+
+                            {/* Edit Supplier Button - Only for suppliers */}
+                            {!isBuyer && (
+                                <Link href="/dashboard/supplier/edit">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="group border-gray-300 hover:border-green-400 hover:bg-green-50 hover:text-green-600 transition-all duration-200 font-medium px-3 sm:px-4"
+                                    >
+                                        <span className="group-hover:scale-110 transition-transform duration-200">🏭</span>
+                                        <span className="ml-2">Edit Supplier</span>
+                                    </Button>
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>

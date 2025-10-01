@@ -278,7 +278,6 @@ async function main() {
                 leadTimeDays: 15,
                 notes: "We can provide samples within 3 days. Our printing quality is excellent with color matching guarantee.",
                 status: "pending",
-                whatsappSent: true,
             },
             {
                 rfqId: createdRfqs[1].id,
@@ -288,7 +287,6 @@ async function main() {
                 leadTimeDays: 12,
                 notes: "Premium LED strips with 5-year warranty. Can provide installation support.",
                 status: "pending",
-                whatsappSent: false,
             },
         ];
 

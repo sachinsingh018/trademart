@@ -17,6 +17,7 @@ export async function GET() {
         }
 
         // Get supplier profile
+        console.log("Looking for supplier with userId:", session.user.id);
         const supplier = await prisma.supplier.findUnique({
             where: { userId: session.user.id },
             include: {
@@ -29,13 +30,17 @@ export async function GET() {
             },
         });
 
+        console.log("Found supplier:", supplier);
+
         if (!supplier) {
+            console.log("No supplier found for user:", session.user.id);
             return NextResponse.json(
                 { error: "Supplier profile not found" },
                 { status: 404 }
             );
         }
 
+        console.log("Returning supplier data:", supplier);
         return NextResponse.json({
             success: true,
             data: supplier,
