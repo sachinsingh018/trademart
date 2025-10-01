@@ -132,9 +132,10 @@ export default function HomeClient() {
             <p className="text-xs text-gray-500">Government initiatives empowering Indian businesses</p>
           </div>
 
-          {/* Horizontal Scrollable Cards */}
+          {/* Horizontal Scrollable Cards - Mobile, Centered Grid - Desktop */}
           <div className="relative">
-            <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {/* Mobile: Horizontal scrollable layout */}
+            <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide md:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
                 <Image
                   src="https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png"
@@ -181,43 +182,77 @@ export default function HomeClient() {
                 />
               </div>
             </div>
-          </div>
 
-          {/* Call-to-Action Section */}
-          <div className="text-center mt-8">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
-              Ready to Start Trading?
-            </h2>
-            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 px-4">
-              {session ? (
-                <>
-                  <Link href="/dashboard" className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                      Go to Dashboard
-                    </Button>
-                  </Link>
-                  <Link href="/auth/signout" className="w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto border-2 border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 px-8 py-4 text-lg font-semibold transition-all duration-300">
-                      Sign Out
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link href="/auth/signup" className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                      Get Started Free
-                    </Button>
-                  </Link>
-                  <Link href="/auth/signin" className="w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 px-8 py-4 text-lg font-semibold transition-all duration-300">
-                      Sign In
-                    </Button>
-                  </Link>
-                </>
-              )}
+            {/* Desktop: Centered grid layout */}
+            <div className="hidden md:flex justify-center items-center gap-6">
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png"
+                  alt="Make in India"
+                  width={140}
+                  height={70}
+                  className="h-14 w-auto object-contain mx-auto"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Digital_India_logo.svg/1200px-Digital_India_logo.svg.png"
+                  alt="Digital India"
+                  width={140}
+                  height={70}
+                  className="h-14 w-auto object-contain mx-auto"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://pbs.twimg.com/profile_images/1840626562082676736/QB8mg12l_400x400.jpg"
+                  alt="Startup India"
+                  width={70}
+                  height={70}
+                  className="h-14 w-14 object-contain rounded-full mx-auto"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="/brics-logo.png"
+                  alt="BRICS"
+                  width={140}
+                  height={70}
+                  className="h-14 w-auto object-contain mx-auto"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="/sme-chamber-logo.svg"
+                  alt="SME Chamber of India"
+                  width={140}
+                  height={70}
+                  className="h-14 w-auto object-contain mx-auto"
+                />
+              </div>
             </div>
           </div>
+
+          {/* Call-to-Action Section - Only show when not logged in */}
+          {!session && (
+            <div className="text-center mt-8">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+                Ready to Start Trading?
+              </h2>
+              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 px-4">
+                <Link href="/auth/signup" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                    Get Started Free
+                  </Button>
+                </Link>
+                <Link href="/auth/signin" className="w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 px-8 py-4 text-lg font-semibold transition-all duration-300">
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
