@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-    Plus, 
-    Search, 
-    Edit, 
-    Trash2, 
-    Eye, 
+import {
+    Plus,
+    Search,
+    Edit,
+    Trash2,
+    Eye,
     Package,
     TrendingUp,
     DollarSign,
@@ -110,11 +110,11 @@ export default function ProductManagement() {
 
     const filteredProducts = products.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            product.category.toLowerCase().includes(searchTerm.toLowerCase());
-        
+            product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase());
+
         const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-        
+
         return matchesSearch && matchesCategory;
     });
 
@@ -158,42 +158,6 @@ export default function ProductManagement() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
-            {/* Navigation */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center">
-                            <Link href="/dashboard" className="flex items-center">
-                                <Image
-                                    src="/logofinal.png"
-                                    alt="TradeMart Logo"
-                                    width={160}
-                                    height={160}
-                                    className="w-40 h-40 hover:scale-120 transition-transform duration-300 drop-shadow-2xl"
-                                />
-                            </Link>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <span className="text-sm text-gray-600 font-medium">
-                                Welcome, {session.user.name}
-                            </span>
-                            <Badge variant="secondary" className="bg-green-100 text-green-800 border-green-200">
-                                Supplier
-                            </Badge>
-                            <Button
-                                variant="outline"
-                                className="border-gray-200 hover:border-red-300 hover:text-red-600 transition-colors"
-                                onClick={() => {
-                                    window.location.href = "/api/auth/signout";
-                                }}
-                            >
-                                Sign Out
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
                 <div className="mb-8">
@@ -331,7 +295,7 @@ export default function ProductManagement() {
                                     {products.length === 0 ? "No Products Yet" : "No Products Found"}
                                 </h3>
                                 <p className="text-gray-600 mb-4">
-                                    {products.length === 0 
+                                    {products.length === 0
                                         ? "Start building your product catalog by adding your first product."
                                         : "Try adjusting your search or filter criteria."
                                     }
@@ -379,7 +343,7 @@ export default function ProductManagement() {
                                                         Edit
                                                     </Link>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem 
+                                                <DropdownMenuItem
                                                     onClick={() => handleDeleteProduct(product.id)}
                                                     className="text-red-600"
                                                 >

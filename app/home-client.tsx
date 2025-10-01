@@ -147,24 +147,6 @@ export default function HomeClient() {
               </div>
               <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
                 <Image
-                  src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Digital_India_logo.svg/1200px-Digital_India_logo.svg.png"
-                  alt="Digital India"
-                  width={120}
-                  height={60}
-                  className="h-12 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
-                <Image
-                  src="https://pbs.twimg.com/profile_images/1840626562082676736/QB8mg12l_400x400.jpg"
-                  alt="Startup India"
-                  width={120}
-                  height={60}
-                  className="h-12 w-12 object-contain rounded-full mx-auto"
-                />
-              </div>
-              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
-                <Image
                   src="/brics-logo.png"
                   alt="BRICS"
                   width={120}
@@ -176,6 +158,24 @@ export default function HomeClient() {
                 <Image
                   src="/sme-chamber-logo.svg"
                   alt="SME Chamber of India"
+                  width={120}
+                  height={60}
+                  className="h-12 w-auto object-contain mx-auto"
+                />
+              </div>
+              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
+                <Image
+                  src="https://www.cccme.cn/templates/CCCME/images/logo.png"
+                  alt="CCCME"
+                  width={120}
+                  height={60}
+                  className="h-12 w-auto object-contain mx-auto"
+                />
+              </div>
+              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Sberbank_Logo.jpg"
+                  alt="Sberbank"
                   width={120}
                   height={60}
                   className="h-12 w-auto object-contain mx-auto"
@@ -196,24 +196,6 @@ export default function HomeClient() {
               </div>
               <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
                 <Image
-                  src="https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Digital_India_logo.svg/1200px-Digital_India_logo.svg.png"
-                  alt="Digital India"
-                  width={140}
-                  height={70}
-                  className="h-14 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
-                <Image
-                  src="https://pbs.twimg.com/profile_images/1840626562082676736/QB8mg12l_400x400.jpg"
-                  alt="Startup India"
-                  width={70}
-                  height={70}
-                  className="h-14 w-14 object-contain rounded-full mx-auto"
-                />
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
-                <Image
                   src="/brics-logo.png"
                   alt="BRICS"
                   width={140}
@@ -225,6 +207,24 @@ export default function HomeClient() {
                 <Image
                   src="/sme-chamber-logo.svg"
                   alt="SME Chamber of India"
+                  width={140}
+                  height={70}
+                  className="h-14 w-auto object-contain mx-auto"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://www.cccme.cn/templates/CCCME/images/logo.png"
+                  alt="CCCME"
+                  width={140}
+                  height={70}
+                  className="h-14 w-auto object-contain mx-auto"
+                />
+              </div>
+              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Sberbank_Logo.jpg"
+                  alt="Sberbank"
                   width={140}
                   height={70}
                   className="h-14 w-auto object-contain mx-auto"

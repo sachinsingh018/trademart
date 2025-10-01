@@ -201,49 +201,6 @@ export default function ServiceDetailPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            {/* Navigation */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center">
-                            <Link href="/" className="flex items-center">
-                                <Image
-                                    src="/logofinal.png"
-                                    alt="TradeMart Logo"
-                                    width={160}
-                                    height={160}
-                                    className="w-40 h-40 hover:scale-120 transition-transform duration-300 drop-shadow-2xl"
-                                />
-                            </Link>
-                        </div>
-                        <div className="flex items-center space-x-6">
-                            <div className="hidden md:flex items-center space-x-6">
-                                <Link href="/suppliers" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                    Suppliers
-                                </Link>
-                                <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                    Products
-                                </Link>
-                                <Link href="/services" className="text-blue-600 font-medium">
-                                    Services
-                                </Link>
-                                <Link href="/rfqs" className="text-gray-600 hover:text-blue-600 transition-colors font-medium">
-                                    RFQs
-                                </Link>
-                            </div>
-                            <div className="flex items-center space-x-4">
-                                <Link href="/auth/signin">
-                                    <Button variant="outline" className="border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors">Sign In</Button>
-                                </Link>
-                                <Link href="/auth/signup">
-                                    <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300">Get Started</Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Breadcrumb */}
                 <div className="mb-6">
