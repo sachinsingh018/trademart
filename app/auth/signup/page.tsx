@@ -890,19 +890,20 @@ function SignUpForm() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl w-full space-y-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-start justify-center px-4 sm:px-6 lg:px-8">
+            <div className="max-w-2xl w-full space-y-0">
                 <div className="text-center">
-                    <Link href="/" className="hidden sm:flex items-center justify-center mb-8">
-                        <Image
-                            src="/logofinal.png"
-                            alt="TradeMart Logo"
-                            width={200}
-                            height={200}
-                            className="w-48 h-48 hover:scale-105 transition-transform duration-300 drop-shadow-xl"
-                        />
+                    <Link href="/" className="hidden sm:flex items-center justify-center">
+                        <div className="relative w-64 h-64 lg:w-72 lg:h-72">
+                            <Image
+                                src="/logofinal.png"
+                                alt="TradeMart Logo"
+                                fill
+                                className="object-contain hover:scale-105 transition-transform duration-300 drop-shadow-xl"
+                            />
+                        </div>
                     </Link>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                    <h1 className="text-4xl font-bold text-gray-900">
                         Join TradeMart
                     </h1>
                     <p className="text-gray-600">

@@ -70,25 +70,26 @@ function SignInForm() {
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center py-4 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-start justify-center px-4 sm:px-6 lg:px-8">
             {/* Background Elements */}
             <div className="absolute inset-0 -z-10">
                 <div className="absolute top-0 left-1/4 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
                 <div className="absolute top-0 right-1/4 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
             </div>
 
-            <div className="max-w-md w-full space-y-4 sm:space-y-8 relative">
+            <div className="max-w-md w-full space-y-0 relative">
                 <div className="text-center">
-                    <Link href="/" className="hidden sm:flex items-center justify-center mb-6">
-                        <Image
-                            src="/logofinal.png"
-                            alt="TradeMart Logo"
-                            width={300}
-                            height={300}
-                            className="w-48 h-48 lg:w-60 lg:h-60 hover:scale-105 transition-transform duration-300 drop-shadow-xl"
-                        />
+                    <Link href="/" className="hidden sm:flex items-center justify-center">
+                        <div className="relative w-64 h-64 lg:w-72 lg:h-72">
+                            <Image
+                                src="/logofinal.png"
+                                alt="TradeMart Logo"
+                                fill
+                                className="object-contain hover:scale-105 transition-transform duration-300 drop-shadow-xl"
+                            />
+                        </div>
                     </Link>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
                         Welcome back
                     </h2>
                     <p className="text-sm sm:text-base text-gray-600">
