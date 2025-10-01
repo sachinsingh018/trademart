@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Save, Building, MapPin, Phone, Globe, Mail, Users, Calendar, DollarSign } from "lucide-react";
+import { ArrowLeft, Save, Building, MapPin, Phone, Globe, DollarSign } from "lucide-react";
 
 interface SupplierProfile {
     id: string;
@@ -53,7 +53,7 @@ export default function EditSupplier() {
     const [saving, setSaving] = useState(false);
 
     // Helper function to safely format rating
-    const formatRating = (rating: any): string => {
+    const formatRating = (rating: number | string | null | undefined): string => {
         if (typeof rating === 'number') {
             return rating.toFixed(1);
         }
@@ -95,9 +95,9 @@ export default function EditSupplier() {
         if (session && session.user.role === "supplier") {
             fetchSupplierProfile();
         }
-    }, [session]);
+    }, [session, fetchSupplierProfile]);
 
-    const fetchSupplierProfile = async () => {
+    const fetchSupplierProfile = useCallback(async () => {
         try {
             console.log("Fetching supplier profile for user:", session?.user?.id);
             const response = await fetch('/api/suppliers/profile');
@@ -142,7 +142,7 @@ export default function EditSupplier() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [session?.user?.id]);
 
     const handleInputChange = (field: string, value: string) => {
         setFormData(prev => ({
