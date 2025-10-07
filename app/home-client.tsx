@@ -9,6 +9,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Badge } from "@/components/ui/badge";
 import CountryFlagsBar from "@/components/ui/country-flags-bar";
 import { useSession } from "next-auth/react";
+import { FaTwitter, FaLinkedinIn, FaFacebookF } from "react-icons/fa";
 
 interface Product {
   id: string;
@@ -120,122 +121,209 @@ export default function HomeClient() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      {/* Full-Width Hero Banner */}
+      <section className="relative w-full py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <Image
+          src="https://drive.google.com/uc?export=view&id=1EulWYKHUaZymToAg9Q6uE1KkXL3gYuYa"
+          alt="Global B2B Marketplace Background"
+          fill
+          className="object-cover brightness-80"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+            Global B2B Marketplace
+          </h1>
+          <p className="text-lg sm:text-xl max-w-4xl mx-auto mb-10 leading-relaxed text-gray-200">
+            Connect with verified suppliers worldwide. Find products, submit RFQs, and grow your business
+            with secure transactions and trusted partnerships.
+          </p>
+
+          {/* Search Bar */}
+          <div className="max-w-5xl mx-auto mb-10 px-4">
+            <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/30 p-2 hover:shadow-2xl transition-all duration-500">
+              <div className="flex flex-col lg:flex-row items-center">
+                <div className="flex-1 relative flex items-center w-full">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search products, suppliers..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    className="w-full pl-10 pr-6 py-3 text-base sm:text-lg border-0 bg-transparent text-gray-900 focus:outline-none placeholder:text-gray-400"
+                  />
+                </div>
+                <button
+                  onClick={handleSearch}
+                  className="w-full md:w-auto mt-2 md:mt-0 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mb-8 px-4">
+            {session ? (
+              <>
+                <Link href="/dashboard" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                    Go to Dashboard
+                  </Button>
+                </Link>
+                <Link href="/auth/signout" className="w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
+                    Sign Out
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/signup?role=buyer" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                    Start Buying
+                  </Button>
+                </Link>
+                <Link href="/auth/signup?role=supplier" className="w-full sm:w-auto">
+                  <Button variant="outline" className="w-full sm:w-auto border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
+                    Start Selling
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Stats Section */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto text-center">
+            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
+              <div className="text-2xl sm:text-3xl font-bold text-blue-300 mb-1">
+                {loading ? '...' : stats.totalSuppliers.toLocaleString()}+
+              </div>
+              <div className="text-sm sm:text-base text-gray-200">Verified Suppliers</div>
+            </div>
+            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
+              <div className="text-2xl sm:text-3xl font-bold text-green-300 mb-1">
+                {loading ? '...' : stats.totalProducts.toLocaleString()}+
+              </div>
+              <div className="text-sm sm:text-base text-gray-200">Products Listed</div>
+            </div>
+            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
+              <div className="text-2xl sm:text-3xl font-bold text-purple-300 mb-1">
+                {loading ? '...' : stats.totalOrders.toLocaleString()}+
+              </div>
+              <div className="text-sm sm:text-base text-gray-200">Orders Completed</div>
+            </div>
+            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
+              <div className="text-2xl sm:text-3xl font-bold text-orange-300 mb-1">100+</div>
+              <div className="text-sm sm:text-base text-gray-200">Countries</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Country Flags Bar */}
       <CountryFlagsBar />
 
       {/* Government Initiatives Section */}
-      <section className="py-8 bg-gradient-to-r from-slate-50 to-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6">
-            <h3 className="text-sm font-medium text-gray-700 mb-1">Supported by</h3>
-            <p className="text-xs text-gray-500">Government initiatives empowering Indian businesses</p>
+      {/* Government Initiatives Section */}
+      <section className="py-16 relative overflow-hidden">
+        {/* Soft background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-white to-green-50 opacity-70 blur-xl"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-10">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 tracking-wide mb-2">
+              Supported by
+            </h3>
+            <p className="text-sm sm:text-base text-gray-600">
+              Government & global initiatives empowering Indian businesses
+            </p>
+            <div className="mx-auto mt-2 w-20 h-1 bg-gradient-to-r from-blue-600 to-green-500 rounded-full"></div>
           </div>
 
-          {/* Horizontal Scrollable Cards - Mobile, Centered Grid - Desktop */}
-          <div className="relative">
-            {/* Mobile: Horizontal scrollable layout */}
-            <div className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide md:hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
-                <Image
-                  src="https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png"
-                  alt="Make in India"
-                  width={120}
-                  height={60}
-                  className="h-12 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
-                <Image
-                  src="/brics-logo.png"
-                  alt="BRICS"
-                  width={120}
-                  height={60}
-                  className="h-12 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
-                <Image
-                  src="/sme-chamber-logo.svg"
-                  alt="SME Chamber of India"
-                  width={120}
-                  height={60}
-                  className="h-12 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
-                <Image
-                  src="https://www.cccme.cn/templates/CCCME/images/logo.png"
-                  alt="CCCME"
-                  width={120}
-                  height={60}
-                  className="h-12 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="flex-shrink-0 bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105 min-w-[140px]">
-                <Image
-                  src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Sberbank_Logo.jpg"
-                  alt="Sberbank"
-                  width={120}
-                  height={60}
-                  className="h-12 w-auto object-contain mx-auto"
-                />
-              </div>
+          {/* Mobile: auto-scrolling ticker */}
+          <div className="relative md:hidden overflow-hidden">
+            <div className="flex whitespace-nowrap animate-marquee gap-5">
+              {[
+                "https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png",
+                "/brics-logo.png",
+                "/sme-chamber-logo.svg",
+                "https://www.cccme.cn/templates/CCCME/images/logo.png",
+                "https://upload.wikimedia.org/wikipedia/commons/f/fa/Sberbank_Logo.jpg",
+              ].map((src, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-200 shadow-md hover:shadow-lg hover:border-blue-300 transition-all duration-300 min-w-[160px] flex items-center justify-center"
+                >
+                  <Image
+                    src={src}
+                    alt={`Supported ${i}`}
+                    width={130}
+                    height={65}
+                    className="h-12 w-auto object-contain mx-auto saturate-150 hover:saturate-200 transition duration-300"
+                  />
+                </div>
+              ))}
             </div>
 
-            {/* Desktop: Centered grid layout */}
-            <div className="hidden md:flex justify-center items-center gap-6">
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
-                <Image
-                  src="https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png"
-                  alt="Make in India"
-                  width={140}
-                  height={70}
-                  className="h-14 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
-                <Image
-                  src="/brics-logo.png"
-                  alt="BRICS"
-                  width={140}
-                  height={70}
-                  className="h-14 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
-                <Image
-                  src="/sme-chamber-logo.svg"
-                  alt="SME Chamber of India"
-                  width={140}
-                  height={70}
-                  className="h-14 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
-                <Image
-                  src="https://www.cccme.cn/templates/CCCME/images/logo.png"
-                  alt="CCCME"
-                  width={140}
-                  height={70}
-                  className="h-14 w-auto object-contain mx-auto"
-                />
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:scale-105">
-                <Image
-                  src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Sberbank_Logo.jpg"
-                  alt="Sberbank"
-                  width={140}
-                  height={70}
-                  className="h-14 w-auto object-contain mx-auto"
-                />
-              </div>
-            </div>
+            {/* Fading edges for ticker */}
+            <div className="absolute top-0 left-0 w-16 h-full bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-16 h-full bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
           </div>
 
-          {/* Call-to-Action Section - Only show when not logged in */}
+          {/* Desktop: static grid */}
+          <div className="hidden md:flex justify-center items-center gap-10 relative">
+            {[
+              {
+                src: "https://upload.wikimedia.org/wikipedia/en/4/46/Make_In_India.png",
+                alt: "Make in India",
+              },
+              { src: "/brics-logo.png", alt: "BRICS" },
+              { src: "/sme-chamber-logo.svg", alt: "SME Chamber of India" },
+              {
+                src: "https://www.cccme.cn/templates/CCCME/images/logo.png",
+                alt: "CCCME",
+              },
+              {
+                src: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Sberbank_Logo.jpg",
+                alt: "Sberbank",
+              },
+            ].map((logo, i) => (
+              <div
+                key={i}
+                className="group bg-white/90 backdrop-blur-md rounded-2xl p-6 border border-gray-100 shadow-md hover:shadow-xl hover:border-blue-300 hover:-translate-y-1 transition-all duration-500"
+              >
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={160}
+                  height={80}
+                  className="h-14 w-auto object-contain mx-auto saturate-150 group-hover:saturate-200 transition-all duration-300"
+                />
+                <p className="text-center text-xs text-gray-500 mt-2 group-hover:text-gray-700 transition-all">
+                  {logo.alt}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA below (unchanged) */}
           {!session && (
-            <div className="text-center mt-8">
+            <div className="text-center mt-12 relative z-10">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
                 Ready to Start Trading?
               </h2>
@@ -246,7 +334,10 @@ export default function HomeClient() {
                   </Button>
                 </Link>
                 <Link href="/auth/signin" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 px-8 py-4 text-lg font-semibold transition-all duration-300">
+                  <Button
+                    variant="outline"
+                    className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 px-8 py-4 text-lg font-semibold transition-all duration-300"
+                  >
                     Sign In
                   </Button>
                 </Link>
@@ -254,264 +345,164 @@ export default function HomeClient() {
             </div>
           )}
         </div>
+
+        {/* Bottom accent line */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400/40 to-transparent"></div>
+
+        <style jsx>{`
+    @keyframes marquee {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+    .animate-marquee {
+      animation: marquee 40s linear infinite;
+    }
+  `}</style>
       </section>
+
 
       {/* Hero Section */}
-      <section className="relative py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="max-w-7xl mx-auto">
-          {/* Main Hero Content */}
-          <div className="text-center mb-12">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 bg-clip-text text-transparent">
-                Global B2B Marketplace
-              </span>
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-700 mb-8 max-w-4xl mx-auto leading-relaxed px-4">
-              Connect with verified suppliers worldwide. Find products, submit RFQs, and grow your business with secure transactions and trusted partnerships.
-            </p>
-
-            {/* Modern Levelled Search Bar */}
-            <div className="max-w-5xl mx-auto mb-8 px-4">
-              <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 p-2 hover:shadow-3xl transition-all duration-500">
-                <div className="flex flex-col lg:flex-row items-center">
-                  {/* Search Input with Icon */}
-                  <div className="flex-1 relative flex items-center w-full">
-                    <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 sm:h-6 sm:w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Search products, suppliers..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="w-full pl-10 sm:pl-12 pr-6 py-3 sm:py-4 text-base sm:text-lg border-0 bg-transparent focus:outline-none transition-all duration-300 placeholder:text-gray-400"
-                    />
-                  </div>
-
-                  {/* Category Filter - Hidden on mobile */}
-                  <div className="hidden md:relative md:flex items-center px-4">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                      </svg>
-                    </div>
-                    <select className="pl-10 pr-8 py-4 border-0 bg-transparent focus:outline-none transition-all duration-300 text-gray-700 font-medium appearance-none cursor-pointer min-w-[180px]">
-                      <option value="">All Categories</option>
-                      <option value="electronics">Electronics</option>
-                      <option value="textiles">Textiles</option>
-                      <option value="machinery">Machinery</option>
-                      <option value="chemicals">Chemicals</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Search Button - Responsive */}
-                  <button
-                    onClick={handleSearch}
-                    className="w-full md:w-auto mt-2 md:mt-0 px-6 py-3 sm:py-4 bg-transparent text-blue-600 font-semibold hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 flex items-center justify-center gap-2 rounded-xl sm:rounded-2xl"
-                  >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Search
-                  </button>
-                </div>
-              </div>
-
-              {/* Modern Popular Searches */}
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
-                <span className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Popular searches:
-                </span>
-                {['Smartphones', 'Textiles', 'Machinery', 'Electronics', 'Chemicals'].map((term) => (
-                  <button
-                    key={term}
-                    onClick={() => setSearchTerm(term)}
-                    className="text-sm text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-full border border-blue-200 hover:border-blue-300 transition-all duration-200 font-medium"
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mb-8 px-4">
-              {session ? (
-                <>
-                  <Link href="/dashboard" className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                      Go to Dashboard
-                    </Button>
-                  </Link>
-                  <Link href="/auth/signout" className="w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
-                      Sign Out
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link href="/auth/signup?role=buyer" className="w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                      Start Buying
-                    </Button>
-                  </Link>
-                  <Link href="/auth/signup?role=supplier" className="w-full sm:w-auto">
-                    <Button variant="outline" className="w-full sm:w-auto border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
-                      Start Selling
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Real-time Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto px-4">
-            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
-              <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">
-                {loading ? '...' : stats.totalSuppliers.toLocaleString()}+
-              </div>
-              <div className="text-sm sm:text-base text-gray-600 font-medium">Verified Suppliers</div>
-            </div>
-            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
-              <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-2">
-                {loading ? '...' : stats.totalProducts.toLocaleString()}+
-              </div>
-              <div className="text-sm sm:text-base text-gray-600 font-medium">Products Listed</div>
-            </div>
-            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
-              <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-2">
-                {loading ? '...' : stats.totalOrders.toLocaleString()}+
-              </div>
-              <div className="text-sm sm:text-base text-gray-600 font-medium">Orders Completed</div>
-            </div>
-            <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-lg">
-              <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-2">100+</div>
-              <div className="text-sm sm:text-base text-gray-600 font-medium">Countries</div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Featured Products Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-20 px-4 sm:px-10 lg:px-16 relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-blue-50">
+        {/* Subtle background blobs */}
+        <div className="absolute top-0 left-0 w-80 h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12 sm:mb-20">
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-3 sm:mb-4">
               Featured Products
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover top-quality products from verified suppliers worldwide
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+              Discover verified, top-quality products from trusted global suppliers.
             </p>
+            <div className="mx-auto mt-5 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-600 via-teal-400 to-green-500 rounded-full"></div>
           </div>
 
+          {/* Loading skeleton */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => (
-                <div key={i} className="bg-gray-200 animate-pulse rounded-xl h-80"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
+              {[...Array(2)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-72 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"
+                ></div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts.map((product) => (
-                <Link key={product.id} href={`/products/${product.id}`} className="block h-full">
-                  <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden cursor-pointer h-full flex flex-col">
-                    <div className="relative">
-                      {product.images && product.images.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
+              {featuredProducts.slice(0, 2).map((product) => (
+                <Link key={product.id} href={`/products/${product.id}`}>
+                  <Card className="group relative flex flex-col overflow-hidden border border-gray-100 bg-white/70 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1 hover:border-blue-200/70">
+                    {/* Image */}
+                    <div className="relative overflow-hidden rounded-t-2xl">
+                      {product.images?.length ? (
                         <Image
                           src={product.images[0]}
                           alt={product.name}
-                          width={300}
-                          height={200}
-                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                          width={400}
+                          height={250}
+                          className="w-full h-52 object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       ) : (
-                        <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                          <svg className="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        <div className="w-full h-52 bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center">
+                          <svg
+                            className="w-12 h-12 text-gray-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                         </div>
                       )}
+                      {/* Stock badge */}
                       <div className="absolute top-3 right-3">
                         {product.inStock ? (
-                          <Badge className="bg-green-500 text-white border-green-400 text-xs px-2 py-1">
+                          <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">
                             In Stock
                           </Badge>
                         ) : (
-                          <Badge className="bg-red-500 text-white border-red-400 text-xs px-2 py-1">
+                          <Badge className="bg-rose-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">
                             Out of Stock
                           </Badge>
                         )}
                       </div>
                     </div>
 
-                    <CardHeader className="p-4 flex-shrink-0">
-                      <CardTitle className="text-lg group-hover:text-blue-600 transition-colors line-clamp-2">
+                    {/* Product details */}
+                    <CardHeader className="p-5 border-b border-gray-100">
+                      <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
                         {product.name}
                       </CardTitle>
-                      <CardDescription className="text-sm text-gray-600">
+                      <CardDescription className="text-sm text-gray-500 mt-1">
                         {product.category}
                       </CardDescription>
                     </CardHeader>
 
-                    <div className="px-4 pb-4 flex-grow flex flex-col justify-between">
+                    {/* Info section */}
+                    <div className="p-5 flex flex-col justify-between flex-grow">
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <div className="text-2xl font-bold text-blue-600">
+                          <div className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
                             {formatPrice(product.price, product.currency)}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <span className="text-sm text-gray-600">
                             Min: {product.minOrderQuantity} {product.unit}
-                          </div>
+                          </span>
                         </div>
 
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm text-gray-600">Supplier:</span>
-                            <span className="text-sm font-medium">{product.supplier.companyName}</span>
-                          </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600">
                           <div className="flex items-center space-x-1">
-                            <span className="text-yellow-500">⭐</span>
-                            <span className="text-sm font-medium">{product.supplier.rating}</span>
+                            <span>Supplier:</span>
+                            <span className="font-medium text-gray-800">
+                              {product.supplier.companyName}
+                            </span>
+                          </div>
+                          <div className="flex items-center text-yellow-500">
+                            ⭐<span className="ml-1 text-gray-700 font-medium">
+                              {product.supplier.rating}
+                            </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between mt-auto">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-gray-600">{product.supplier.country}</span>
+                      <div className="flex items-center justify-between mt-5 pt-3 border-t border-gray-100">
+                        <div className="flex items-center space-x-2 text-sm">
+                          <span className="text-gray-600">{product.supplier.country}</span>
                           {product.supplier.verified && (
-                            <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                            <Badge className="bg-green-50 text-green-700 border-green-200 text-xs px-2 py-0.5 rounded-full">
                               Verified
                             </Badge>
                           )}
                         </div>
-                        <div className="text-sm text-blue-600 font-medium group-hover:text-blue-700">
-                          View Details →
-                        </div>
+                        <span className="text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition-colors">
+                          View →
+                        </span>
                       </div>
                     </div>
+
+                    {/* Hover accent */}
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-green-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                   </Card>
                 </Link>
               ))}
             </div>
           )}
 
-          <div className="text-center mt-12">
+          {/* CTA */}
+          <div className="text-center mt-14 sm:mt-20">
             <Link href="/products">
-              <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-8 py-4 text-lg font-semibold">
+              <Button className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:shadow-lg text-base font-semibold px-8 py-4 rounded-full text-white transition-all duration-300">
                 View All Products
               </Button>
             </Link>
@@ -520,35 +511,46 @@ export default function HomeClient() {
       </section>
 
       {/* Top Suppliers Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-16 px-5 sm:px-10 lg:px-16 relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-blue-50">
+        {/* soft background blobs */}
+        <div className="absolute top-0 left-0 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12 sm:mb-20">
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-3 sm:mb-4">
               Verified Suppliers
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Connect with trusted suppliers from around the world
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+              Connect with globally trusted suppliers backed by quality and reliability.
             </p>
+            <div className="mx-auto mt-5 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-500 via-teal-500 to-green-500 rounded-full"></div>
           </div>
 
+          {/* Loading Skeleton */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-gray-200 animate-pulse rounded-xl h-48"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-52 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"></div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {topSuppliers.map((supplier) => (
-                <Card key={supplier.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {topSuppliers.slice(0, 3).map((supplier) => (
+                <Card
+                  key={supplier.id}
+                  className="group relative overflow-hidden border border-gray-200/50 bg-white/60 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1"
+                >
                   <CardHeader className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    {/* Supplier Header */}
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center text-white font-semibold text-lg shadow-md">
                           {supplier.companyName.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
+                          <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                             {supplier.companyName}
                           </CardTitle>
                           <CardDescription className="text-sm text-gray-600">
@@ -557,183 +559,221 @@ export default function HomeClient() {
                         </div>
                       </div>
                       {supplier.verified && (
-                        <Badge className="bg-green-100 text-green-800 border-green-200">
-                          Verified
-                        </Badge>
+                        <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full border border-green-200">
+                          <span>✅</span> Verified
+                        </span>
                       )}
                     </div>
 
+                    {/* Stats Row */}
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-6">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-blue-600">⭐ {supplier.rating}</div>
-                          <div className="text-xs text-gray-600">Rating</div>
+                          <div className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                            ⭐ {supplier.rating}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Rating</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-green-600">{supplier.totalOrders}</div>
-                          <div className="text-xs text-gray-600">Orders</div>
+                          <div className="text-xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
+                            {supplier.totalOrders}
+                          </div>
+                          <div className="text-xs text-gray-600 mt-1">Orders</div>
                         </div>
                       </div>
+
                       <Link href={`/suppliers/${supplier.id}`}>
-                        <Button size="sm" className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800">
-                          View Profile
-                        </Button>
+                        <button className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm font-medium text-blue-600 rounded-full border border-blue-300 bg-white/60 hover:bg-gradient-to-r hover:from-blue-600 hover:to-teal-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
+                          View
+                        </button>
                       </Link>
                     </div>
                   </CardHeader>
+
+                  {/* Accent Glow */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-teal-400 to-green-400 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                 </Card>
               ))}
             </div>
           )}
 
-          <div className="text-center mt-12">
+          {/* CTA */}
+          <div className="text-center mt-14 sm:mt-20">
             <Link href="/suppliers">
-              <Button className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 px-8 py-4 text-lg font-semibold">
+              <button className="relative inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-semibold text-base sm:text-lg border border-blue-400 text-blue-600 bg-white/50 backdrop-blur-md hover:bg-gradient-to-r hover:from-blue-600 hover:to-teal-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg">
                 View All Suppliers
-              </Button>
+                <span className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-teal-400 opacity-0 group-hover:opacity-20 blur-xl transition-all"></span>
+              </button>
             </Link>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+      {/* Why Choose Section */}
+      <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-16 relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-blue-50">
+        {/* background blobs */}
+        <div className="absolute top-0 left-0 w-60 sm:w-80 h-60 sm:h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16 sm:mb-20">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
               Why Choose TradeMart for Your B2B Trading?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We provide the tools, security, and global network you need to grow your business worldwide with verified suppliers and secure transactions.
+            <p className="text-base sm:text-lg text-gray-600 max-w-md sm:max-w-2xl mx-auto">
+              The all-in-one global B2B hub connecting verified suppliers with secure, AI-driven trade opportunities.
             </p>
+            <div className="mx-auto mt-6 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-600 via-green-500 to-teal-400 rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center p-8 hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-              <CardHeader>
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl mb-2">Verified Suppliers</CardTitle>
-                <CardDescription className="text-gray-600">
-                  All suppliers are verified and certified. Trade with confidence knowing you&apos;re working with legitimate businesses.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="text-center p-8 hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-              <CardHeader>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl mb-2">Secure Payments</CardTitle>
-                <CardDescription className="text-gray-600">
-                  Protected transactions with escrow services. Your money is safe until you receive your goods.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="text-center p-8 hover:shadow-lg transition-all duration-300 border-0 shadow-md">
-              <CardHeader>
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl mb-2">Fast Matching</CardTitle>
-                <CardDescription className="text-gray-600">
-                  AI-powered matching connects you with the right suppliers instantly. Save time and find better deals.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+          {/* Cards */}
+          {/* Cards */}
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 sm:px-0 pb-4">
+            {[
+              {
+                iconBg: "from-blue-500 to-blue-700",
+                hover: "text-blue-600",
+                title: "Verified Suppliers",
+                desc: "Every supplier is verified and certified — trade with absolute confidence.",
+                path: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
+              },
+              {
+                iconBg: "from-green-500 to-emerald-600",
+                hover: "text-green-600",
+                title: "Secure Payments",
+                desc: "Escrow-protected transactions keep your funds safe until you receive your goods.",
+                path: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1",
+              },
+              {
+                iconBg: "from-purple-500 to-indigo-600",
+                hover: "text-purple-600",
+                title: "Fast Matching",
+                desc: "Our AI instantly connects you with the best suppliers — faster deals, better margins.",
+                path: "M13 10V3L4 14h7v7l9-11h-7z",
+              },
+            ].map((card, i) => (
+              <Card
+                key={i}
+                className="group min-w-[85%] sm:min-w-0 snap-center text-center p-6 sm:p-10 border border-gray-100/70 bg-white/90 backdrop-blur-lg rounded-3xl shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
+              >
+                <CardHeader>
+                  <div
+                    className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${card.iconBg} rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-md`}
+                  >
+                    <svg
+                      className="w-7 h-7 sm:w-8 sm:h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d={card.path}
+                      />
+                    </svg>
+                  </div>
+                  <CardTitle
+                    className={`text-lg sm:text-xl font-semibold mb-2 text-gray-900 group-hover:${card.hover} transition-colors`}
+                  >
+                    {card.title}
+                  </CardTitle>
+                  <CardDescription className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-xs mx-auto">
+                    {card.desc}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
           </div>
+
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              How It Works
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Get started in minutes and begin trading with verified partners worldwide
+      {/* Steps */}
+      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-10 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 sm:px-0">
+        {[
+          { step: 1, title: "Sign Up", desc: "Create your account as a buyer or supplier in just a few clicks." },
+          { step: 2, title: "Browse & Connect", desc: "Find products or suppliers that match your business goals." },
+          { step: 3, title: "Negotiate", desc: "Chat directly and finalize terms with clarity and trust." },
+          { step: 4, title: "Trade Safely", desc: "Complete your order through our secure, protected payment system." },
+        ].map((item) => (
+          <div
+            key={item.step}
+            className="text-center group min-w-[80%] sm:min-w-0 snap-center bg-white/50 backdrop-blur-sm rounded-2xl shadow-sm px-3 py-6 sm:px-4 hover:shadow-md transition-all duration-300"
+          >
+            <div className="relative w-12 sm:w-20 h-12 sm:h-20 mx-auto mb-4 sm:mb-6">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-green-500 rounded-full blur-sm opacity-70 group-hover:opacity-90 transition-all duration-500"></div>
+              <div className="relative w-full h-full bg-gradient-to-br from-blue-600 to-green-500 text-white rounded-full flex items-center justify-center text-lg sm:text-2xl font-bold shadow-lg group-hover:scale-105 transition-transform">
+                {item.step}
+              </div>
+            </div>
+            <h3 className="text-base sm:text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+              {item.title}
+            </h3>
+            <p className="text-gray-600 text-xs sm:text-base max-w-xs mx-auto leading-relaxed">
+              {item.desc}
             </p>
           </div>
+        ))}
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                1
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Sign Up</h3>
-              <p className="text-gray-600">Create your account as a buyer or supplier in just a few clicks</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                2
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Browse & Connect</h3>
-              <p className="text-gray-600">Find products or suppliers that match your business needs</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                3
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Negotiate</h3>
-              <p className="text-gray-600">Communicate directly and negotiate terms that work for both parties</p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
-                4
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Trade Safely</h3>
-              <p className="text-gray-600">Complete secure transactions with our protected payment system</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-blue-800">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">
+      <section className="relative py-20 sm:py-28 px-4 sm:px-8 lg:px-16 overflow-hidden bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700">
+        {/* background accents */}
+        <div className="absolute inset-0">
+          <div className="absolute -top-16 sm:-top-20 -left-16 sm:-left-20 w-72 sm:w-96 h-72 sm:h-96 bg-blue-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+          <div className="absolute bottom-0 right-0 w-72 sm:w-[28rem] h-72 sm:h-[28rem] bg-green-400/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(255,255,255,0.08),_transparent_60%)]"></div>
+        </div>
+
+        <div className="relative max-w-3xl sm:max-w-4xl mx-auto text-center text-white px-2">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 sm:mb-6 tracking-tight">
             Ready to Start Trading?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join thousands of businesses already growing on TradeMart
+          <p className="text-base sm:text-xl text-blue-100 mb-8 sm:mb-10 leading-relaxed px-2">
+            Join thousands of businesses already growing with verified partners on TradeMart.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
             {session ? (
               <>
-                <Link href="/dashboard">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                <Link href="/dashboard" className="w-full sm:w-auto">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-semibold bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 transition-all duration-300 rounded-full shadow-md hover:shadow-lg"
+                  >
                     Go to Dashboard
                   </Button>
                 </Link>
-                <Link href="/auth/signout">
-                  <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                <Link href="/auth/signout" className="w-full sm:w-auto">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-semibold bg-gradient-to-r from-rose-500 to-red-600 text-white hover:from-rose-600 hover:to-red-700 hover:scale-105 transition-all duration-300 rounded-full shadow-md hover:shadow-lg"
+                  >
                     Sign Out
                   </Button>
                 </Link>
               </>
             ) : (
               <>
-                <Link href="/auth/signup?role=buyer">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                <Link href="/auth/signup?role=buyer" className="w-full sm:w-auto">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-semibold bg-white text-blue-700 hover:bg-blue-50 hover:scale-105 transition-all duration-300 rounded-full shadow-md hover:shadow-lg"
+                  >
                     Start Buying
                   </Button>
                 </Link>
-                <Link href="/auth/signup?role=supplier">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                <Link href="/auth/signup?role=supplier" className="w-full sm:w-auto">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 text-base sm:text-lg font-semibold bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:from-green-500 hover:to-emerald-600 hover:scale-105 transition-all duration-300 rounded-full shadow-md hover:shadow-lg"
+                  >
                     Start Selling
                   </Button>
                 </Link>
@@ -743,110 +783,119 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-            {/* Company Info */}
-            <div className="md:col-span-2">
+
+      {/* import {FaTwitter, FaLinkedinIn, FaFacebookF} from "react-icons/fa"; */}
+
+      <footer className="relative bg-gradient-to-b from-gray-950 via-gray-900 to-blue-950 text-white py-16 px-6 sm:px-8 lg:px-16 overflow-hidden">
+        {/* Animated gradient accents */}
+        <div className="absolute top-0 left-0 w-72 h-72 sm:w-96 sm:h-96 bg-blue-600/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 right-0 w-72 h-72 sm:w-[28rem] sm:h-[28rem] bg-green-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(255,255,255,0.05),_transparent_70%)]"></div>
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Main Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-10">
+            {/* Brand */}
+            <div className="md:col-span-2 sm:col-span-2">
               <div className="flex items-center mb-6">
-                <Image
-                  src="/logofinal.png"
-                  alt="TradeMart Logo"
-                  width={50}
-                  height={50}
-                  className="w-12 h-12"
-                />
-                <span className="ml-3 text-2xl font-bold">TradeMart</span>
+
+                <span className="ml-3 text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-teal-300 bg-clip-text text-transparent">
+                  TradeMart
+                </span>
               </div>
-              <p className="text-gray-400 mb-6 leading-relaxed">
-                The leading global B2B marketplace connecting verified suppliers with buyers worldwide.
-                Secure transactions, competitive quotes, and trusted partnerships for international trade.
+
+              <p className="text-gray-400 mb-8 leading-relaxed text-sm sm:text-base">
+                The world’s most trusted B2B marketplace — connecting verified suppliers and global buyers through secure, AI-powered trade.
               </p>
+
+              {/* Social Icons using React Icons */}
               <div className="flex space-x-4">
-                <a href="https://twitter.com/trademart" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                  </svg>
-                </a>
-                <a href="https://linkedin.com/company/trademart" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                  </svg>
-                </a>
-                <a href="https://facebook.com/trademart" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
-                </a>
+                {[
+                  { href: "https://twitter.com/trademart", icon: <FaTwitter /> },
+                  { href: "https://linkedin.com/company/trademart", icon: <FaLinkedinIn /> },
+                  { href: "https://facebook.com/trademart", icon: <FaFacebookF /> },
+                ].map((item, i) => (
+                  <a
+                    key={i}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 transition-all duration-300 text-gray-400 hover:text-white text-xl sm:text-2xl flex items-center justify-center"
+                  >
+                    {item.icon}
+                  </a>
+                ))}
               </div>
             </div>
 
-            {/* For Buyers */}
+            {/* Buyers */}
             <div>
-              <h3 className="text-lg font-semibold mb-6">For Buyers</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li><Link href="/products" className="hover:text-white transition-colors">Browse Products</Link></li>
-                <li><Link href="/suppliers" className="hover:text-white transition-colors">Find Suppliers</Link></li>
-                <li><Link href="/rfqs" className="hover:text-white transition-colors">Submit RFQ</Link></li>
-                <li><Link href="/auth/signup?role=buyer" className="hover:text-white transition-colors">Join as Buyer</Link></li>
+              <h3 className="text-base sm:text-lg font-semibold mb-5 text-blue-300">For Buyers</h3>
+              <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
+                <li><Link href="/products" className="hover:text-blue-300 transition-colors">Browse Products</Link></li>
+                <li><Link href="/suppliers" className="hover:text-blue-300 transition-colors">Find Suppliers</Link></li>
+                <li><Link href="/rfqs" className="hover:text-blue-300 transition-colors">Submit RFQ</Link></li>
+                <li><Link href="/auth/signup?role=buyer" className="hover:text-blue-300 transition-colors">Join as Buyer</Link></li>
               </ul>
             </div>
 
-            {/* For Suppliers */}
+            {/* Suppliers */}
             <div>
-              <h3 className="text-lg font-semibold mb-6">For Suppliers</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li><Link href="/products/create" className="hover:text-white transition-colors">List Products</Link></li>
-                <li><Link href="/suppliers" className="hover:text-white transition-colors">Supplier Dashboard</Link></li>
-                <li><Link href="/rfqs" className="hover:text-white transition-colors">Respond to RFQs</Link></li>
-                <li><Link href="/auth/signup?role=supplier" className="hover:text-white transition-colors">Join as Supplier</Link></li>
+              <h3 className="text-base sm:text-lg font-semibold mb-5 text-green-300">For Suppliers</h3>
+              <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
+                <li><Link href="/products/create" className="hover:text-green-300 transition-colors">List Products</Link></li>
+                <li><Link href="/suppliers" className="hover:text-green-300 transition-colors">Supplier Dashboard</Link></li>
+                <li><Link href="/rfqs" className="hover:text-green-300 transition-colors">Respond to RFQs</Link></li>
+                <li><Link href="/auth/signup?role=supplier" className="hover:text-green-300 transition-colors">Join as Supplier</Link></li>
               </ul>
             </div>
 
             {/* Support */}
             <div>
-              <h3 className="text-lg font-semibold mb-6">Support</h3>
-              <ul className="space-y-3 text-gray-400">
-                <li><Link href="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+              <h3 className="text-base sm:text-lg font-semibold mb-5 text-purple-300">Support</h3>
+              <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
+                <li><Link href="/help" className="hover:text-purple-300 transition-colors">Help Center</Link></li>
+                <li><Link href="/contact" className="hover:text-purple-300 transition-colors">Contact Us</Link></li>
+                <li><Link href="/privacy" className="hover:text-purple-300 transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-purple-300 transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
 
-          {/* Company Stats */}
-          <div className="border-t border-gray-800 mt-12 pt-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-400 mb-2">
-                  {loading ? '...' : stats.totalSuppliers.toLocaleString()}+
+          {/* Stats Section */}
+          <div className="border-t border-gray-800 mt-14 pt-10">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
+              <div>
+                <div className="text-xl sm:text-2xl font-bold text-blue-400 mb-1">
+                  {loading ? "..." : stats.totalSuppliers.toLocaleString()}+
                 </div>
-                <div className="text-gray-400 text-sm">Verified Suppliers</div>
+                <div className="text-gray-400 text-xs sm:text-sm">Verified Suppliers</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-400 mb-2">
-                  {loading ? '...' : stats.totalProducts.toLocaleString()}+
+              <div>
+                <div className="text-xl sm:text-2xl font-bold text-green-400 mb-1">
+                  {loading ? "..." : stats.totalProducts.toLocaleString()}+
                 </div>
-                <div className="text-gray-400 text-sm">Products Listed</div>
+                <div className="text-gray-400 text-xs sm:text-sm">Products Listed</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-400 mb-2">
-                  {loading ? '...' : stats.totalOrders.toLocaleString()}+
+              <div>
+                <div className="text-xl sm:text-2xl font-bold text-purple-400 mb-1">
+                  {loading ? "..." : stats.totalOrders.toLocaleString()}+
                 </div>
-                <div className="text-gray-400 text-sm">Orders Completed</div>
+                <div className="text-gray-400 text-xs sm:text-sm">Orders Completed</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-orange-400 mb-2">100+</div>
-                <div className="text-gray-400 text-sm">Countries</div>
+              <div>
+                <div className="text-xl sm:text-2xl font-bold text-amber-400 mb-1">100+</div>
+                <div className="text-gray-400 text-xs sm:text-sm">Countries</div>
               </div>
             </div>
-          </div>
 
-
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 TradeMart. All rights reserved. | Global B2B Marketplace</p>
+            {/* Bottom Bar */}
+            <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500 text-xs sm:text-sm leading-relaxed">
+              <p>
+                &copy; 2024 <span className="text-blue-400 font-semibold">TradeMart</span> — Global B2B Marketplace.
+                All rights reserved.
+              </p>
+            </div>
           </div>
         </div>
       </footer>

@@ -42,116 +42,122 @@ function SupplierCard({ supplier, getRatingColor }: { supplier: Supplier, getRat
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-md flex flex-col h-full">
-            <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
+        <div
+            className="group relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+        >
+            {/* Top Accent Gradient */}
+            <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-green-400 to-blue-600 opacity-60"></div>
+
+            <div className="p-5 sm:p-6 flex flex-col h-full">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                        <CardTitle className="text-base sm:text-lg mb-1 line-clamp-1">{supplier.company}</CardTitle>
-                        <CardDescription className="text-xs sm:text-sm line-clamp-2">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-blue-700 transition-colors line-clamp-1">
+                            {supplier.company}
+                        </h3>
+                        <p className="text-sm text-gray-500 line-clamp-1">
                             {supplier.name} • {supplier.country}
-                        </CardDescription>
+                        </p>
                     </div>
-                    <div className="flex flex-col items-end space-y-1">
+
+                    <div className="text-right">
                         {supplier.verified && (
-                            <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                            <span className="inline-flex items-center bg-green-50 text-green-700 text-xs font-medium px-2 py-1 rounded-full border border-green-100">
                                 ✓ Verified
-                            </Badge>
+                            </span>
                         )}
-                        <div className={`text-xs sm:text-sm font-semibold ${getRatingColor(supplier.rating)}`}>
+                        <div className={`text-xs sm:text-sm font-semibold mt-1 ${getRatingColor(supplier.rating)}`}>
                             ⭐ {supplier.rating}
                         </div>
                     </div>
                 </div>
-            </CardHeader>
 
-            <CardContent className="flex flex-col flex-grow pt-0">
-                {/* Always visible - Compact view */}
-                <div className="space-y-3 flex-grow">
-                    <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
-                        {supplier.description}
-                    </p>
+                {/* Description */}
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    {supplier.description || "No description provided."}
+                </p>
 
-                    {/* Essential info - Always visible */}
-                    <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
-                        <div>
-                            <span className="text-gray-600">Industry:</span>
-                            <div className="font-medium truncate">{supplier.industry}</div>
-                        </div>
-                        <div>
-                            <span className="text-gray-600">Orders:</span>
-                            <div className="font-medium">{supplier.totalOrders.toLocaleString()}</div>
-                        </div>
+                {/* Quick Stats */}
+                <div className="grid grid-cols-2 gap-2 mb-3 text-xs sm:text-sm">
+                    <div className="bg-slate-50 rounded-lg p-2">
+                        <span className="block text-gray-500 text-[11px] uppercase tracking-wide">
+                            Industry
+                        </span>
+                        <span className="font-medium text-gray-800">{supplier.industry}</span>
                     </div>
-
-                    {/* Expandable content */}
-                    {isExpanded && (
-                        <div className="space-y-3 border-t pt-3">
-                            <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
-                                <div>
-                                    <span className="text-gray-600">Established:</span>
-                                    <div className="font-medium">{supplier.establishedYear}</div>
-                                </div>
-                                <div>
-                                    <span className="text-gray-600">Response:</span>
-                                    <div className="font-medium">{supplier.responseTime}</div>
-                                </div>
-                            </div>
-
-                            {supplier.website && (
-                                <div className="text-xs sm:text-sm">
-                                    <span className="text-gray-600">Website:</span>
-                                    <div className="font-medium truncate">{supplier.website}</div>
-                                </div>
-                            )}
-
-                            {supplier.specialties && supplier.specialties.length > 0 && (
-                                <div>
-                                    <span className="text-xs sm:text-sm text-gray-600 mb-2 block">Specialties:</span>
-                                    <div className="flex flex-wrap gap-1">
-                                        {supplier.specialties.slice(0, 3).map((specialty, index) => (
-                                            <Badge key={index} variant="outline" className="text-xs">
-                                                {specialty}
-                                            </Badge>
-                                        ))}
-                                        {supplier.specialties.length > 3 && (
-                                            <Badge variant="outline" className="text-xs">
-                                                +{supplier.specialties.length - 3} more
-                                            </Badge>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    <div className="bg-slate-50 rounded-lg p-2">
+                        <span className="block text-gray-500 text-[11px] uppercase tracking-wide">
+                            Orders
+                        </span>
+                        <span className="font-medium text-gray-800">{supplier.totalOrders.toLocaleString()}</span>
+                    </div>
                 </div>
 
-                {/* Actions - Always at bottom */}
-                <div className="pt-3 border-t border-gray-200 flex justify-between items-center mt-auto">
-                    <div className="flex items-center space-x-2">
-                        <div className="text-xs sm:text-sm text-gray-600">
-                            {supplier.totalOrders} orders
+                {/* Expandable Section */}
+                {isExpanded && (
+                    <div className="mt-3 space-y-2 border-t border-gray-100 pt-3 text-sm">
+                        <div className="flex justify-between">
+                            <span className="text-gray-500">Established:</span>
+                            <span className="font-medium text-gray-800">{supplier.establishedYear}</span>
                         </div>
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-xs h-6 px-2 text-blue-600 hover:text-blue-700"
-                            onClick={() => setIsExpanded(!isExpanded)}
-                        >
-                            {isExpanded ? 'Less' : 'More'}
-                        </Button>
+                        <div className="flex justify-between">
+                            <span className="text-gray-500">Response:</span>
+                            <span className="font-medium text-gray-800">{supplier.responseTime}</span>
+                        </div>
+
+                        {supplier.website && (
+                            <div className="truncate text-blue-600 hover:underline">
+                                <Link href={supplier.website} target="_blank">
+                                    {supplier.website}
+                                </Link>
+                            </div>
+                        )}
+
+                        {supplier.specialties && supplier.specialties.length > 0 && (
+                            <div>
+                                <span className="block text-gray-500 text-xs mb-1">Specialties</span>
+                                <div className="flex flex-wrap gap-1">
+                                    {supplier.specialties.slice(0, 3).map((specialty, index) => (
+                                        <Badge key={index} variant="outline" className="text-[11px]">
+                                            {specialty}
+                                        </Badge>
+                                    ))}
+                                    {supplier.specialties.length > 3 && (
+                                        <Badge variant="outline" className="text-[11px]">
+                                            +{supplier.specialties.length - 3} more
+                                        </Badge>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    <div className="flex space-x-1 sm:space-x-2">
+                )}
+
+                {/* Footer Actions */}
+                <div className="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                    <button
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                    >
+                        {isExpanded ? "Show Less ▲" : "Show More ▼"}
+                    </button>
+
+                    <div className="flex gap-2">
                         <Link href={`/suppliers/${supplier.id}`}>
-                            <Button variant="outline" size="sm" className="text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="text-xs sm:text-sm h-8 px-3 border-gray-300 hover:bg-gray-100"
+                            >
                                 View
                             </Button>
                         </Link>
                         <Button
                             size="sm"
-                            className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3"
+                            className="text-xs sm:text-sm h-8 px-3 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-sm"
                             onClick={() => {
                                 if (supplier.phone) {
-                                    window.open(`https://wa.me/${supplier.phone.replace(/\D/g, '')}`, '_blank');
+                                    window.open(`https://wa.me/${supplier.phone.replace(/\D/g, "")}`, "_blank");
                                 } else {
                                     alert("Supplier contact information not available");
                                 }
@@ -161,8 +167,8 @@ function SupplierCard({ supplier, getRatingColor }: { supplier: Supplier, getRat
                         </Button>
                     </div>
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }
 
@@ -417,50 +423,87 @@ export default function SuppliersPage() {
             )}
 
             {/* Header */}
-            <div className={`bg-white border-b border-gray-200 transition-all duration-500 ${!session && showOverlay ? 'blur-sm opacity-50' : ''}`}>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+            <div
+                className={`relative bg-white border-b border-gray-100 transition-all duration-500 ${!session && showOverlay ? "blur-sm opacity-50" : ""
+                    }`}
+            >
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
                     <div className="text-center">
-                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-4">
+                        {/* Gradient Title */}
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
                             Verified Suppliers
                         </h1>
-                        <p className="text-sm sm:text-base lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 max-w-3xl mx-auto px-4">
-                            Connect with trusted suppliers worldwide. Find verified manufacturers,
-                            wholesalers, and service providers for your business needs.
+
+                        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+                            Connect with trusted manufacturers, wholesalers, and service providers worldwide.
+                            Discover verified suppliers and build long-term partnerships for your business.
                         </p>
 
-                        {/* Timer display - only for non-logged-in users */}
+                        {/* Timer display for guest users */}
                         {!session && !showOverlay && timeRemaining > 0 && (
-                            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
-                                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <div className="inline-flex items-center bg-blue-50 text-blue-700 border border-blue-100 px-4 py-2 rounded-full text-sm font-medium mb-10 transition-all duration-300 hover:bg-blue-100">
+                                <svg
+                                    className="w-4 h-4 mr-2 text-blue-600 animate-spin-slow"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    />
                                 </svg>
                                 Free preview ends in {timeRemaining}s
                             </div>
                         )}
 
-                        {/* Stats - Compact on mobile */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-4xl mx-auto">
-                            <div className="bg-blue-50 rounded-lg p-3 sm:p-4 lg:p-6">
-                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 mb-1 sm:mb-2">{suppliers.length}</div>
-                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Suppliers</div>
-                            </div>
-                            <div className="bg-green-50 rounded-lg p-3 sm:p-4 lg:p-6">
-                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1 sm:mb-2">
-                                    {suppliers.filter(s => s.verified).length}
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
+                            {/* Total Suppliers */}
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
+                                <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">
+                                    {suppliers.length}
                                 </div>
-                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Verified</div>
-                            </div>
-                            <div className="bg-purple-50 rounded-lg p-3 sm:p-4 lg:p-6">
-                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-600 mb-1 sm:mb-2">
-                                    {suppliers.reduce((sum, s) => sum + s.totalOrders, 0).toLocaleString()}
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">
+                                    Total Suppliers
                                 </div>
-                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Total Orders</div>
                             </div>
-                            <div className="bg-orange-50 rounded-lg p-3 sm:p-4 lg:p-6">
-                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1 sm:mb-2">
-                                    {(suppliers.reduce((sum, s) => sum + s.rating, 0) / suppliers.length || 0).toFixed(1)}
+
+                            {/* Verified */}
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
+                                <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-1">
+                                    {suppliers.filter((s) => s.verified).length}
                                 </div>
-                                <div className="text-xs sm:text-sm lg:text-base text-gray-600">Avg Rating</div>
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">
+                                    Verified
+                                </div>
+                            </div>
+
+                            {/* Total Orders */}
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
+                                <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">
+                                    {suppliers
+                                        .reduce((sum, s) => sum + s.totalOrders, 0)
+                                        .toLocaleString()}
+                                </div>
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">
+                                    Total Orders
+                                </div>
+                            </div>
+
+                            {/* Average Rating */}
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
+                                <div className="text-2xl sm:text-3xl font-bold text-orange-600 mb-1">
+                                    {(
+                                        suppliers.reduce((sum, s) => sum + s.rating, 0) /
+                                        suppliers.length || 0
+                                    ).toFixed(1)}
+                                </div>
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">
+                                    Avg. Rating
+                                </div>
                             </div>
                         </div>
                     </div>
