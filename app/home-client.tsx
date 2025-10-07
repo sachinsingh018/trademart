@@ -387,19 +387,19 @@ export default function HomeClient() {
 
           {/* Loading skeleton */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
-              {[...Array(2)].map((_, i) => (
+            <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+              {[...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-72 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"
+                  className="h-72 w-80 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"
                 ></div>
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-10">
-              {featuredProducts.slice(0, 2).map((product) => (
+            <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+              {featuredProducts.slice(0, 3).map((product) => (
                 <Link key={product.id} href={`/products/${product.id}`}>
-                  <Card className="group relative flex flex-col overflow-hidden border border-gray-100 bg-white/70 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1 hover:border-blue-200/70">
+                  <Card className="group relative flex flex-col overflow-hidden border border-gray-100 bg-white/70 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1 hover:border-blue-200/70 w-80 sm:w-96">
                     {/* Image */}
                     <div className="relative overflow-hidden rounded-t-2xl">
                       {product.images?.length ? (
@@ -509,6 +509,7 @@ export default function HomeClient() {
           </div>
         </div>
       </section>
+
 
       {/* Top Suppliers Section */}
       <section className="py-16 px-5 sm:px-10 lg:px-16 relative overflow-hidden bg-gradient-to-b from-gray-50 via-white to-blue-50">
