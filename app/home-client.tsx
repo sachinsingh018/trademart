@@ -122,7 +122,9 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Full-Width Hero Banner */}
-      <section className="relative w-full py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+
+      {/* Full-Width Hero Banner (Mobile Optimized) */}
+      <section className="relative w-full py-16 sm:py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <Image
           src="https://drive.google.com/uc?export=view&id=1EulWYKHUaZymToAg9Q6uE1KkXL3gYuYa"
           alt="Global B2B Marketplace Background"
@@ -133,18 +135,17 @@ export default function HomeClient() {
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          <h1 className="text-3xl sm:text-6xl font-bold leading-snug mb-4 sm:mb-6">
             Global B2B Marketplace
           </h1>
-          <p className="text-lg sm:text-xl max-w-4xl mx-auto mb-10 leading-relaxed text-gray-200">
-            Connect with verified suppliers worldwide. Find products, submit RFQs, and grow your business
-            with secure transactions and trusted partnerships.
+          <p className="text-base sm:text-xl max-w-4xl mx-auto mb-8 sm:mb-10 leading-relaxed text-gray-200">
+            Connect with verified suppliers worldwide. Find products, submit RFQs, and grow your business with secure transactions and trusted partnerships.
           </p>
 
           {/* Search Bar */}
-          <div className="max-w-5xl mx-auto mb-10 px-4">
-            <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-white/30 p-2 hover:shadow-2xl transition-all duration-500">
-              <div className="flex flex-col lg:flex-row items-center">
+          <div className="max-w-5xl mx-auto mb-8 sm:mb-10 px-3 sm:px-4">
+            <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-white/30 p-2 hover:shadow-2xl transition-all duration-500">
+              <div className="flex flex-col sm:flex-row items-center">
                 <div className="flex-1 relative flex items-center w-full">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,12 +159,12 @@ export default function HomeClient() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="w-full pl-10 pr-6 py-3 text-base sm:text-lg border-0 bg-transparent text-gray-900 focus:outline-none placeholder:text-gray-400"
+                    className="w-full pl-10 pr-6 py-2 sm:py-3 text-sm sm:text-lg border-0 bg-transparent text-gray-900 focus:outline-none placeholder:text-gray-400"
                   />
                 </div>
                 <button
                   onClick={handleSearch}
-                  className="w-full md:w-auto mt-2 md:mt-0 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto mt-2 sm:mt-0 px-5 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center gap-2"
                 >
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -175,17 +176,17 @@ export default function HomeClient() {
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mb-8 px-4">
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 px-4">
             {session ? (
               <>
                 <Link href="/dashboard" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold rounded-xl shadow-md hover:shadow-xl transition-all">
                     Go to Dashboard
                   </Button>
                 </Link>
                 <Link href="/auth/signout" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
+                  <Button variant="outline" className="w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold transition-all">
                     Sign Out
                   </Button>
                 </Link>
@@ -193,12 +194,12 @@ export default function HomeClient() {
             ) : (
               <>
                 <Link href="/auth/signup?role=buyer" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold rounded-xl shadow-md hover:shadow-xl transition-all">
                     Start Buying
                   </Button>
                 </Link>
                 <Link href="/auth/signup?role=supplier" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold transition-all duration-300">
+                  <Button variant="outline" className="w-full sm:w-auto border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold transition-all">
                     Start Selling
                   </Button>
                 </Link>
@@ -206,30 +207,21 @@ export default function HomeClient() {
             )}
           </div>
 
-          {/* Stats Section */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto text-center">
-            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-              <div className="text-2xl sm:text-3xl font-bold text-blue-300 mb-1">
-                {loading ? '...' : stats.totalSuppliers.toLocaleString()}+
+          {/* Stats (smaller grid on mobile) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 max-w-5xl mx-auto text-center">
+            {[
+              { value: stats.totalSuppliers, color: "text-blue-300", label: "Suppliers" },
+              { value: stats.totalProducts, color: "text-green-300", label: "Products" },
+              { value: stats.totalOrders, color: "text-purple-300", label: "Orders" },
+              { value: "100+", color: "text-orange-300", label: "Countries" },
+            ].map((s, i) => (
+              <div key={i} className="bg-white/10 rounded-xl p-4 sm:p-6 backdrop-blur-sm">
+                <div className={`text-xl sm:text-3xl font-bold ${s.color} mb-1`}>
+                  {loading ? "..." : s.value.toLocaleString?.() || s.value}+
+                </div>
+                <div className="text-xs sm:text-base text-gray-200">{s.label}</div>
               </div>
-              <div className="text-sm sm:text-base text-gray-200">Verified Suppliers</div>
-            </div>
-            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-              <div className="text-2xl sm:text-3xl font-bold text-green-300 mb-1">
-                {loading ? '...' : stats.totalProducts.toLocaleString()}+
-              </div>
-              <div className="text-sm sm:text-base text-gray-200">Products Listed</div>
-            </div>
-            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-              <div className="text-2xl sm:text-3xl font-bold text-purple-300 mb-1">
-                {loading ? '...' : stats.totalOrders.toLocaleString()}+
-              </div>
-              <div className="text-sm sm:text-base text-gray-200">Orders Completed</div>
-            </div>
-            <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-              <div className="text-2xl sm:text-3xl font-bold text-orange-300 mb-1">100+</div>
-              <div className="text-sm sm:text-base text-gray-200">Countries</div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -368,38 +360,37 @@ export default function HomeClient() {
       {/* Hero Section */}
 
       {/* Featured Products Section */}
-      <section className="py-20 px-4 sm:px-10 lg:px-16 relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-blue-50">
-        {/* Subtle background blobs */}
-        <div className="absolute top-0 left-0 w-80 h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+      {/* Featured Products Section — Compact on Mobile */}
+      <section className="py-12 sm:py-20 px-4 sm:px-10 lg:px-16 relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-blue-50">
+        {/* background blobs */}
+        <div className="absolute top-0 left-0 w-64 sm:w-80 h-64 sm:h-80 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob hidden sm:block"></div>
+        <div className="absolute bottom-0 right-0 w-72 sm:w-96 h-72 sm:h-96 bg-green-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000 hidden sm:block"></div>
 
         <div className="relative max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12 sm:mb-20">
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-3 sm:mb-4">
+          <div className="text-center mb-10 sm:mb-20">
+            <h2 className="text-2xl sm:text-5xl font-extrabold text-gray-900 mb-3">
               Featured Products
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-lg text-gray-600 max-w-2xl mx-auto">
               Discover verified, top-quality products from trusted global suppliers.
             </p>
-            <div className="mx-auto mt-5 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-600 via-teal-400 to-green-500 rounded-full"></div>
+            <div className="mx-auto mt-4 sm:mt-5 w-16 sm:w-24 h-1.5 bg-gradient-to-r from-blue-600 via-teal-400 to-green-500 rounded-full"></div>
           </div>
 
-          {/* Loading skeleton */}
+          {/* Cards */}
           {loading ? (
-            <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+            <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-5 sm:gap-10 no-scrollbar snap-x snap-mandatory pb-3 sm:pb-0">
               {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-72 w-80 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"
-                ></div>
+                <div key={i} className="snap-center shrink-0 h-60 sm:h-72 w-48 sm:w-80 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"></div>
               ))}
             </div>
           ) : (
-            <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+            <div className="flex overflow-x-auto sm:grid sm:grid-cols-3 gap-5 sm:gap-10 no-scrollbar snap-x snap-mandatory pb-3 sm:pb-0">
               {featuredProducts.slice(0, 3).map((product) => (
-                <Link key={product.id} href={`/products/${product.id}`}>
-                  <Card className="group relative flex flex-col overflow-hidden border border-gray-100 bg-white/70 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1 hover:border-blue-200/70 w-80 sm:w-96">
+                <Link key={product.id} href={`/products/${product.id}`} className="snap-center shrink-0 w-48 sm:w-96">
+                  {/* Desktop Card (Full) */}
+                  <Card className="hidden sm:flex flex-col overflow-hidden border border-gray-100 bg-white/70 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1 hover:border-blue-200/70">
                     {/* Image */}
                     <div className="relative overflow-hidden rounded-t-2xl">
                       {product.images?.length ? (
@@ -412,11 +403,7 @@ export default function HomeClient() {
                         />
                       ) : (
                         <div className="w-full h-52 bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center">
-                          <svg
-                            className="w-12 h-12 text-gray-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
+                          <svg className="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                             <path
                               fillRule="evenodd"
                               d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -428,18 +415,14 @@ export default function HomeClient() {
                       {/* Stock badge */}
                       <div className="absolute top-3 right-3">
                         {product.inStock ? (
-                          <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">
-                            In Stock
-                          </Badge>
+                          <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">In Stock</Badge>
                         ) : (
-                          <Badge className="bg-rose-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">
-                            Out of Stock
-                          </Badge>
+                          <Badge className="bg-rose-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">Out of Stock</Badge>
                         )}
                       </div>
                     </div>
 
-                    {/* Product details */}
+                    {/* Details (full view) */}
                     <CardHeader className="p-5 border-b border-gray-100">
                       <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
                         {product.name}
@@ -449,7 +432,6 @@ export default function HomeClient() {
                       </CardDescription>
                     </CardHeader>
 
-                    {/* Info section */}
                     <div className="p-5 flex flex-col justify-between flex-grow">
                       <div>
                         <div className="flex items-center justify-between mb-3">
@@ -464,14 +446,10 @@ export default function HomeClient() {
                         <div className="flex items-center justify-between text-sm text-gray-600">
                           <div className="flex items-center space-x-1">
                             <span>Supplier:</span>
-                            <span className="font-medium text-gray-800">
-                              {product.supplier.companyName}
-                            </span>
+                            <span className="font-medium text-gray-800">{product.supplier.companyName}</span>
                           </div>
                           <div className="flex items-center text-yellow-500">
-                            ⭐<span className="ml-1 text-gray-700 font-medium">
-                              {product.supplier.rating}
-                            </span>
+                            ⭐<span className="ml-1 text-gray-700 font-medium">{product.supplier.rating}</span>
                           </div>
                         </div>
                       </div>
@@ -490,9 +468,32 @@ export default function HomeClient() {
                         </span>
                       </div>
                     </div>
+                  </Card>
 
-                    {/* Hover accent */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-green-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                  {/* Mobile Card (Compact) */}
+                  <Card className="sm:hidden flex flex-col overflow-hidden border border-gray-200 bg-white shadow-sm rounded-2xl hover:shadow-lg transition-all duration-300">
+                    <div className="relative w-full h-36 overflow-hidden">
+                      <Image
+                        src={product.images?.[0] || "https://via.placeholder.com/150"}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="p-3">
+                      <h3 className="text-sm font-semibold text-gray-900 truncate">{product.name}</h3>
+                      <p className="text-xs text-gray-500 truncate">{product.supplier.companyName}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-sm font-bold text-blue-600">
+                          {formatPrice(product.price, product.currency)}
+                        </span>
+                        {product.supplier.verified && (
+                          <Badge className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+                            ✓ Verified
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
                   </Card>
                 </Link>
               ))}
@@ -500,9 +501,9 @@ export default function HomeClient() {
           )}
 
           {/* CTA */}
-          <div className="text-center mt-14 sm:mt-20">
+          <div className="text-center mt-10 sm:mt-16">
             <Link href="/products">
-              <Button className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:shadow-lg text-base font-semibold px-8 py-4 rounded-full text-white transition-all duration-300">
+              <Button className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:shadow-lg text-sm sm:text-base font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full text-white transition-all duration-300">
                 View All Products
               </Button>
             </Link>
@@ -529,87 +530,118 @@ export default function HomeClient() {
             <div className="mx-auto mt-5 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-500 via-teal-500 to-green-500 rounded-full"></div>
           </div>
 
-          {/* Loading Skeleton */}
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="h-52 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"></div>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {topSuppliers.slice(0, 3).map((supplier) => (
-                <Card
-                  key={supplier.id}
-                  className="group relative overflow-hidden border border-gray-200/50 bg-white/60 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1"
-                >
-                  <CardHeader className="p-6">
-                    {/* Supplier Header */}
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center text-white font-semibold text-lg shadow-md">
-                          {supplier.companyName.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                            {supplier.companyName}
-                          </CardTitle>
-                          <CardDescription className="text-sm text-gray-600">
-                            {supplier.industry} • {supplier.country}
-                          </CardDescription>
-                        </div>
-                      </div>
-                      {supplier.verified && (
-                        <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full border border-green-200">
-                          <span>✅</span> Verified
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Stats Row */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-6">
-                        <div className="text-center">
-                          <div className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
-                            ⭐ {supplier.rating}
+          {/* Two-column layout (equal height) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
+            {/* Left: Supplier Cards */}
+            <div className="flex flex-col justify-between space-y-8">
+              {loading ? (
+                [...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-52 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse"
+                  ></div>
+                ))
+              ) : (
+                topSuppliers.slice(0, 3).map((supplier) => (
+                  <Card
+                    key={supplier.id}
+                    className="group relative overflow-hidden border border-gray-200/50 bg-white/60 backdrop-blur-xl shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl hover:-translate-y-1"
+                  >
+                    <CardHeader className="p-6">
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-teal-400 flex items-center justify-center text-white font-semibold text-lg shadow-md">
+                            {supplier.companyName.charAt(0).toUpperCase()}
                           </div>
-                          <div className="text-xs text-gray-600 mt-1">Rating</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
-                            {supplier.totalOrders}
+                          <div>
+                            <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                              {supplier.companyName}
+                            </CardTitle>
+                            <CardDescription className="text-sm text-gray-600">
+                              {supplier.industry} • {supplier.country}
+                            </CardDescription>
                           </div>
-                          <div className="text-xs text-gray-600 mt-1">Orders</div>
                         </div>
+                        {supplier.verified && (
+                          <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full border border-green-200">
+                            <span>✅</span> Verified
+                          </span>
+                        )}
                       </div>
 
-                      <Link href={`/suppliers/${supplier.id}`}>
-                        <button className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm font-medium text-blue-600 rounded-full border border-blue-300 bg-white/60 hover:bg-gradient-to-r hover:from-blue-600 hover:to-teal-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
-                          View
-                        </button>
-                      </Link>
-                    </div>
-                  </CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-6">
+                          <div className="text-center">
+                            <div className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
+                              ⭐ {supplier.rating}
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">Rating</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
+                              {supplier.totalOrders}
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">Orders</div>
+                          </div>
+                        </div>
 
-                  {/* Accent Glow */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-teal-400 to-green-400 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                </Card>
-              ))}
+                        <Link href={`/suppliers/${supplier.id}`}>
+                          <button className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm font-medium text-blue-600 rounded-full border border-blue-300 bg-white/60 hover:bg-gradient-to-r hover:from-blue-600 hover:to-teal-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
+                            View
+                          </button>
+                        </Link>
+                      </div>
+                    </CardHeader>
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-teal-400 to-green-400 opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                  </Card>
+                ))
+              )}
             </div>
-          )}
+
+            {/* Right: Scrollable Image Viewer (hidden on mobile) */}
+            <div className="hidden lg:flex relative overflow-x-auto rounded-2xl shadow-lg border border-gray-200/40 scroll-smooth snap-x snap-mandatory bg-transparent h-full min-h-[480px]">
+              <div className="flex space-x-6 px-6 py-2 w-full">
+                {[
+                  "https://drive.google.com/thumbnail?id=1fYBQF00JYL_Tay4u1Q7Onc7En_Rq7DFG&sz=w1080",
+                  "https://drive.google.com/thumbnail?id=1JOUCkZkpBY8OSzaVcX5dpuHTlklmmjcu&sz=w1080",
+                  "https://drive.google.com/thumbnail?id=1U2ZihNC2okp7t5MkwIOtHi56qDKpcDWM&sz=w1080",
+                  "https://drive.google.com/thumbnail?id=17BnEBdb0resnTuV8stJJpkKOATOEoggL&sz=w1080",
+                ].map((src, i) => (
+                  <div
+                    key={i}
+                    className="shrink-0 snap-center w-full h-full flex justify-center items-center rounded-2xl overflow-hidden"
+                  >
+                    <img
+                      src={src}
+                      alt={`carousel-${i}`}
+                      draggable={false}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover rounded-2xl"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?q=80&w=1080&auto=format&fit=crop';
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Fade masks */}
+              <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none"></div>
+            </div>
+          </div>
 
           {/* CTA */}
           <div className="text-center mt-14 sm:mt-20">
             <Link href="/suppliers">
               <button className="relative inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-semibold text-base sm:text-lg border border-blue-400 text-blue-600 bg-white/50 backdrop-blur-md hover:bg-gradient-to-r hover:from-blue-600 hover:to-teal-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg">
                 View All Suppliers
-                <span className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-teal-400 opacity-0 group-hover:opacity-20 blur-xl transition-all"></span>
               </button>
             </Link>
           </div>
         </div>
       </section>
-
       {/* Features Section */}
       {/* Why Choose Section */}
       <section className="py-16 sm:py-24 px-4 sm:px-8 lg:px-16 relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-blue-50">
@@ -900,6 +932,7 @@ export default function HomeClient() {
           </div>
         </div>
       </footer>
+
 
     </div>
   );
