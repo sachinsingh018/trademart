@@ -34,7 +34,7 @@ export function translate(
   key: string
 ): string {
   const msgs = getMessages(locale);
-  const sectionMsgs = msgs[section] as any;
+  const sectionMsgs = msgs[section] as Record<string, string>;
   return sectionMsgs?.[key] || key;
 }
 
