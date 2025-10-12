@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
 import "./globals.css";
 import { Providers } from "./providers";
 import WhatsAppButton from "@/components/ui/whatsapp-button";
@@ -149,13 +147,11 @@ export const viewport = {
   maximumScale: 1,
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const messages = await getMessages();
-
   return (
     <html lang="en">
       <head>
@@ -184,17 +180,15 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
-          <Providers>
-            <LoanFormProvider>
-              <PopupProvider>
-                <NavbarWrapper />
-                {children}
-              </PopupProvider>
-            </LoanFormProvider>
-          </Providers>
-          <WhatsAppButton />
-        </NextIntlClientProvider>
+        <Providers>
+          <LoanFormProvider>
+            <PopupProvider>
+              <NavbarWrapper />
+              {children}
+            </PopupProvider>
+          </LoanFormProvider>
+        </Providers>
+        <WhatsAppButton />
       </body>
     </html>
   );
