@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 import "./globals.css";
 import { Providers } from "./providers";
 import WhatsAppButton from "@/components/ui/whatsapp-button";
@@ -19,12 +21,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://trademart.app'),
+  metadataBase: new URL('https://tradepanda.ai'),
   title: {
-    default: "TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide",
+    default: "TradePanda - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide",
     template: "%s | TradeMart - Global B2B Marketplace"
   },
-  description: "TradeMart is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business with 10K+ suppliers across 100+ countries.",
+  description: "TradePanda is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business with 10K+ suppliers across 100+ countries.",
   keywords: [
     "B2B marketplace",
     "global trade",
@@ -47,10 +49,10 @@ export const metadata: Metadata = {
     "trade verification",
     "business growth"
   ],
-  authors: [{ name: "TradeMart Team", url: "https://trademart.app" }],
-  creator: "TradeMart",
-  publisher: "TradeMart",
-  applicationName: "TradeMart",
+  authors: [{ name: "TradePanda Team", url: "https://tradepanda.ai" }],
+  creator: "TradePanda",
+  publisher: "TradePanda",
+  applicationName: "TradePanda",
   category: "Business",
   classification: "B2B Marketplace",
   referrer: "origin-when-cross-origin",
@@ -71,10 +73,10 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://trademart.app",
+    canonical: "https://tradepanda.ai",
     languages: {
-      "en-US": "https://trademart.app",
-      "en-GB": "https://trademart.app",
+      "en-US": "https://tradepanda.ai",
+      "en-GB": "https://tradepanda.ai",
     },
   },
   formatDetection: {
@@ -108,26 +110,26 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://trademart.app',
-    siteName: 'TradeMart',
-    title: 'TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide',
-    description: 'TradeMart is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business with 10K+ suppliers across 100+ countries.',
+    url: 'https://tradepanda.ai',
+    siteName: 'TradePanda',
+    title: 'TradePanda - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide',
+    description: 'TradePanda is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business with 10K+ suppliers across 100+ countries.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'TradeMart - Global B2B Marketplace',
+        alt: 'TradePanda - Global B2B Marketplace',
         type: 'image/png',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@trademart',
-    creator: '@trademart',
-    title: 'TradeMart - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide',
-    description: 'TradeMart is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business.',
+    site: '@tradepanda',
+    creator: '@tradepanda',
+    title: 'TradePanda - Global B2B Marketplace | Connect Buyers & Suppliers Worldwide',
+    description: 'TradePanda is the leading global B2B marketplace connecting verified suppliers with buyers worldwide. Find products, submit RFQs, secure payments, and grow your business.',
     images: ['/twitter-image.png'],
   },
   verification: {
@@ -147,11 +149,13 @@ export const viewport = {
   maximumScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const messages = await getMessages();
+
   return (
     <html lang="en">
       <head>
@@ -180,15 +184,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>
-          <LoanFormProvider>
-            <PopupProvider>
-              <NavbarWrapper />
-              {children}
-            </PopupProvider>
-          </LoanFormProvider>
-        </Providers>
-        <WhatsAppButton />
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
+            <LoanFormProvider>
+              <PopupProvider>
+                <NavbarWrapper />
+                {children}
+              </PopupProvider>
+            </LoanFormProvider>
+          </Providers>
+          <WhatsAppButton />
+        </NextIntlClientProvider>
       </body>
     </html>
   );
