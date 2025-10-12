@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
 import WhatsAppButton from "@/components/ui/whatsapp-button";
@@ -154,6 +155,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-04PLT61V9J"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-04PLT61V9J');
+          `}
+        </Script>
+        
         <link rel="icon" href="/api/favicon" />
         <link rel="shortcut icon" href="/api/favicon" />
         <link rel="apple-touch-icon" href="/logofinal.png?v=4" />
