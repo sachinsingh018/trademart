@@ -162,7 +162,7 @@ function FiltersSection({
 }
 
 // Service Card Component with expand/collapse functionality
-function ServiceCard({ service }: { service: Service }) {
+function ServiceCard({ service, info }: { service: Service; info: (message: string, title: string) => void }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const imageUrl = service.images?.[0] || "/placeholder-service.jpg";
 
@@ -617,7 +617,7 @@ export default function ServicesPage() {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                         {services.map((service) => (
-                            <ServiceCard key={service.id} service={service} />
+                            <ServiceCard key={service.id} service={service} info={info} />
                         ))}
                     </div>
                 )}

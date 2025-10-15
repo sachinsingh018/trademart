@@ -39,7 +39,7 @@ interface Supplier {
 }
 
 // Supplier Card Component with expand/collapse functionality
-function SupplierCard({ supplier, getRatingColor }: { supplier: Supplier, getRatingColor: (rating: number) => string }) {
+function SupplierCard({ supplier, getRatingColor, warning }: { supplier: Supplier, getRatingColor: (rating: number) => string, warning: (message: string, title: string) => void }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
@@ -617,7 +617,7 @@ export default function SuppliersPage() {
                         </div>
                     ) : (
                         filteredSuppliers.map((supplier) => (
-                            <SupplierCard key={supplier.id} supplier={supplier} getRatingColor={getRatingColor} />
+                            <SupplierCard key={supplier.id} supplier={supplier} getRatingColor={getRatingColor} warning={warning} />
                         ))
                     )}
                 </div>
