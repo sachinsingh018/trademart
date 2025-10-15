@@ -26,22 +26,26 @@ export async function POST(request: NextRequest) {
                 });
                 break;
             case 'supplier':
-                result = await prisma.supplier.update({
-                    where: { id },
-                    data: { viewCount: { increment: 1 } }
+                // Suppliers don't have a viewCount field, just fetch the supplier
+                result = await prisma.supplier.findUnique({
+                    where: { id }
                 });
                 break;
             case 'rfq':
-                result = await prisma.rfq.update({
-                    where: { id },
-                    data: { viewCount: { increment: 1 } }
+                // RFQs don't have a viewCount field, just fetch the RFQ
+                result = await prisma.rfq.findUnique({
+                    where: { id }
                 });
                 break;
             default:
                 return NextResponse.json({ success: false, error: 'Invalid type' }, { status: 400 });
         }
 
-        const viewCount = 'views' in result ? result.views : 'viewCount' in result ? result.viewCount : 0;
+        if (!result) {
+            return NextResponse.json({ success: false, error: 'Item not found' }, { status: 404 });
+        }
+
+        const viewCount = 'views' in result ? result.views : 0;
 
         return NextResponse.json({
             success: true,
