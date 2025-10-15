@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
 import { usePopup } from "@/contexts/PopupContext";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 
 interface Product {
     id: string;
@@ -202,7 +203,10 @@ function ProductCard({ product }: { product: Product }) {
                                 if (product.supplier.phone) {
                                     window.open(`https://wa.me/${product.supplier.phone.replace(/\D/g, "")}`, "_blank");
                                 } else {
-                                    alert("Supplier contact information not available");
+                                    warning(
+                                        "This supplier hasn't provided their contact information yet.",
+                                        "Contact Information Unavailable"
+                                    );
                                 }
                             }}
                         >
@@ -222,6 +226,7 @@ export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const { toasts, removeToast, warning } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedSubcategory, setSelectedSubcategory] = useState("all");
@@ -446,6 +451,7 @@ export default function ProductsPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative">
+            <ToastContainer toasts={toasts} onRemove={removeToast} />
             <PageTitle
                 title="Products | TradeMart - Browse Global Product Catalog"
                 description="Discover products from verified suppliers worldwide. Browse our extensive catalog of electronics, textiles, manufacturing, and more."

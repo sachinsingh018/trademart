@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
 import { usePopup } from "@/contexts/PopupContext";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 // import { Package } from "lucide-react"; // COMMENTED OUT - not used
 
 interface Supplier {
@@ -159,7 +160,10 @@ function SupplierCard({ supplier, getRatingColor }: { supplier: Supplier, getRat
                                 if (supplier.phone) {
                                     window.open(`https://wa.me/${supplier.phone.replace(/\D/g, "")}`, "_blank");
                                 } else {
-                                    alert("Supplier contact information not available");
+                                    warning(
+                                        "This supplier hasn't provided their contact information yet.",
+                                        "Contact Information Unavailable"
+                                    );
                                 }
                             }}
                         >
@@ -178,6 +182,7 @@ export default function SuppliersPage() {
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [filteredSuppliers, setFilteredSuppliers] = useState<Supplier[]>([]);
     const [loading, setLoading] = useState(true);
+    const { toasts, removeToast, warning } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedIndustry, setSelectedIndustry] = useState("all");
     const [selectedCountry, setSelectedCountry] = useState("all");
@@ -382,6 +387,7 @@ export default function SuppliersPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative">
+            <ToastContainer toasts={toasts} onRemove={removeToast} />
             <PageTitle
                 title="Suppliers | TradeMart - Find Verified Suppliers Worldwide"
                 description="Browse verified suppliers on TradeMart. Find manufacturers, wholesalers, and distributors for your business needs."

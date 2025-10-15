@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Save, User, Mail, Building, MapPin, Phone, Globe } from "lucide-react";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 
 interface UserProfile {
     id: string;
@@ -49,6 +50,7 @@ export default function EditProfile() {
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const { toasts, removeToast, success, error } = useToast();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -112,11 +114,11 @@ export default function EditProfile() {
                 });
             } else {
                 console.error("Error fetching profile:", data.error);
-                alert('Failed to load profile data. Please try again.');
+                error('Failed to load profile data. Please try again.', 'Error Loading Profile');
             }
         } catch (error) {
             console.error("Error fetching profile:", error);
-            alert('Failed to load profile data. Please try again.');
+            error('Failed to load profile data. Please try again.', 'Error Loading Profile');
         } finally {
             setLoading(false);
         }
@@ -145,14 +147,25 @@ export default function EditProfile() {
             const data = await response.json();
 
             if (data.success) {
-                alert('Profile updated successfully!');
-                router.push('/dashboard');
+                success(
+                    'Your profile has been updated successfully! All changes have been saved.',
+                    'Profile Updated Successfully! 🎉'
+                );
+                setTimeout(() => {
+                    router.push('/dashboard');
+                }, 2000);
             } else {
-                alert('Failed to update profile: ' + (data.error || 'Unknown error'));
+                error(
+                    `Failed to update profile: ${data.error || 'Unknown error'}`,
+                    'Update Failed'
+                );
             }
         } catch (error) {
             console.error("Error updating profile:", error);
-            alert('Failed to update profile. Please try again.');
+            error(
+                'Failed to update profile. Please check your connection and try again.',
+                'Network Error'
+            );
         } finally {
             setSaving(false);
         }
@@ -177,6 +190,7 @@ export default function EditProfile() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+            <ToastContainer toasts={toasts} onRemove={removeToast} />
             {/* Navigation */}
             <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200/60 shadow-lg shadow-gray-900/5">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

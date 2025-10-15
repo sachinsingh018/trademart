@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
 import { usePopup } from "@/contexts/PopupContext";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 
 interface Service {
     id: string;
@@ -314,7 +315,10 @@ function ServiceCard({ service }: { service: Service }) {
                         <Button
                             size="sm"
                             className="text-xs sm:text-sm h-8 px-3 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white shadow-sm"
-                            onClick={() => alert("Service quote request placeholder")}
+                            onClick={() => info(
+                                "Quote request feature is coming soon! You'll be able to request custom quotes directly from service providers.",
+                                "Coming Soon"
+                            )}
                         >
                             Get Quote
                         </Button>
@@ -332,6 +336,7 @@ export default function ServicesPage() {
     const [services, setServices] = useState<Service[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    const { toasts, removeToast, info } = useToast();
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedSubcategory, setSelectedSubcategory] = useState("all");
     const [sortBy, setSortBy] = useState("popular");
@@ -464,6 +469,7 @@ export default function ServicesPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 relative">
+            <ToastContainer toasts={toasts} onRemove={removeToast} />
             <PageTitle
                 title="Professional Services"
                 description="Find and connect with verified service providers across various industries"

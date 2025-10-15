@@ -38,6 +38,7 @@ model Supplier {
   companyName          String           @map("company_name")
   industry             String?
   businessType         String?          @map("business_type")
+  supplierCategory     String?          @map("supplier_category")
   website              String?
   description          String?
   country              String?

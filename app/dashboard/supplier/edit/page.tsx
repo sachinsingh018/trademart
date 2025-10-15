@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Save, Building, MapPin, Phone, Globe, DollarSign } from "lucide-react";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 
 interface SupplierProfile {
     id: string;
@@ -20,6 +21,7 @@ interface SupplierProfile {
     companyName: string;
     industry: string;
     businessType: string;
+    supplierCategory: string;
     website: string;
     description: string;
     country: string;
@@ -51,6 +53,7 @@ export default function EditSupplier() {
     const [profile, setProfile] = useState<SupplierProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const { toasts, removeToast, success, error } = useToast();
 
     // Helper function to safely format rating
     const formatRating = (rating: number | string | null | undefined): string => {
@@ -64,6 +67,7 @@ export default function EditSupplier() {
         companyName: '',
         industry: '',
         businessType: '',
+        supplierCategory: '',
         website: '',
         description: '',
         country: '',
@@ -100,6 +104,7 @@ export default function EditSupplier() {
                     companyName: supplierData.companyName || '',
                     industry: supplierData.industry || '',
                     businessType: supplierData.businessType || '',
+                    supplierCategory: supplierData.supplierCategory || '',
                     website: supplierData.website || '',
                     description: supplierData.description || '',
                     country: supplierData.country || '',
@@ -122,11 +127,11 @@ export default function EditSupplier() {
                 });
             } else {
                 console.error("Error fetching supplier profile:", data.error);
-                alert('Failed to load supplier profile data. Please try again.');
+                error('Failed to load supplier profile data. Please try again.', 'Error Loading Profile');
             }
         } catch (error) {
             console.error("Error fetching supplier profile:", error);
-            alert('Failed to load supplier profile data. Please try again.');
+            error('Failed to load supplier profile data. Please try again.', 'Error Loading Profile');
         } finally {
             setLoading(false);
         }
@@ -155,6 +160,12 @@ export default function EditSupplier() {
         try {
             setSaving(true);
 
+            // Show a brief saving notification
+            success(
+                'Saving your supplier profile changes...',
+                'Saving Profile'
+            );
+
             const response = await fetch('/api/suppliers/upsert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -164,14 +175,27 @@ export default function EditSupplier() {
             const data = await response.json();
 
             if (data.success) {
-                alert('Supplier profile updated successfully!');
-                router.push('/dashboard');
+                success(
+                    'Your supplier profile has been updated successfully! All your changes have been saved.',
+                    'Profile Updated Successfully! 🎉'
+                );
+
+                // Redirect after a short delay to allow user to see the success message
+                setTimeout(() => {
+                    router.push('/dashboard');
+                }, 2000);
             } else {
-                alert('Failed to update supplier profile: ' + (data.error || 'Unknown error'));
+                error(
+                    `Failed to update supplier profile: ${data.error || 'Unknown error'}`,
+                    'Update Failed'
+                );
             }
         } catch (error) {
             console.error("Error updating supplier profile:", error);
-            alert('Failed to update supplier profile. Please try again.');
+            error(
+                'Failed to update supplier profile. Please check your connection and try again.',
+                'Network Error'
+            );
         } finally {
             setSaving(false);
         }
@@ -203,6 +227,7 @@ export default function EditSupplier() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+            <ToastContainer toasts={toasts} onRemove={removeToast} />
             {/* Navigation */}
             <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-200/60 shadow-lg shadow-gray-900/5">
                 <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
@@ -362,6 +387,53 @@ export default function EditSupplier() {
                                             className="h-10 sm:h-11 text-sm"
                                         />
                                     </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="supplierCategory" className="text-sm font-medium">Supplier Category</Label>
+                                    <Select value={formData.supplierCategory} onValueChange={(value) => handleInputChange('supplierCategory', value)}>
+                                        <SelectTrigger className="h-10 sm:h-11 text-sm">
+                                            <SelectValue placeholder="Select your supplier category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="manufacturer">Manufacturer</SelectItem>
+                                            <SelectItem value="distributor">Distributor</SelectItem>
+                                            <SelectItem value="wholesaler">Wholesaler</SelectItem>
+                                            <SelectItem value="retailer">Retailer</SelectItem>
+                                            <SelectItem value="trading-company">Trading Company</SelectItem>
+                                            <SelectItem value="export-house">Export House</SelectItem>
+                                            <SelectItem value="import-house">Import House</SelectItem>
+                                            <SelectItem value="supply-chain-partner">Supply Chain Partner</SelectItem>
+                                            <SelectItem value="logistics-provider">Logistics Provider</SelectItem>
+                                            <SelectItem value="service-provider">Service Provider</SelectItem>
+                                            <SelectItem value="technology-vendor">Technology Vendor</SelectItem>
+                                            <SelectItem value="equipment-supplier">Equipment Supplier</SelectItem>
+                                            <SelectItem value="raw-materials-supplier">Raw Materials Supplier</SelectItem>
+                                            <SelectItem value="component-supplier">Component Supplier</SelectItem>
+                                            <SelectItem value="finished-goods-supplier">Finished Goods Supplier</SelectItem>
+                                            <SelectItem value="packaging-supplier">Packaging Supplier</SelectItem>
+                                            <SelectItem value="machinery-supplier">Machinery Supplier</SelectItem>
+                                            <SelectItem value="industrial-supplier">Industrial Supplier</SelectItem>
+                                            <SelectItem value="construction-supplier">Construction Supplier</SelectItem>
+                                            <SelectItem value="automotive-supplier">Automotive Supplier</SelectItem>
+                                            <SelectItem value="electronics-supplier">Electronics Supplier</SelectItem>
+                                            <SelectItem value="textile-supplier">Textile Supplier</SelectItem>
+                                            <SelectItem value="chemical-supplier">Chemical Supplier</SelectItem>
+                                            <SelectItem value="food-beverage-supplier">Food & Beverage Supplier</SelectItem>
+                                            <SelectItem value="pharmaceutical-supplier">Pharmaceutical Supplier</SelectItem>
+                                            <SelectItem value="energy-supplier">Energy Supplier</SelectItem>
+                                            <SelectItem value="consulting-firm">Consulting Firm</SelectItem>
+                                            <SelectItem value="contract-manufacturer">Contract Manufacturer</SelectItem>
+                                            <SelectItem value="oem-supplier">OEM Supplier</SelectItem>
+                                            <SelectItem value="aftermarket-supplier">Aftermarket Supplier</SelectItem>
+                                            <SelectItem value="sustainable-supplier">Sustainable/Green Supplier</SelectItem>
+                                            <SelectItem value="startup-supplier">Startup Supplier</SelectItem>
+                                            <SelectItem value="established-supplier">Established Supplier</SelectItem>
+                                            <SelectItem value="specialty-supplier">Specialty Supplier</SelectItem>
+                                            <SelectItem value="commodity-supplier">Commodity Supplier</SelectItem>
+                                            <SelectItem value="other">Other</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
 
                                 <div className="space-y-2">
@@ -636,12 +708,12 @@ export default function EditSupplier() {
                             <Button
                                 onClick={handleSave}
                                 disabled={saving}
-                                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 sm:px-8 py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+                                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white px-6 sm:px-8 py-3 font-semibold shadow-lg hover:shadow-xl disabled:hover:shadow-lg transition-all duration-300 w-full sm:w-auto"
                             >
                                 {saving ? (
                                     <div className="flex items-center gap-2">
                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                        <span className="text-sm sm:text-base">Saving...</span>
+                                        <span className="text-sm sm:text-base">Saving Changes...</span>
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-2">

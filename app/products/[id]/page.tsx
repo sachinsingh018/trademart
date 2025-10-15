@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSession } from "next-auth/react";
 import { useViewTracker } from "@/hooks/useViewTracker";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 
 interface Product {
     id: string;
@@ -69,6 +70,7 @@ export default function ProductDetailPage() {
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState("");
+    const { toasts, removeToast, warning } = useToast();
     const [selectedSpecs, setSelectedSpecs] = useState({
         color: "",
         size: "",
@@ -85,7 +87,10 @@ export default function ProductDetailPage() {
     const handleContactSupplier = () => {
         console.log('Product supplier phone:', product?.supplier?.phone); // Debug log
         if (!product?.supplier?.phone) {
-            alert("Supplier phone number not available");
+            warning(
+                "This supplier hasn't provided their contact information yet.",
+                "Contact Information Unavailable"
+            );
             return;
         }
 
@@ -295,6 +300,7 @@ export default function ProductDetailPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+            <ToastContainer toasts={toasts} onRemove={removeToast} />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Breadcrumb */}
                 <div className="mb-6">

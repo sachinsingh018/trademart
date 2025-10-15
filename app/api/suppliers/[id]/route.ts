@@ -60,6 +60,7 @@ export async function GET(
             company: supplier.companyName,
             country: supplier.country,
             industry: supplier.industry,
+            supplierCategory: supplier.supplierCategory,
             verified: supplier.verified,
             rating: supplier.rating,
             totalOrders: supplier.totalOrders,

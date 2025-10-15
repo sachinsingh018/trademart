@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { usePopup } from "@/contexts/PopupContext";
+import { useToast, ToastContainer } from "@/components/ui/toast";
 
 interface RFQ {
     id: string;
@@ -41,7 +42,7 @@ interface RFQ {
 }
 
 // RFQ Card Component with expand/collapse functionality
-function RFQCard({ rfq }: { rfq: RFQ }) {
+function RFQCard({ rfq, onInfoToast }: { rfq: RFQ, onInfoToast: (message: string, title: string) => void }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getStatusColor = (status: string) => {
@@ -208,7 +209,10 @@ function RFQCard({ rfq }: { rfq: RFQ }) {
                         <Button
                             size="sm"
                             className="text-xs sm:text-sm h-8 px-3 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white shadow-sm"
-                            onClick={() => alert("Quote submission placeholder")}
+                            onClick={() => onInfoToast(
+                                "Quote submission feature is coming soon! You'll be able to submit competitive quotes for RFQs.",
+                                "Coming Soon"
+                            )}
                         >
                             Quote
                         </Button>
@@ -226,6 +230,7 @@ export default function RFQsPage() {
     const [rfqs, setRfqs] = useState<RFQ[]>([]);
     const [filteredRfqs, setFilteredRfqs] = useState<RFQ[]>([]);
     const [loading, setLoading] = useState(true);
+    const { toasts, removeToast, info } = useToast();
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [selectedStatus, setSelectedStatus] = useState("all");
@@ -446,6 +451,7 @@ export default function RFQsPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 relative">
+            <ToastContainer toasts={toasts} onRemove={removeToast} />
 
             {/* Auth overlay - only for non-logged-in users */}
             {!session && showOverlay && (
@@ -619,7 +625,7 @@ export default function RFQsPage() {
                         </div>
                     ) : (
                         filteredRfqs.map((rfq) => (
-                            <RFQCard key={rfq.id} rfq={rfq} />
+                            <RFQCard key={rfq.id} rfq={rfq} onInfoToast={info} />
                         ))
                     )}
                 </div>
