@@ -116,8 +116,8 @@ export default function EditProfile() {
                 console.error("Error fetching profile:", data.error);
                 error('Failed to load profile data. Please try again.', 'Error Loading Profile');
             }
-        } catch (error) {
-            console.error("Error fetching profile:", error);
+        } catch (err) {
+            console.error("Error fetching profile:", err);
             error('Failed to load profile data. Please try again.', 'Error Loading Profile');
         } finally {
             setLoading(false);
@@ -160,8 +160,8 @@ export default function EditProfile() {
                     'Update Failed'
                 );
             }
-        } catch (error) {
-            console.error("Error updating profile:", error);
+        } catch (err) {
+            console.error("Error updating profile:", err);
             error(
                 'Failed to update profile. Please check your connection and try again.',
                 'Network Error'

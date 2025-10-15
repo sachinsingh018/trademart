@@ -129,8 +129,8 @@ export default function EditSupplier() {
                 console.error("Error fetching supplier profile:", data.error);
                 error('Failed to load supplier profile data. Please try again.', 'Error Loading Profile');
             }
-        } catch (error) {
-            console.error("Error fetching supplier profile:", error);
+        } catch (err) {
+            console.error("Error fetching supplier profile:", err);
             error('Failed to load supplier profile data. Please try again.', 'Error Loading Profile');
         } finally {
             setLoading(false);
@@ -190,8 +190,8 @@ export default function EditSupplier() {
                     'Update Failed'
                 );
             }
-        } catch (error) {
-            console.error("Error updating supplier profile:", error);
+        } catch (err) {
+            console.error("Error updating supplier profile:", err);
             error(
                 'Failed to update supplier profile. Please check your connection and try again.',
                 'Network Error'
