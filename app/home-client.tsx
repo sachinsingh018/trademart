@@ -119,6 +119,23 @@ export default function HomeClient() {
     }).format(price);
   };
 
+  // Generate random discount from 0.1 to 5, ensuring it's less than actual price
+  const getDiscountPrice = (productId: string, actualPrice: number) => {
+    // Use product ID to generate consistent "random" discount
+    const hash = productId.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+
+    // Generate random number between 0.1 and 5
+    const randomFactor = (Math.abs(hash) % 1000) / 1000; // 0 to 1
+    const maxDiscount = Math.min(5, actualPrice - 0.01); // Ensure discount is less than actual price
+    const minDiscount = Math.min(0.1, maxDiscount);
+
+    const discountPrice = minDiscount + (randomFactor * (maxDiscount - minDiscount));
+    return Math.max(0.1, Math.min(discountPrice, maxDiscount));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Full-Width Hero Banner */}
@@ -435,8 +452,13 @@ export default function HomeClient() {
                     <div className="p-5 flex flex-col justify-between flex-grow">
                       <div>
                         <div className="flex items-center justify-between mb-3">
-                          <div className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
-                            {formatPrice(product.price, product.currency)}
+                          <div className="flex items-center gap-2">
+                            <div className="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+                              {formatPrice(getDiscountPrice(product.id, product.price), product.currency)}
+                            </div>
+                            <div className="text-sm text-gray-400 line-through">
+                              {formatPrice(product.price, product.currency)}
+                            </div>
                           </div>
                           <span className="text-sm text-gray-600">
                             Min: {product.minOrderQuantity} {product.unit}
@@ -484,9 +506,14 @@ export default function HomeClient() {
                       <h3 className="text-sm font-semibold text-gray-900 truncate">{product.name}</h3>
                       <p className="text-xs text-gray-500 truncate">{product.supplier.companyName}</p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-sm font-bold text-blue-600">
-                          {formatPrice(product.price, product.currency)}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-sm font-bold text-blue-600">
+                            {formatPrice(getDiscountPrice(product.id, product.price), product.currency)}
+                          </span>
+                          <span className="text-xs text-gray-400 line-through">
+                            {formatPrice(product.price, product.currency)}
+                          </span>
+                        </div>
                         {product.supplier.verified && (
                           <Badge className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
                             ✓ Verified

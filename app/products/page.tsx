@@ -56,6 +56,25 @@ function ProductCard({ product, warning }: { product: Product; warning: (message
     const [isExpanded, setIsExpanded] = useState(false);
     const imageUrl = product.images?.[0] || "/placeholder-product.jpg";
 
+    // Generate random discount from 0.1 to 20, ensuring it's less than actual price
+    const getDiscountPrice = (productId: string, actualPrice: number) => {
+        // Use product ID to generate consistent "random" discount
+        const hash = productId.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+
+        // Generate random number between 0.1 and 20
+        const randomFactor = (Math.abs(hash) % 1000) / 1000; // 0 to 1
+        const maxDiscount = Math.min(20, actualPrice - 0.01); // Ensure discount is less than actual price
+        const minDiscount = Math.min(0.1, maxDiscount);
+
+        const discountPrice = minDiscount + (randomFactor * (maxDiscount - minDiscount));
+        return Math.max(0.1, Math.min(discountPrice, maxDiscount));
+    };
+
+    const discountPrice = getDiscountPrice(product.id, product.price);
+
     return (
         <div className="group relative bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 flex flex-col">
             {/* Product Image */}
@@ -93,8 +112,13 @@ function ProductCard({ product, warning }: { product: Product; warning: (message
                 {/* Price & Supplier */}
                 <div className="flex justify-between items-start mb-3">
                     <div>
-                        <div className="text-lg font-bold text-green-600">
-                            {product.currency} {Number(product.price).toFixed(2)}
+                        <div className="flex items-center gap-2">
+                            <div className="text-lg font-bold text-green-600">
+                                {product.currency} {discountPrice.toFixed(2)}
+                            </div>
+                            <div className="text-sm text-gray-400 line-through">
+                                {product.currency} {Number(product.price).toFixed(2)}
+                            </div>
                         </div>
                         <div className="text-xs text-gray-500">
                             Min: {product.minOrderQuantity} {product.unit}
