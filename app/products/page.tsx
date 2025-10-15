@@ -52,7 +52,7 @@ interface Product {
 }
 
 // Product Card Component with expand/collapse functionality
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({ product, warning }: { product: Product; warning: (message: string, title: string) => void }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const imageUrl = product.images?.[0] || "/placeholder-product.jpg";
 
@@ -646,7 +646,7 @@ export default function ProductsPage() {
                         </div>
                     ) : (
                         filteredProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} warning={warning} />
                         ))
                     )}
                 </div>
