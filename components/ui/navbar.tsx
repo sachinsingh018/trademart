@@ -45,6 +45,12 @@ export default function Navbar({ isPopupActive = false }: NavbarProps) {
                                     <span className="text-gray-400 cursor-not-allowed font-medium">Products</span>
                                     <span className="text-gray-400 cursor-not-allowed font-medium">Services</span>
                                     <span className="text-gray-400 cursor-not-allowed font-medium">RFQs</span>
+                                    <span className="text-gray-400 cursor-not-allowed font-medium relative">
+                                        Business Leads
+                                        <sup className="absolute -top-1 -right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
+                                            NEW
+                                        </sup>
+                                    </span>
                                     <Link
                                         href="/loans"
                                         className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
@@ -90,6 +96,18 @@ export default function Navbar({ isPopupActive = false }: NavbarProps) {
                                             }`}
                                     >
                                         RFQs
+                                    </Link>
+                                    <Link
+                                        href="/business-leads"
+                                        className={`transition-colors font-medium relative ${isActive('/business-leads')
+                                            ? 'text-blue-600'
+                                            : 'text-gray-600 hover:text-blue-600'
+                                            }`}
+                                    >
+                                        Business Leads
+                                        <sup className="absolute -top-1 -right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
+                                            NEW
+                                        </sup>
                                     </Link>
                                     <Link
                                         href="/loans"
@@ -177,6 +195,12 @@ export default function Navbar({ isPopupActive = false }: NavbarProps) {
                                     <div className="block px-3 py-2 text-base font-medium text-gray-400 cursor-not-allowed">
                                         RFQs
                                     </div>
+                                    <div className="block px-3 py-2 text-base font-medium text-gray-400 cursor-not-allowed relative">
+                                        Business Leads
+                                        <sup className="absolute top-1 right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
+                                            NEW
+                                        </sup>
+                                    </div>
                                     <Link
                                         href="/loans"
                                         className="block px-3 py-2 text-base font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
@@ -227,6 +251,19 @@ export default function Navbar({ isPopupActive = false }: NavbarProps) {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         RFQs
+                                    </Link>
+                                    <Link
+                                        href="/business-leads"
+                                        className={`block px-3 py-2 text-base font-medium rounded-md transition-colors relative ${isActive('/business-leads')
+                                            ? 'text-blue-600 bg-blue-50'
+                                            : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                                            }`}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Business Leads
+                                        <sup className="absolute top-1 right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
+                                            NEW
+                                        </sup>
                                     </Link>
                                     <Link
                                         href="/loans"
