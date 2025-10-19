@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { usePopup } from "@/contexts/PopupContext";
 import { useToast, ToastContainer } from "@/components/ui/toast";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from '@/components/ui/smooth-transition';
 
 interface RFQ {
     id: string;
@@ -237,6 +239,25 @@ export default function RFQsPage() {
     const [sortBy, setSortBy] = useState("newest");
     const [showOverlay, setShowOverlay] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(10);
+
+    // Translation setup
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    // Helper functions for translations
+    const t = (key: string) => messages.rfqs?.[key as keyof typeof messages.rfqs] || messages.common?.[key as keyof typeof messages.common] || key;
 
     // Fetch RFQs from database
     useEffect(() => {
@@ -465,21 +486,21 @@ export default function RFQsPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
+                            <h2 className="text-xl font-bold text-gray-900 mb-2">{t('signInRequired')}</h2>
                             <p className="text-gray-600 text-sm">
-                                Sign in to view detailed RFQ information and submit quotes.
+                                {t('signInToViewRfqs')}
                             </p>
                         </div>
 
                         <div className="space-y-3">
                             <Link href="/auth/signin" className="block">
                                 <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg">
-                                    Sign In
+                                    {t('signIn')}
                                 </Button>
                             </Link>
                             <Link href="/auth/signup" className="block">
                                 <Button variant="outline" className="w-full border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-3 font-semibold transition-all duration-300 rounded-lg">
-                                    Create Account
+                                    {t('createAccount')}
                                 </Button>
                             </Link>
                         </div>
@@ -495,14 +516,15 @@ export default function RFQsPage() {
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
                     <div className="text-center">
                         {/* Subtle gradient title */}
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
-                            Request for Quotations
-                        </h1>
+                        <SmoothTransition>
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
+                                {t('requestForQuotations')}
+                            </h1>
 
-                        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
-                            Discover business opportunities and connect with verified buyers worldwide.
-                            Submit competitive quotes and grow your trade network effortlessly.
-                        </p>
+                            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+                                {t('rfqsDescription')}
+                            </p>
+                        </SmoothTransition>
 
                         {/* Timer display (only for guests) */}
                         {!session && !showOverlay && timeRemaining > 0 && (
@@ -520,7 +542,7 @@ export default function RFQsPage() {
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                     />
                                 </svg>
-                                Free preview ends in {timeRemaining}s
+                                {t('freePreviewEndsIn')} {timeRemaining}s
                             </div>
                         )}
 
@@ -528,21 +550,21 @@ export default function RFQsPage() {
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-4xl mx-auto">
                             <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
                                 <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">{rfqs.length}</div>
-                                <div className="text-xs sm:text-sm font-medium text-gray-500">Active RFQs</div>
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">{t('activeRfqs')}</div>
                             </div>
 
                             <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
                                 <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-1">
                                     {rfqs.filter((rfq) => rfq.status === "open").length}
                                 </div>
-                                <div className="text-xs sm:text-sm font-medium text-gray-500">Open for Quotes</div>
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">{t('openForQuotes')}</div>
                             </div>
 
                             <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
                                 <div className="text-2xl sm:text-3xl font-bold text-purple-600 mb-1">
                                     {rfqs.reduce((sum, rfq) => sum + rfq.quotesCount, 0)}
                                 </div>
-                                <div className="text-xs sm:text-sm font-medium text-gray-500">Total Quotes</div>
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">{t('totalQuotes')}</div>
                             </div>
 
                             <div className="rounded-2xl border border-gray-100 bg-gray-50 hover:bg-white transition-all duration-300 shadow-sm hover:shadow-md p-5 sm:p-6">
@@ -552,7 +574,7 @@ export default function RFQsPage() {
                                         .reduce((sum, rfq) => sum + Number(rfq.budget || 0), 0)
                                         .toLocaleString()}
                                 </div>
-                                <div className="text-xs sm:text-sm font-medium text-gray-500">Total Budget</div>
+                                <div className="text-xs sm:text-sm font-medium text-gray-500">{t('totalBudget')}</div>
                             </div>
                         </div>
                     </div>
@@ -565,7 +587,7 @@ export default function RFQsPage() {
                     <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
                         <div className="flex-1">
                             <Input
-                                placeholder="Search RFQs by title, description, or category..."
+                                placeholder={t('searchPlaceholder')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full"
@@ -574,12 +596,12 @@ export default function RFQsPage() {
                         <div className="flex gap-4">
                             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Category" />
+                                    <SelectValue placeholder={t('category')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {categories.map((category) => (
                                         <SelectItem key={category} value={category}>
-                                            {category === "all" ? "All Categories" : category}
+                                            {category === "all" ? t('allCategories') : category}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -587,26 +609,26 @@ export default function RFQsPage() {
 
                             <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                                 <SelectTrigger className="w-32">
-                                    <SelectValue placeholder="Status" />
+                                    <SelectValue placeholder={t('status')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Status</SelectItem>
-                                    <SelectItem value="open">Open</SelectItem>
-                                    <SelectItem value="quoted">Quoted</SelectItem>
-                                    <SelectItem value="closed">Closed</SelectItem>
+                                    <SelectItem value="all">{t('allStatus')}</SelectItem>
+                                    <SelectItem value="open">{t('open')}</SelectItem>
+                                    <SelectItem value="quoted">{t('quoted')}</SelectItem>
+                                    <SelectItem value="closed">{t('closed')}</SelectItem>
                                 </SelectContent>
                             </Select>
 
                             <Select value={sortBy} onValueChange={setSortBy}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Sort by" />
+                                    <SelectValue placeholder={t('sortBy')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="newest">Newest First</SelectItem>
-                                    <SelectItem value="oldest">Oldest First</SelectItem>
-                                    <SelectItem value="budget-high">Budget: High to Low</SelectItem>
-                                    <SelectItem value="budget-low">Budget: Low to High</SelectItem>
-                                    <SelectItem value="quotes">Most Quotes</SelectItem>
+                                    <SelectItem value="newest">{t('newestFirst')}</SelectItem>
+                                    <SelectItem value="oldest">{t('oldestFirst')}</SelectItem>
+                                    <SelectItem value="budget-high">{t('budgetHighToLow')}</SelectItem>
+                                    <SelectItem value="budget-low">{t('budgetLowToHigh')}</SelectItem>
+                                    <SelectItem value="quotes">{t('mostQuotes')}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -620,8 +642,8 @@ export default function RFQsPage() {
                     {filteredRfqs.length === 0 ? (
                         <div className="col-span-full text-center py-12">
                             <div className="text-gray-400 text-6xl mb-4">🔍</div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">No RFQs Found</h3>
-                            <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noRfqsFound')}</h3>
+                            <p className="text-gray-600">{t('tryAdjustingSearch')}</p>
                         </div>
                     ) : (
                         filteredRfqs.map((rfq) => (

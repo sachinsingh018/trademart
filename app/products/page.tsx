@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
 import { usePopup } from "@/contexts/PopupContext";
 import { useToast, ToastContainer } from "@/components/ui/toast";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from '@/components/ui/smooth-transition';
 
 interface Product {
     id: string;
@@ -258,6 +260,25 @@ export default function ProductsPage() {
     const [showOverlay, setShowOverlay] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(10);
 
+    // Translation setup
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    // Helper functions for translations
+    const t = (key: string) => messages.products?.[key as keyof typeof messages.products] || messages.common?.[key as keyof typeof messages.common] || key;
+
     // Fetch products from database
     useEffect(() => {
         const fetchProducts = async () => {
@@ -493,21 +514,21 @@ export default function ProductsPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
+                            <h2 className="text-xl font-bold text-gray-900 mb-2">{t('signInRequired')}</h2>
                             <p className="text-gray-600 text-sm">
-                                Sign in to view detailed product information and contact suppliers.
+                                {t('signInToViewProducts')}
                             </p>
                         </div>
 
                         <div className="space-y-3">
                             <Link href="/auth/signin" className="block">
                                 <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg">
-                                    Sign In
+                                    {t('signIn')}
                                 </Button>
                             </Link>
                             <Link href="/auth/signup" className="block">
                                 <Button variant="outline" className="w-full border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-3 font-semibold transition-all duration-300 rounded-lg">
-                                    Create Account
+                                    {t('createAccount')}
                                 </Button>
                             </Link>
                         </div>
@@ -523,14 +544,15 @@ export default function ProductsPage() {
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
                     <div className="text-center">
                         {/* Gradient Title */}
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
-                            Product Catalog
-                        </h1>
+                        <SmoothTransition>
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
+                                {t('productCatalog')}
+                            </h1>
 
-                        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
-                            Explore premium products from verified suppliers worldwide.
-                            Compare, connect, and trade smarter with trusted B2B partners across industries.
-                        </p>
+                            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+                                {t('productsDescription')}
+                            </p>
+                        </SmoothTransition>
 
                         {/* Timer badge for guest users */}
                         {!session && !showOverlay && timeRemaining > 0 && (
@@ -548,7 +570,7 @@ export default function ProductsPage() {
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                     />
                                 </svg>
-                                Free preview ends in {timeRemaining}s
+                                {t('freePreviewEndsIn')} {timeRemaining}s
                             </div>
                         )}
 
@@ -559,7 +581,7 @@ export default function ProductsPage() {
                                     {products.length}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    Total Products
+                                    {t('totalProducts')}
                                 </div>
                             </div>
 
@@ -568,7 +590,7 @@ export default function ProductsPage() {
                                     {products.filter((p) => p.inStock).length}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    In Stock
+                                    {t('inStock')}
                                 </div>
                             </div>
 
@@ -577,7 +599,7 @@ export default function ProductsPage() {
                                     {products.reduce((sum, p) => sum + p.views, 0).toLocaleString()}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    Total Views
+                                    {t('totalViews')}
                                 </div>
                             </div>
 
@@ -586,7 +608,7 @@ export default function ProductsPage() {
                                     {products.reduce((sum, p) => sum + p.orders, 0).toLocaleString()}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    Total Orders
+                                    {t('totalOrders')}
                                 </div>
                             </div>
                         </div>
@@ -600,7 +622,7 @@ export default function ProductsPage() {
                     <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
                         <div className="flex-1">
                             <Input
-                                placeholder="Search products by name, description, category, or tags..."
+                                placeholder={t('searchPlaceholder')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full"
@@ -612,27 +634,27 @@ export default function ProductsPage() {
                                 setSelectedSubcategory("all");
                             }}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Category" />
+                                    <SelectValue placeholder={t('category')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Categories</SelectItem>
-                                    <SelectItem value="Electronics">Electronics</SelectItem>
-                                    <SelectItem value="Textiles">Textiles</SelectItem>
-                                    <SelectItem value="Manufacturing">Manufacturing</SelectItem>
-                                    <SelectItem value="Automotive">Automotive</SelectItem>
-                                    <SelectItem value="Chemicals">Chemicals</SelectItem>
-                                    <SelectItem value="Food & Beverage">Food & Beverage</SelectItem>
-                                    <SelectItem value="Construction">Construction</SelectItem>
-                                    <SelectItem value="Healthcare">Healthcare</SelectItem>
+                                    <SelectItem value="all">{t('allCategories')}</SelectItem>
+                                    <SelectItem value="Electronics">{t('electronics')}</SelectItem>
+                                    <SelectItem value="Textiles">{t('textiles')}</SelectItem>
+                                    <SelectItem value="Manufacturing">{t('manufacturing')}</SelectItem>
+                                    <SelectItem value="Automotive">{t('automotive')}</SelectItem>
+                                    <SelectItem value="Chemicals">{t('chemicals')}</SelectItem>
+                                    <SelectItem value="Food & Beverage">{t('foodBeverage')}</SelectItem>
+                                    <SelectItem value="Construction">{t('construction')}</SelectItem>
+                                    <SelectItem value="Healthcare">{t('healthcare')}</SelectItem>
                                 </SelectContent>
                             </Select>
 
                             <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Subcategory" />
+                                    <SelectValue placeholder={t('subcategory')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Subcategories</SelectItem>
+                                    <SelectItem value="all">{t('allSubcategories')}</SelectItem>
                                     {getSubcategories(selectedCategory).map((subcategory) => (
                                         <SelectItem key={subcategory} value={subcategory}>
                                             {subcategory}
@@ -643,15 +665,15 @@ export default function ProductsPage() {
 
                             <Select value={sortBy} onValueChange={setSortBy}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Sort by" />
+                                    <SelectValue placeholder={t('sortBy')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="popular">Most Popular</SelectItem>
-                                    <SelectItem value="orders">Most Ordered</SelectItem>
-                                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                                    <SelectItem value="newest">Newest First</SelectItem>
-                                    <SelectItem value="oldest">Oldest First</SelectItem>
+                                    <SelectItem value="popular">{t('mostPopular')}</SelectItem>
+                                    <SelectItem value="orders">{t('mostOrdered')}</SelectItem>
+                                    <SelectItem value="price-low">{t('priceLowToHigh')}</SelectItem>
+                                    <SelectItem value="price-high">{t('priceHighToLow')}</SelectItem>
+                                    <SelectItem value="newest">{t('newestFirst')}</SelectItem>
+                                    <SelectItem value="oldest">{t('oldestFirst')}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -665,8 +687,8 @@ export default function ProductsPage() {
                     {filteredProducts.length === 0 ? (
                         <div className="col-span-full text-center py-12">
                             <div className="text-gray-400 text-6xl mb-4">🔍</div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Products Found</h3>
-                            <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noProductsFound')}</h3>
+                            <p className="text-gray-600">{t('tryAdjustingSearch')}</p>
                         </div>
                     ) : (
                         filteredProducts.map((product) => (

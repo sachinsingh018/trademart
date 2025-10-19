@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
 import { usePopup } from "@/contexts/PopupContext";
 import { useToast, ToastContainer } from "@/components/ui/toast";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from '@/components/ui/smooth-transition';
 // import { Package } from "lucide-react"; // COMMENTED OUT - not used
 
 interface Supplier {
@@ -39,7 +41,7 @@ interface Supplier {
 }
 
 // Supplier Card Component with expand/collapse functionality
-function SupplierCard({ supplier, getRatingColor, warning }: { supplier: Supplier, getRatingColor: (rating: number) => string, warning: (message: string, title: string) => void }) {
+function SupplierCard({ supplier, getRatingColor, warning, t }: { supplier: Supplier, getRatingColor: (rating: number) => string, warning: (message: string, title: string) => void, t: (key: string) => string }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
@@ -98,11 +100,11 @@ function SupplierCard({ supplier, getRatingColor, warning }: { supplier: Supplie
                 {isExpanded && (
                     <div className="mt-3 space-y-2 border-t border-gray-100 pt-3 text-sm">
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Established:</span>
+                            <span className="text-gray-500">{t('established')}:</span>
                             <span className="font-medium text-gray-800">{supplier.establishedYear}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-gray-500">Response:</span>
+                            <span className="text-gray-500">{t('response')}:</span>
                             <span className="font-medium text-gray-800">{supplier.responseTime}</span>
                         </div>
 
@@ -116,7 +118,7 @@ function SupplierCard({ supplier, getRatingColor, warning }: { supplier: Supplie
 
                         {supplier.specialties && supplier.specialties.length > 0 && (
                             <div>
-                                <span className="block text-gray-500 text-xs mb-1">Specialties</span>
+                                <span className="block text-gray-500 text-xs mb-1">{t('specialties')}</span>
                                 <div className="flex flex-wrap gap-1">
                                     {supplier.specialties.slice(0, 3).map((specialty, index) => (
                                         <Badge key={index} variant="outline" className="text-[11px]">
@@ -125,7 +127,7 @@ function SupplierCard({ supplier, getRatingColor, warning }: { supplier: Supplie
                                     ))}
                                     {supplier.specialties.length > 3 && (
                                         <Badge variant="outline" className="text-[11px]">
-                                            +{supplier.specialties.length - 3} more
+                                            +{supplier.specialties.length - 3} {t('more')}
                                         </Badge>
                                     )}
                                 </div>
@@ -140,7 +142,7 @@ function SupplierCard({ supplier, getRatingColor, warning }: { supplier: Supplie
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
                     >
-                        {isExpanded ? "Show Less ▲" : "Show More ▼"}
+                        {isExpanded ? t('showLess') : t('showMore')}
                     </button>
 
                     <div className="flex gap-2">
@@ -189,6 +191,25 @@ export default function SuppliersPage() {
     const [sortBy, setSortBy] = useState("rating");
     const [showOverlay, setShowOverlay] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(10);
+
+    // Translation setup
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    // Helper functions for translations
+    const t = (key: string) => messages.suppliers?.[key as keyof typeof messages.suppliers] || messages.common?.[key as keyof typeof messages.common] || key;
 
     // Fetch suppliers from database
     useEffect(() => {
@@ -406,21 +427,21 @@ export default function SuppliersPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
                             </div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
+                            <h2 className="text-xl font-bold text-gray-900 mb-2">{t('signInRequired')}</h2>
                             <p className="text-gray-600 text-sm">
-                                Sign in to view detailed supplier information and contact suppliers.
+                                {t('signInToViewSuppliers')}
                             </p>
                         </div>
 
                         <div className="space-y-3">
                             <Link href="/auth/signin" className="block">
                                 <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg">
-                                    Sign In
+                                    {t('signIn')}
                                 </Button>
                             </Link>
                             <Link href="/auth/signup" className="block">
                                 <Button variant="outline" className="w-full border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-3 font-semibold transition-all duration-300 rounded-lg">
-                                    Create Account
+                                    {t('createAccount')}
                                 </Button>
                             </Link>
                         </div>
@@ -436,14 +457,15 @@ export default function SuppliersPage() {
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
                     <div className="text-center">
                         {/* Gradient Title */}
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
-                            Verified Suppliers
-                        </h1>
+                        <SmoothTransition>
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
+                                {t('verifiedSuppliers')}
+                            </h1>
 
-                        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
-                            Connect with trusted manufacturers, wholesalers, and service providers worldwide.
-                            Discover verified suppliers and build long-term partnerships for your business.
-                        </p>
+                            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+                                {t('suppliersDescription')}
+                            </p>
+                        </SmoothTransition>
 
                         {/* Timer display for guest users */}
                         {!session && !showOverlay && timeRemaining > 0 && (
@@ -461,7 +483,7 @@ export default function SuppliersPage() {
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                     />
                                 </svg>
-                                Free preview ends in {timeRemaining}s
+                                {t('freePreviewEndsIn')} {timeRemaining}s
                             </div>
                         )}
 
@@ -473,7 +495,7 @@ export default function SuppliersPage() {
                                     {suppliers.length}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    Total Suppliers
+                                    {t('totalSuppliers')}
                                 </div>
                             </div>
 
@@ -483,7 +505,7 @@ export default function SuppliersPage() {
                                     {suppliers.filter((s) => s.verified).length}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    Verified
+                                    {t('verified')}
                                 </div>
                             </div>
 
@@ -495,7 +517,7 @@ export default function SuppliersPage() {
                                         .toLocaleString()}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    Total Orders
+                                    {t('totalOrders')}
                                 </div>
                             </div>
 
@@ -508,7 +530,7 @@ export default function SuppliersPage() {
                                     ).toFixed(1)}
                                 </div>
                                 <div className="text-xs sm:text-sm font-medium text-gray-500">
-                                    Avg. Rating
+                                    {t('avgRating')}
                                 </div>
                             </div>
                         </div>
@@ -548,7 +570,7 @@ export default function SuppliersPage() {
                     <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
                         <div className="flex-1">
                             <Input
-                                placeholder="Search suppliers by company, name, industry, or specialties..."
+                                placeholder={t('searchPlaceholder')}
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full"
@@ -557,48 +579,48 @@ export default function SuppliersPage() {
                         <div className="flex gap-4">
                             <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Industry" />
+                                    <SelectValue placeholder={t('industry')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Industries</SelectItem>
-                                    <SelectItem value="Electronics">Electronics</SelectItem>
-                                    <SelectItem value="Textiles">Textiles</SelectItem>
-                                    <SelectItem value="Manufacturing">Manufacturing</SelectItem>
-                                    <SelectItem value="Automotive">Automotive</SelectItem>
-                                    <SelectItem value="Chemicals">Chemicals</SelectItem>
-                                    <SelectItem value="Food & Beverage">Food & Beverage</SelectItem>
-                                    <SelectItem value="Construction">Construction</SelectItem>
-                                    <SelectItem value="Healthcare">Healthcare</SelectItem>
+                                    <SelectItem value="all">{t('allIndustries')}</SelectItem>
+                                    <SelectItem value="Electronics">{t('electronics')}</SelectItem>
+                                    <SelectItem value="Textiles">{t('textiles')}</SelectItem>
+                                    <SelectItem value="Manufacturing">{t('manufacturing')}</SelectItem>
+                                    <SelectItem value="Automotive">{t('automotive')}</SelectItem>
+                                    <SelectItem value="Chemicals">{t('chemicals')}</SelectItem>
+                                    <SelectItem value="Food & Beverage">{t('foodBeverage')}</SelectItem>
+                                    <SelectItem value="Construction">{t('construction')}</SelectItem>
+                                    <SelectItem value="Healthcare">{t('healthcare')}</SelectItem>
                                 </SelectContent>
                             </Select>
 
                             <Select value={selectedCountry} onValueChange={setSelectedCountry}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Country" />
+                                    <SelectValue placeholder={t('country')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Countries</SelectItem>
-                                    <SelectItem value="China">China</SelectItem>
-                                    <SelectItem value="Bangladesh">Bangladesh</SelectItem>
-                                    <SelectItem value="Mexico">Mexico</SelectItem>
-                                    <SelectItem value="Vietnam">Vietnam</SelectItem>
-                                    <SelectItem value="United Kingdom">United Kingdom</SelectItem>
-                                    <SelectItem value="Germany">Germany</SelectItem>
-                                    <SelectItem value="Turkey">Turkey</SelectItem>
-                                    <SelectItem value="Japan">Japan</SelectItem>
+                                    <SelectItem value="all">{t('allCountries')}</SelectItem>
+                                    <SelectItem value="China">{t('china')}</SelectItem>
+                                    <SelectItem value="Bangladesh">{t('bangladesh')}</SelectItem>
+                                    <SelectItem value="Mexico">{t('mexico')}</SelectItem>
+                                    <SelectItem value="Vietnam">{t('vietnam')}</SelectItem>
+                                    <SelectItem value="United Kingdom">{t('unitedKingdom')}</SelectItem>
+                                    <SelectItem value="Germany">{t('germany')}</SelectItem>
+                                    <SelectItem value="Turkey">{t('turkey')}</SelectItem>
+                                    <SelectItem value="Japan">{t('japan')}</SelectItem>
                                 </SelectContent>
                             </Select>
 
                             <Select value={sortBy} onValueChange={setSortBy}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Sort by" />
+                                    <SelectValue placeholder={t('sortBy')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="rating">Highest Rating</SelectItem>
-                                    <SelectItem value="orders">Most Orders</SelectItem>
-                                    <SelectItem value="verified">Verified First</SelectItem>
-                                    <SelectItem value="newest">Newest</SelectItem>
-                                    <SelectItem value="oldest">Oldest</SelectItem>
+                                    <SelectItem value="rating">{t('highestRating')}</SelectItem>
+                                    <SelectItem value="orders">{t('mostOrders')}</SelectItem>
+                                    <SelectItem value="verified">{t('verifiedFirst')}</SelectItem>
+                                    <SelectItem value="newest">{t('newest')}</SelectItem>
+                                    <SelectItem value="oldest">{t('oldest')}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -612,12 +634,12 @@ export default function SuppliersPage() {
                     {filteredSuppliers.length === 0 ? (
                         <div className="col-span-full text-center py-12">
                             <div className="text-gray-400 text-6xl mb-4">🔍</div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Suppliers Found</h3>
-                            <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noSuppliersFound')}</h3>
+                            <p className="text-gray-600">{t('tryAdjustingSearch')}</p>
                         </div>
                     ) : (
                         filteredSuppliers.map((supplier) => (
-                            <SupplierCard key={supplier.id} supplier={supplier} getRatingColor={getRatingColor} warning={warning} />
+                            <SupplierCard key={supplier.id} supplier={supplier} getRatingColor={getRatingColor} warning={warning} t={t} />
                         ))
                     )}
                 </div>

@@ -1,0 +1,106 @@
+/* Smooth Language Transition Animations */
+
+/* Global transition styles for language changes */
+.language-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade in animation for new content */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+/* Smooth text transition */
+.text-transition {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Language toggle dropdown animation */
+.language-dropdown {
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth background transition for hero section */
+.hero-transition {
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* Enhanced button transitions */
+.button-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateZ(0);
+    /* Enable hardware acceleration */
+}
+
+.button-transition:hover {
+    transform: translateY(-2px) translateZ(0);
+}
+
+/* Card transition effects */
+.card-transition {
+    transition: all 0.3s ease-in-out;
+    transform: translateZ(0);
+}
+
+.card-transition:hover {
+    transform: translateY(-4px) translateZ(0);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Smooth loading states */
+.loading-transition {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Text content transitions */
+.content-transition {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Mobile-specific transitions */
+@media (max-width: 768px) {
+    .mobile-transition {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .mobile-transition:hover {
+        transform: scale(1.02);
+    }
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+
+    .language-transition,
+    .text-transition,
+    .button-transition,
+    .card-transition,
+    .content-transition {
+        transition: none;
+        animation: none;
+    }
+}

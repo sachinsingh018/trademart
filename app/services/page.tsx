@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import PageTitle from "@/components/ui/page-title";
 import { usePopup } from "@/contexts/PopupContext";
 import { useToast, ToastContainer } from "@/components/ui/toast";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from '@/components/ui/smooth-transition';
 
 interface Service {
     id: string;
@@ -67,7 +69,8 @@ function FiltersSection({
     setSortBy,
     categories,
     subcategories,
-    handleSearch
+    handleSearch,
+    t
 }: {
     searchTerm: string;
     setSearchTerm: (value: string) => void;
@@ -80,8 +83,17 @@ function FiltersSection({
     categories: string[];
     subcategories: Record<string, string[]>;
     handleSearch: (e: React.FormEvent) => void;
+    t?: (key: string) => string;
 }) {
     const [showFilters, setShowFilters] = useState(false);
+
+    // Helper function with fallback
+    const translate = (key: string) => {
+        if (t && typeof t === 'function') {
+            return t(key);
+        }
+        return key; // Fallback to key if t is not available
+    };
 
     return (
         <div className="bg-white rounded-lg shadow-sm p-2 sm:p-3 mb-1 sm:mb-2">
@@ -89,7 +101,7 @@ function FiltersSection({
                 {/* Always visible: Search bar + Filters button */}
                 <div className="flex gap-2">
                     <Input
-                        placeholder="Search services..."
+                        placeholder={translate('searchPlaceholder')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="h-8 sm:h-9 text-sm flex-1"
@@ -104,7 +116,7 @@ function FiltersSection({
                         <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
                         </svg>
-                        Filters
+                        {translate('filters')}
                     </Button>
                 </div>
 
@@ -351,6 +363,25 @@ export default function ServicesPage() {
     const [showOverlay, setShowOverlay] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState(10);
 
+    // Translation setup
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    // Helper functions for translations
+    const t = (key: string) => messages.services?.[key as keyof typeof messages.services] || messages.common?.[key as keyof typeof messages.common] || key;
+
     const categories = [
         "Technology",
         "Finance",
@@ -517,14 +548,15 @@ export default function ServicesPage() {
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
                     <div className="text-center">
                         {/* Gradient Title */}
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
-                            Professional Services
-                        </h1>
+                        <SmoothTransition>
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-3 sm:mb-5 tracking-tight">
+                                {t('professionalServices')}
+                            </h1>
 
-                        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
-                            Find and connect with verified professionals across multiple industries.
-                            Explore our curated catalog of trusted service providers and get instant quotes.
-                        </p>
+                            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+                                {t('servicesDescription')}
+                            </p>
+                        </SmoothTransition>
 
                         {/* Timer display for guests */}
                         {!session && !showOverlay && timeRemaining > 0 && (
@@ -542,7 +574,7 @@ export default function ServicesPage() {
                                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                                     />
                                 </svg>
-                                Free preview ends in {timeRemaining}s
+                                {t('freePreviewEndsIn')} {timeRemaining}s
                             </div>
                         )}
                     </div>
@@ -563,6 +595,7 @@ export default function ServicesPage() {
                     categories={categories}
                     subcategories={subcategories}
                     handleSearch={handleSearch}
+                    t={t}
                 />
 
                 {/* Stats - Compact on mobile */}
@@ -571,7 +604,7 @@ export default function ServicesPage() {
                         <CardContent className="p-2 sm:p-3 lg:p-4">
                             <div className="text-center">
                                 <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">{stats.totalServices}</p>
-                                <p className="text-xs sm:text-sm font-medium text-gray-600">Total Services</p>
+                                <p className="text-xs sm:text-sm font-medium text-gray-600">{t('totalServices')}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -579,7 +612,7 @@ export default function ServicesPage() {
                         <CardContent className="p-2 sm:p-3 lg:p-4">
                             <div className="text-center">
                                 <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 mb-1">{stats.availableServices}</p>
-                                <p className="text-xs sm:text-sm font-medium text-gray-600">Available</p>
+                                <p className="text-xs sm:text-sm font-medium text-gray-600">{t('available')}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -587,7 +620,7 @@ export default function ServicesPage() {
                         <CardContent className="p-2 sm:p-3 lg:p-4">
                             <div className="text-center">
                                 <p className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 mb-1">{stats.totalViews}</p>
-                                <p className="text-xs sm:text-sm font-medium text-gray-600">Total Views</p>
+                                <p className="text-xs sm:text-sm font-medium text-gray-600">{t('totalViews')}</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -595,7 +628,7 @@ export default function ServicesPage() {
                         <CardContent className="p-2 sm:p-3 lg:p-4">
                             <div className="text-center">
                                 <p className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600 mb-1">{stats.totalOrders}</p>
-                                <p className="text-xs sm:text-sm font-medium text-gray-600">Total Orders</p>
+                                <p className="text-xs sm:text-sm font-medium text-gray-600">{t('totalOrders')}</p>
                             </div>
                         </CardContent>
                     </Card>

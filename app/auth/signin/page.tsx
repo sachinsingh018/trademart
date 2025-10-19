@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { detectLocale, getMessages } from '@/lib/i18n';
 
 function SignInForm() {
     const [loginMethod, setLoginMethod] = useState<"email" | "phone">("email");
@@ -16,10 +17,23 @@ function SignInForm() {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
 
     const router = useRouter();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
+
+    // Detect locale and load messages
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Helper functions for translations
+    const t = (key: string) => messages.auth?.[key as keyof typeof messages.auth] || key;
+    const tCommon = (key: string) => messages.common?.[key as keyof typeof messages.common] || key;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,17 +42,17 @@ function SignInForm() {
 
         // Validate input
         if (loginMethod === "email" && !email.trim()) {
-            setError("Please enter your email address");
+            setError(t('enterEmail'));
             setIsLoading(false);
             return;
         }
         if (loginMethod === "phone" && !phone.trim()) {
-            setError("Please enter your phone number");
+            setError(t('enterPhone'));
             setIsLoading(false);
             return;
         }
         if (!password.trim()) {
-            setError("Please enter your password");
+            setError(t('enterPassword'));
             setIsLoading(false);
             return;
         }
@@ -51,7 +65,7 @@ function SignInForm() {
             });
 
             if (result?.error) {
-                setError(`Invalid ${loginMethod} or password`);
+                setError(t('invalidCredentials'));
             } else {
                 // Get the updated session to check user role
                 const session = await getSession();
@@ -62,7 +76,7 @@ function SignInForm() {
                 }
             }
         } catch {
-            setError("An error occurred. Please try again.");
+            setError(tCommon('error'));
         } finally {
             setIsLoading(false);
         }
@@ -90,16 +104,16 @@ function SignInForm() {
                         </div>
                     </Link>
                     <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                        Welcome back
+                        {t('welcomeBack')}
                     </h2>
                     <p className="text-sm sm:text-base text-gray-600">
-                        Sign in to your account to continue
+                        {t('signIn')} to your account to continue
                     </p>
                 </div>
 
                 <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm">
                     <CardHeader className="text-center pb-4 sm:pb-6">
-                        <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">Sign In</CardTitle>
+                        <CardTitle className="text-xl sm:text-2xl font-bold text-gray-900">{t('signIn')}</CardTitle>
                         <CardDescription className="text-sm sm:text-base text-gray-600">
                             Enter your credentials to access your account
                         </CardDescription>

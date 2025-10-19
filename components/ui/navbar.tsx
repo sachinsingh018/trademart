@@ -4,8 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import LanguageToggle from "./language-toggle";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from './smooth-transition';
 
 interface NavbarProps {
     isPopupActive?: boolean;
@@ -15,6 +18,25 @@ export default function Navbar({ isPopupActive = false }: NavbarProps) {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { data: session } = useSession();
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    // Detect locale and load messages
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    // Helper functions for translations
+    const t = (key: string) => messages.nav?.[key as keyof typeof messages.nav] || key;
+    const tCommon = (key: string) => messages.common?.[key as keyof typeof messages.common] || key;
 
     const isActive = (path: string) => {
         return pathname === path;
@@ -37,121 +59,128 @@ export default function Navbar({ isPopupActive = false }: NavbarProps) {
                     </div>
                     <div className="flex items-center space-x-6">
                         {/* Navigation Links */}
-                        <div className="hidden md:flex items-center space-x-6">
-                            {isPopupActive ? (
-                                // When popup is active, only show Business Loans as clickable
-                                <>
-                                    <span className="text-gray-400 cursor-not-allowed font-medium">Suppliers</span>
-                                    <span className="text-gray-400 cursor-not-allowed font-medium">Products</span>
-                                    <span className="text-gray-400 cursor-not-allowed font-medium">Services</span>
-                                    <span className="text-gray-400 cursor-not-allowed font-medium">RFQs</span>
-                                    <span className="text-gray-400 cursor-not-allowed font-medium relative">
-                                        Business Leads
-                                        <sup className="absolute -top-1 -right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
-                                            NEW
-                                        </sup>
-                                    </span>
-                                    <Link
-                                        href="/loans"
-                                        className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                                    >
-                                        Business Loans
-                                    </Link>
-                                </>
-                            ) : (
-                                // Normal navigation when popup is not active
-                                <>
-                                    <Link
-                                        href="/suppliers"
-                                        className={`transition-colors font-medium ${isActive('/suppliers')
-                                            ? 'text-blue-600'
-                                            : 'text-gray-600 hover:text-blue-600'
-                                            }`}
-                                    >
-                                        Suppliers
-                                    </Link>
-                                    <Link
-                                        href="/products"
-                                        className={`transition-colors font-medium ${isActive('/products')
-                                            ? 'text-blue-600'
-                                            : 'text-gray-600 hover:text-blue-600'
-                                            }`}
-                                    >
-                                        Products
-                                    </Link>
-                                    <Link
-                                        href="/services"
-                                        className={`transition-colors font-medium ${isActive('/services')
-                                            ? 'text-blue-600'
-                                            : 'text-gray-600 hover:text-blue-600'
-                                            }`}
-                                    >
-                                        Services
-                                    </Link>
-                                    <Link
-                                        href="/rfqs"
-                                        className={`transition-colors font-medium ${isActive('/rfqs')
-                                            ? 'text-blue-600'
-                                            : 'text-gray-600 hover:text-blue-600'
-                                            }`}
-                                    >
-                                        RFQs
-                                    </Link>
-                                    <Link
-                                        href="/business-leads"
-                                        className={`transition-colors font-medium relative ${isActive('/business-leads')
-                                            ? 'text-blue-600'
-                                            : 'text-gray-600 hover:text-blue-600'
-                                            }`}
-                                    >
-                                        Business Leads
-                                        <sup className="absolute -top-1 -right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
-                                            NEW
-                                        </sup>
-                                    </Link>
-                                    <Link
-                                        href="/loans"
-                                        className={`transition-colors font-medium ${isActive('/loans')
-                                            ? 'text-blue-600'
-                                            : 'text-gray-600 hover:text-blue-600'
-                                            }`}
-                                    >
-                                        Business Loans
-                                    </Link>
-                                </>
-                            )}
-                        </div>
+                        <SmoothTransition>
+                            <div className="hidden md:flex items-center space-x-6">
+                                {isPopupActive ? (
+                                    // When popup is active, only show Business Loans as clickable
+                                    <>
+                                        <span className="text-gray-400 cursor-not-allowed font-medium">{t('suppliers')}</span>
+                                        <span className="text-gray-400 cursor-not-allowed font-medium">{t('products')}</span>
+                                        <span className="text-gray-400 cursor-not-allowed font-medium">{t('services')}</span>
+                                        <span className="text-gray-400 cursor-not-allowed font-medium">{t('rfqs')}</span>
+                                        <span className="text-gray-400 cursor-not-allowed font-medium relative">
+                                            {t('businessLeads')}
+                                            <sup className="absolute -top-1 -right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
+                                                {tCommon('new')}
+                                            </sup>
+                                        </span>
+                                        <Link
+                                            href="/loans"
+                                            className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                                        >
+                                            {t('loans')}
+                                        </Link>
+                                    </>
+                                ) : (
+                                    // Normal navigation when popup is not active
+                                    <>
+                                        <Link
+                                            href="/suppliers"
+                                            className={`transition-colors font-medium ${isActive('/suppliers')
+                                                ? 'text-blue-600'
+                                                : 'text-gray-600 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            {t('suppliers')}
+                                        </Link>
+                                        <Link
+                                            href="/products"
+                                            className={`transition-colors font-medium ${isActive('/products')
+                                                ? 'text-blue-600'
+                                                : 'text-gray-600 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            {t('products')}
+                                        </Link>
+                                        <Link
+                                            href="/services"
+                                            className={`transition-colors font-medium ${isActive('/services')
+                                                ? 'text-blue-600'
+                                                : 'text-gray-600 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            {t('services')}
+                                        </Link>
+                                        <Link
+                                            href="/rfqs"
+                                            className={`transition-colors font-medium ${isActive('/rfqs')
+                                                ? 'text-blue-600'
+                                                : 'text-gray-600 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            {t('rfqs')}
+                                        </Link>
+                                        <Link
+                                            href="/business-leads"
+                                            className={`transition-colors font-medium relative ${isActive('/business-leads')
+                                                ? 'text-blue-600'
+                                                : 'text-gray-600 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            {t('businessLeads')}
+                                            <sup className="absolute -top-1 -right-2 inline-flex items-center justify-center w-3 h-3 text-[8px] font-bold text-white bg-blue-500 rounded-full animate-pulse">
+                                                {tCommon('new')}
+                                            </sup>
+                                        </Link>
+                                        <Link
+                                            href="/loans"
+                                            className={`transition-colors font-medium ${isActive('/loans')
+                                                ? 'text-blue-600'
+                                                : 'text-gray-600 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            {t('loans')}
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                        </SmoothTransition>
 
                         {/* Auth Buttons - Desktop */}
-                        <div className="hidden md:flex items-center space-x-4">
-                            {session ? (
-                                <>
-                                    <Link href="/dashboard">
-                                        <Button variant="outline" className="border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors">
-                                            Dashboard
-                                        </Button>
-                                    </Link>
-                                    <Link href="/auth/signout">
-                                        <Button className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl transition-all duration-300">
-                                            Sign Out
-                                        </Button>
-                                    </Link>
-                                </>
-                            ) : (
-                                <>
-                                    <Link href="/auth/signin">
-                                        <Button variant="outline" className="border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors">
-                                            Sign In
-                                        </Button>
-                                    </Link>
-                                    <Link href="/auth/signup">
-                                        <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300">
-                                            Get Started
-                                        </Button>
-                                    </Link>
-                                </>
-                            )}
-                        </div>
+                        <SmoothTransition>
+                            <div className="hidden md:flex items-center space-x-4">
+                                {/* Language Toggle */}
+                                <LanguageToggle />
+
+                                {session ? (
+                                    <>
+                                        <Link href="/dashboard">
+                                            <Button variant="outline" className="border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors">
+                                                {t('dashboard')}
+                                            </Button>
+                                        </Link>
+                                        <Link href="/auth/signout">
+                                            <Button className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 shadow-lg hover:shadow-xl transition-all duration-300">
+                                                {t('signOut')}
+                                            </Button>
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link href="/auth/signin">
+                                            <Button variant="outline" className="border-gray-200 hover:border-blue-300 hover:text-blue-600 transition-colors">
+                                                {t('signIn')}
+                                            </Button>
+                                        </Link>
+                                        <Link href="/auth/signup">
+                                            <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-300">
+                                                {t('getStarted')}
+                                            </Button>
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                        </SmoothTransition>
 
                         {/* Mobile menu button */}
                         <div className="md:hidden">
@@ -280,6 +309,11 @@ export default function Navbar({ isPopupActive = false }: NavbarProps) {
 
                             {/* Mobile Auth Buttons */}
                             <div className="border-t border-gray-200 pt-3 pb-3">
+                                {/* Mobile Language Toggle */}
+                                <div className="px-2 mb-3">
+                                    <LanguageToggle />
+                                </div>
+
                                 <div className="px-2 flex gap-2">
                                     {session ? (
                                         <>

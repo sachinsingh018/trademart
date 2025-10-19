@@ -1,6 +1,20 @@
 'use client';
 
+import { detectLocale, getMessages } from '@/lib/i18n';
+import { useState, useEffect } from 'react';
+
 export default function WhatsAppButton() {
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    const t = (key: string) => messages.ui?.[key as keyof typeof messages.ui] || key;
+
     return (
         <div className="fixed bottom-6 right-6 z-50">
             <a
@@ -8,7 +22,7 @@ export default function WhatsAppButton() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center justify-center w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 active:scale-95"
-                title="Chat with us on WhatsApp"
+                title={t('whatsappTitle')}
             >
                 {/* WhatsApp Icon */}
                 <svg className="w-7 h-7 group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">

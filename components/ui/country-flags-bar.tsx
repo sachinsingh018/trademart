@@ -1,9 +1,27 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from './smooth-transition';
 
 const CountryFlagsBar = () => {
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    const t = (key: string) => messages.ui?.[key as keyof typeof messages.ui] || key;
     const countries = [
         { name: "Brazil", code: "BR", flag: "🇧🇷" },
         { name: "Russia", code: "RU", flag: "🇷🇺" },
@@ -36,14 +54,16 @@ const CountryFlagsBar = () => {
     return (
         <div className="relative overflow-hidden py-8 bg-gradient-to-r from-blue-950 via-blue-900 to-indigo-950 border-t border-b border-blue-700/40 backdrop-blur-md shadow-inner">
             {/* Header */}
-            <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-white tracking-wide">
-                    🌍 Connected Across Nations
-                </h3>
-                <p className="text-sm text-blue-200">
-                    Empowering trade between BRICS, MENA, and global allies
-                </p>
-            </div>
+            <SmoothTransition>
+                <div className="text-center mb-6">
+                    <h3 className="text-xl font-semibold text-white tracking-wide">
+                        {t('connectedAcrossNations')}
+                    </h3>
+                    <p className="text-sm text-blue-200">
+                        {t('empoweringTrade')}
+                    </p>
+                </div>
+            </SmoothTransition>
 
             {/* Scrolling Flags Row */}
             <div className="overflow-hidden">

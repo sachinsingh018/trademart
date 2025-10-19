@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import CountryFlagsBar from "@/components/ui/country-flags-bar";
 import { useSession } from "next-auth/react";
 import { FaTwitter, FaLinkedinIn, FaFacebookF } from "react-icons/fa";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from '@/components/ui/smooth-transition';
 
 interface Product {
   id: string;
@@ -49,6 +51,8 @@ interface Stats {
 export default function HomeClient() {
   const router = useRouter();
   const { data: session } = useSession();
+  const [locale, setLocale] = useState('en');
+  const [messages, setMessages] = useState(() => getMessages('en'));
   const [searchTerm, setSearchTerm] = useState("");
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [topSuppliers, setTopSuppliers] = useState<Supplier[]>([]);
@@ -59,6 +63,31 @@ export default function HomeClient() {
     inStockProducts: 0,
   });
   const [loading, setLoading] = useState(true);
+
+  // Helper functions for translations
+  const t = (key: string) => {
+    // Try to find the key in different sections
+    const homeValue = messages.home?.[key as keyof typeof messages.home];
+    const footerValue = messages.footer?.[key as keyof typeof messages.footer];
+    const governmentValue = messages.government?.[key as keyof typeof messages.government];
+
+    // Return the first found value or the key itself
+    return homeValue || footerValue || governmentValue || key;
+  };
+  const tNav = (key: string) => messages.nav?.[key as keyof typeof messages.nav] || key;
+
+  // Detect locale and load messages
+  useEffect(() => {
+    const detectedLocale = detectLocale();
+    setLocale(detectedLocale);
+    setMessages(getMessages(detectedLocale));
+  }, []);
+
+  // Listen for language changes with smooth transition
+  useLanguageChange((newLocale: string) => {
+    setLocale(newLocale);
+    setMessages(getMessages(newLocale));
+  });
 
   // Fetch data on component mount
   useEffect(() => {
@@ -152,94 +181,102 @@ export default function HomeClient() {
         <div className="absolute inset-0 bg-black/40"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
-          <h1 className="text-3xl sm:text-6xl font-bold leading-snug mb-4 sm:mb-6">
-            Global B2B Marketplace
-          </h1>
-          <p className="text-base sm:text-xl max-w-4xl mx-auto mb-8 sm:mb-10 leading-relaxed text-gray-200">
-            Connect with verified suppliers worldwide. Find products, submit RFQs, and grow your business with secure transactions and trusted partnerships.
-          </p>
+          <SmoothTransition>
+            <h1 className="text-3xl sm:text-6xl font-bold leading-snug mb-4 sm:mb-6">
+              {t('title')}
+            </h1>
+            <p className="text-base sm:text-xl max-w-4xl mx-auto mb-8 sm:mb-10 leading-relaxed text-gray-200">
+              {t('subtitle')}
+            </p>
+          </SmoothTransition>
 
           {/* Search Bar */}
-          <div className="max-w-5xl mx-auto mb-8 sm:mb-10 px-3 sm:px-4">
-            <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-white/30 p-2 hover:shadow-2xl transition-all duration-500">
-              <div className="flex flex-col sm:flex-row items-center">
-                <div className="flex-1 relative flex items-center w-full">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <SmoothTransition>
+            <div className="max-w-5xl mx-auto mb-8 sm:mb-10 px-3 sm:px-4">
+              <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-white/30 p-2 hover:shadow-2xl transition-all duration-500">
+                <div className="flex flex-col sm:flex-row items-center">
+                  <div className="flex-1 relative flex items-center w-full">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder={t('searchPlaceholder')}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      className="w-full pl-10 pr-6 py-2 sm:py-3 text-sm sm:text-lg border-0 bg-transparent text-gray-900 focus:outline-none placeholder:text-gray-400"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSearch}
+                    className="w-full sm:w-auto mt-2 sm:mt-0 px-5 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center gap-2"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Search products, suppliers..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    className="w-full pl-10 pr-6 py-2 sm:py-3 text-sm sm:text-lg border-0 bg-transparent text-gray-900 focus:outline-none placeholder:text-gray-400"
-                  />
+                    {t('searchButton')}
+                  </button>
                 </div>
-                <button
-                  onClick={handleSearch}
-                  className="w-full sm:w-auto mt-2 sm:mt-0 px-5 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 flex items-center justify-center gap-2"
-                >
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  Search
-                </button>
               </div>
             </div>
-          </div>
+          </SmoothTransition>
 
           {/* Buttons */}
-          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 px-4">
-            {session ? (
-              <>
-                <Link href="/dashboard" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold rounded-xl shadow-md hover:shadow-xl transition-all">
-                    Go to Dashboard
-                  </Button>
-                </Link>
-                <Link href="/auth/signout" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold transition-all">
-                    Sign Out
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/auth/signup?role=buyer" className="w-full sm:w-auto">
-                  <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold rounded-xl shadow-md hover:shadow-xl transition-all">
-                    Start Buying
-                  </Button>
-                </Link>
-                <Link href="/auth/signup?role=supplier" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full sm:w-auto border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold transition-all">
-                    Start Selling
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
+          <SmoothTransition>
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 px-4">
+              {session ? (
+                <>
+                  <Link href="/dashboard" className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold rounded-xl shadow-md hover:shadow-xl transition-all">
+                      {tNav('dashboard')}
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signout" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold transition-all">
+                      {tNav('signOut')}
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/signup?role=buyer" className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold rounded-xl shadow-md hover:shadow-xl transition-all">
+                      {t('startBuying')}
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup?role=supplier" className="w-full sm:w-auto">
+                    <Button variant="outline" className="w-full sm:w-auto border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white text-sm sm:text-lg px-6 py-2 sm:py-3 font-semibold transition-all">
+                      {t('startSelling')}
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+          </SmoothTransition>
 
           {/* Stats (smaller grid on mobile) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 max-w-5xl mx-auto text-center">
-            {[
-              { value: stats.totalSuppliers, color: "text-blue-300", label: "Suppliers" },
-              { value: stats.totalProducts, color: "text-green-300", label: "Products" },
-              { value: stats.totalOrders, color: "text-purple-300", label: "Orders" },
-              { value: "100+", color: "text-orange-300", label: "Countries" },
-            ].map((s, i) => (
-              <div key={i} className="bg-white/10 rounded-xl p-4 sm:p-6 backdrop-blur-sm">
-                <div className={`text-xl sm:text-3xl font-bold ${s.color} mb-1`}>
-                  {loading ? "..." : s.value.toLocaleString?.() || s.value}+
+          <SmoothTransition>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 max-w-5xl mx-auto text-center">
+              {[
+                { value: stats.totalSuppliers, color: "text-blue-300", label: t('verifiedSuppliers') },
+                { value: stats.totalProducts, color: "text-green-300", label: t('productsAvailable') },
+                { value: stats.totalOrders, color: "text-purple-300", label: t('ordersCompleted') },
+                { value: "100+", color: "text-orange-300", label: t('countries') },
+              ].map((s, i) => (
+                <div key={i} className="bg-white/10 rounded-xl p-4 sm:p-6 backdrop-blur-sm">
+                  <div className={`text-xl sm:text-3xl font-bold ${s.color} mb-1`}>
+                    {loading ? "..." : s.value.toLocaleString?.() || s.value}+
+                  </div>
+                  <div className="text-xs sm:text-base text-gray-200">{s.label}</div>
                 </div>
-                <div className="text-xs sm:text-base text-gray-200">{s.label}</div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </SmoothTransition>
         </div>
       </section>
 
@@ -247,22 +284,23 @@ export default function HomeClient() {
       <CountryFlagsBar />
 
       {/* Government Initiatives Section */}
-      {/* Government Initiatives Section */}
       <section className="py-16 relative overflow-hidden">
         {/* Soft background gradient */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-50 via-white to-green-50 opacity-70 blur-xl"></div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="text-center mb-10">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 tracking-wide mb-2">
-              Supported by
-            </h3>
-            <p className="text-sm sm:text-base text-gray-600">
-              Government & global initiatives empowering Indian businesses
-            </p>
-            <div className="mx-auto mt-2 w-20 h-1 bg-gradient-to-r from-blue-600 to-green-500 rounded-full"></div>
-          </div>
+          <SmoothTransition>
+            <div className="text-center mb-10">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 tracking-wide mb-2">
+                {t('supportedBy')}
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600">
+                {t('governmentInitiatives')}
+              </p>
+              <div className="mx-auto mt-2 w-20 h-1 bg-gradient-to-r from-blue-600 to-green-500 rounded-full"></div>
+            </div>
+          </SmoothTransition>
 
           {/* Mobile: auto-scrolling ticker */}
           <div className="relative md:hidden overflow-hidden">
@@ -334,12 +372,12 @@ export default function HomeClient() {
           {!session && (
             <div className="text-center mt-12 relative z-10">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
-                Ready to Start Trading?
+                {t('readyToStart')}
               </h2>
               <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 px-4">
                 <Link href="/auth/signup" className="w-full sm:w-auto">
                   <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                    Get Started Free
+                    {tNav('startFree')}
                   </Button>
                 </Link>
                 <Link href="/auth/signin" className="w-full sm:w-auto">
@@ -347,7 +385,7 @@ export default function HomeClient() {
                     variant="outline"
                     className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 px-8 py-4 text-lg font-semibold transition-all duration-300"
                   >
-                    Sign In
+                    {tNav('signIn')}
                   </Button>
                 </Link>
               </div>
@@ -387,10 +425,10 @@ export default function HomeClient() {
           {/* Header */}
           <div className="text-center mb-10 sm:mb-20">
             <h2 className="text-2xl sm:text-5xl font-extrabold text-gray-900 mb-3">
-              Featured Products
+              {t('featuredProducts')}
             </h2>
             <p className="text-sm sm:text-lg text-gray-600 max-w-2xl mx-auto">
-              Discover verified, top-quality products from trusted global suppliers.
+              {t('featuredProductsDesc')}
             </p>
             <div className="mx-auto mt-4 sm:mt-5 w-16 sm:w-24 h-1.5 bg-gradient-to-r from-blue-600 via-teal-400 to-green-500 rounded-full"></div>
           </div>
@@ -432,9 +470,9 @@ export default function HomeClient() {
                       {/* Stock badge */}
                       <div className="absolute top-3 right-3">
                         {product.inStock ? (
-                          <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">In Stock</Badge>
+                          <Badge className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">{t('inStock')}</Badge>
                         ) : (
-                          <Badge className="bg-rose-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">Out of Stock</Badge>
+                          <Badge className="bg-rose-500 text-white text-xs px-2 py-1 rounded-full shadow-sm">{t('outOfStock')}</Badge>
                         )}
                       </div>
                     </div>
@@ -461,7 +499,7 @@ export default function HomeClient() {
                             </div>
                           </div>
                           <span className="text-sm text-gray-600">
-                            Min: {product.minOrderQuantity} {product.unit}
+                            {t('minOrder')}: {product.minOrderQuantity} {product.unit}
                           </span>
                         </div>
 
@@ -481,12 +519,12 @@ export default function HomeClient() {
                           <span className="text-gray-600">{product.supplier.country}</span>
                           {product.supplier.verified && (
                             <Badge className="bg-green-50 text-green-700 border-green-200 text-xs px-2 py-0.5 rounded-full">
-                              Verified
+                              {t('verified')}
                             </Badge>
                           )}
                         </div>
                         <span className="text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition-colors">
-                          View →
+                          {t('viewProduct')} →
                         </span>
                       </div>
                     </div>
@@ -516,7 +554,7 @@ export default function HomeClient() {
                         </div>
                         {product.supplier.verified && (
                           <Badge className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
-                            ✓ Verified
+                            {t('verified')}
                           </Badge>
                         )}
                       </div>
@@ -531,7 +569,7 @@ export default function HomeClient() {
           <div className="text-center mt-10 sm:mt-16">
             <Link href="/products">
               <Button className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 hover:shadow-lg text-sm sm:text-base font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full text-white transition-all duration-300">
-                View All Products
+                {tNav('products')}
               </Button>
             </Link>
           </div>
@@ -549,10 +587,10 @@ export default function HomeClient() {
           {/* Header */}
           <div className="text-center mb-12 sm:mb-20">
             <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 mb-3 sm:mb-4">
-              Verified Suppliers
+              {t('topSuppliers')}
             </h2>
             <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-              Connect with globally trusted suppliers backed by quality and reliability.
+              {t('topSuppliersDesc')}
             </p>
             <div className="mx-auto mt-5 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-500 via-teal-500 to-green-500 rounded-full"></div>
           </div>
@@ -591,7 +629,7 @@ export default function HomeClient() {
                         </div>
                         {supplier.verified && (
                           <span className="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full border border-green-200">
-                            <span>✅</span> Verified
+                            <span>✅</span> {t('verified')}
                           </span>
                         )}
                       </div>
@@ -602,19 +640,19 @@ export default function HomeClient() {
                             <div className="text-xl font-bold bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-transparent">
                               ⭐ {supplier.rating}
                             </div>
-                            <div className="text-xs text-gray-600 mt-1">Rating</div>
+                            <div className="text-xs text-gray-600 mt-1">{t('rating')}</div>
                           </div>
                           <div className="text-center">
                             <div className="text-xl font-bold bg-gradient-to-r from-green-500 to-teal-500 bg-clip-text text-transparent">
                               {supplier.totalOrders}
                             </div>
-                            <div className="text-xs text-gray-600 mt-1">Orders</div>
+                            <div className="text-xs text-gray-600 mt-1">{t('orders')}</div>
                           </div>
                         </div>
 
                         <Link href={`/suppliers/${supplier.id}`}>
                           <button className="px-4 py-1.5 sm:px-5 sm:py-2 text-sm font-medium text-blue-600 rounded-full border border-blue-300 bg-white/60 hover:bg-gradient-to-r hover:from-blue-600 hover:to-teal-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
-                            View
+                            {t('viewSupplier')}
                           </button>
                         </Link>
                       </div>
@@ -663,7 +701,7 @@ export default function HomeClient() {
           <div className="text-center mt-14 sm:mt-20">
             <Link href="/suppliers">
               <button className="relative inline-flex items-center justify-center px-8 sm:px-10 py-3.5 sm:py-4 rounded-full font-semibold text-base sm:text-lg border border-blue-400 text-blue-600 bg-white/50 backdrop-blur-md hover:bg-gradient-to-r hover:from-blue-600 hover:to-teal-500 hover:text-white transition-all duration-300 shadow-sm hover:shadow-lg">
-                View All Suppliers
+                {tNav('suppliers')}
               </button>
             </Link>
           </div>
@@ -678,108 +716,113 @@ export default function HomeClient() {
 
         <div className="relative max-w-7xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16 sm:mb-20">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
-              Why Choose TradeMart for Your B2B Trading?
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-md sm:max-w-2xl mx-auto">
-              The all-in-one global B2B hub connecting verified suppliers with secure, AI-driven trade opportunities.
-            </p>
-            <div className="mx-auto mt-6 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-600 via-green-500 to-teal-400 rounded-full"></div>
-          </div>
+          <SmoothTransition>
+            <div className="text-center mb-16 sm:mb-20">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+                {t('whyChoose')}
+              </h2>
+              <p className="text-base sm:text-lg text-gray-600 max-w-md sm:max-w-2xl mx-auto">
+                {t('whyChooseDesc')}
+              </p>
+              <div className="mx-auto mt-6 w-20 sm:w-24 h-1.5 bg-gradient-to-r from-blue-600 via-green-500 to-teal-400 rounded-full"></div>
+            </div>
+          </SmoothTransition>
 
           {/* Cards */}
-          {/* Cards */}
-          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 sm:px-0 pb-4">
-            {[
-              {
-                iconBg: "from-blue-500 to-blue-700",
-                hover: "text-blue-600",
-                title: "Verified Suppliers",
-                desc: "Every supplier is verified and certified — trade with absolute confidence.",
-                path: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
-              },
-              {
-                iconBg: "from-green-500 to-emerald-600",
-                hover: "text-green-600",
-                title: "Secure Payments",
-                desc: "Escrow-protected transactions keep your funds safe until you receive your goods.",
-                path: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1",
-              },
-              {
-                iconBg: "from-purple-500 to-indigo-600",
-                hover: "text-purple-600",
-                title: "Fast Matching",
-                desc: "Our AI instantly connects you with the best suppliers — faster deals, better margins.",
-                path: "M13 10V3L4 14h7v7l9-11h-7z",
-              },
-            ].map((card, i) => (
-              <Card
-                key={i}
-                className="group min-w-[85%] sm:min-w-0 snap-center text-center p-6 sm:p-10 border border-gray-100/70 bg-white/90 backdrop-blur-lg rounded-3xl shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
-              >
-                <CardHeader>
-                  <div
-                    className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${card.iconBg} rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-md`}
-                  >
-                    <svg
-                      className="w-7 h-7 sm:w-8 sm:h-8 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+          <SmoothTransition>
+            <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-10 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 sm:px-0 pb-4">
+              {[
+                {
+                  iconBg: "from-blue-500 to-blue-700",
+                  hover: "text-blue-600",
+                  title: t('verifiedSuppliersFeature'),
+                  desc: t('verifiedSuppliersDesc'),
+                  path: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z",
+                },
+                {
+                  iconBg: "from-green-500 to-emerald-600",
+                  hover: "text-green-600",
+                  title: t('securePaymentsFeature'),
+                  desc: t('securePaymentsDesc'),
+                  path: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1",
+                },
+                {
+                  iconBg: "from-purple-500 to-indigo-600",
+                  hover: "text-purple-600",
+                  title: t('fastMatchingFeature'),
+                  desc: t('fastMatchingDesc'),
+                  path: "M13 10V3L4 14h7v7l9-11h-7z",
+                },
+              ].map((card, i) => (
+                <Card
+                  key={i}
+                  className="group min-w-[85%] sm:min-w-0 snap-center text-center p-6 sm:p-10 border border-gray-100/70 bg-white/90 backdrop-blur-lg rounded-3xl shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500"
+                >
+                  <CardHeader>
+                    <div
+                      className={`w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${card.iconBg} rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-md`}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d={card.path}
-                      />
-                    </svg>
-                  </div>
-                  <CardTitle
-                    className={`text-lg sm:text-xl font-semibold mb-2 text-gray-900 group-hover:${card.hover} transition-colors`}
-                  >
-                    {card.title}
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-xs mx-auto">
-                    {card.desc}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
+                      <svg
+                        className="w-7 h-7 sm:w-8 sm:h-8 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d={card.path}
+                        />
+                      </svg>
+                    </div>
+                    <CardTitle
+                      className={`text-lg sm:text-xl font-semibold mb-2 text-gray-900 group-hover:${card.hover} transition-colors`}
+                    >
+                      {card.title}
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-xs mx-auto">
+                      {card.desc}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </SmoothTransition>
 
         </div>
       </section>
 
       {/* How It Works Section */}
       {/* Steps */}
-      <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-10 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 sm:px-0">
-        {[
-          { step: 1, title: "Sign Up", desc: "Create your account as a buyer or supplier in just a few clicks." },
-          { step: 2, title: "Browse & Connect", desc: "Find products or suppliers that match your business goals." },
-          { step: 3, title: "Negotiate", desc: "Chat directly and finalize terms with clarity and trust." },
-          { step: 4, title: "Trade Safely", desc: "Complete your order through our secure, protected payment system." },
-        ].map((item) => (
-          <div
-            key={item.step}
-            className="text-center group min-w-[80%] sm:min-w-0 snap-center bg-white/50 backdrop-blur-sm rounded-2xl shadow-sm px-3 py-6 sm:px-4 hover:shadow-md transition-all duration-300"
-          >
-            <div className="relative w-12 sm:w-20 h-12 sm:h-20 mx-auto mb-4 sm:mb-6">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-green-500 rounded-full blur-sm opacity-70 group-hover:opacity-90 transition-all duration-500"></div>
-              <div className="relative w-full h-full bg-gradient-to-br from-blue-600 to-green-500 text-white rounded-full flex items-center justify-center text-lg sm:text-2xl font-bold shadow-lg group-hover:scale-105 transition-transform">
-                {item.step}
+      <SmoothTransition>
+        <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-10 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1 sm:px-0">
+          {[
+            { step: 1, title: t('step1Title'), desc: t('step1Desc') },
+            { step: 2, title: t('step2Title'), desc: t('step2Desc') },
+            { step: 3, title: t('step3Title'), desc: t('step3Desc') },
+            { step: 4, title: t('step4Title'), desc: t('step4Desc') },
+          ].map((item) => (
+            <div
+              key={item.step}
+              className="text-center group min-w-[80%] sm:min-w-0 snap-center bg-white/50 backdrop-blur-sm rounded-2xl shadow-sm px-3 py-6 sm:px-4 hover:shadow-md transition-all duration-300"
+            >
+              <div className="relative w-12 sm:w-20 h-12 sm:h-20 mx-auto mb-4 sm:mb-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-green-500 rounded-full blur-sm opacity-70 group-hover:opacity-90 transition-all duration-500"></div>
+                <div className="relative w-full h-full bg-gradient-to-br from-blue-600 to-green-500 text-white rounded-full flex items-center justify-center text-lg sm:text-2xl font-bold shadow-lg group-hover:scale-105 transition-transform">
+                  {item.step}
+                </div>
               </div>
+              <h3 className="text-base sm:text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                {item.title}
+              </h3>
+              <p className="text-gray-600 text-xs sm:text-base max-w-xs mx-auto leading-relaxed">
+                {item.desc}
+              </p>
             </div>
-            <h3 className="text-base sm:text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-              {item.title}
-            </h3>
-            <p className="text-gray-600 text-xs sm:text-base max-w-xs mx-auto leading-relaxed">
-              {item.desc}
-            </p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </SmoothTransition>
 
 
       {/* CTA Section */}
@@ -792,12 +835,14 @@ export default function HomeClient() {
         </div>
 
         <div className="relative max-w-3xl sm:max-w-4xl mx-auto text-center text-white px-2">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 sm:mb-6 tracking-tight">
-            Ready to Start Trading?
-          </h2>
-          <p className="text-base sm:text-xl text-blue-100 mb-8 sm:mb-10 leading-relaxed px-2">
-            Join thousands of businesses already growing with verified partners on TradeMart.
-          </p>
+          <SmoothTransition>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 sm:mb-6 tracking-tight">
+              {t('readyToStartTrading')}
+            </h2>
+            <p className="text-base sm:text-xl text-blue-100 mb-8 sm:mb-10 leading-relaxed px-2">
+              {t('joinThousandsBusinesses')}
+            </p>
+          </SmoothTransition>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
             {session ? (
@@ -858,15 +903,16 @@ export default function HomeClient() {
             {/* Brand */}
             <div className="md:col-span-2 sm:col-span-2">
               <div className="flex items-center mb-6">
-
                 <span className="ml-3 text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-400 to-teal-300 bg-clip-text text-transparent">
                   TradeMart
                 </span>
               </div>
 
-              <p className="text-gray-400 mb-8 leading-relaxed text-sm sm:text-base">
-                The world’s most trusted B2B marketplace — connecting verified suppliers and global buyers through secure, AI-powered trade.
-              </p>
+              <SmoothTransition>
+                <p className="text-gray-400 mb-8 leading-relaxed text-sm sm:text-base">
+                  {t('footerDescription')}
+                </p>
+              </SmoothTransition>
 
               {/* Social Icons using React Icons */}
               <div className="flex space-x-4">
@@ -890,73 +936,80 @@ export default function HomeClient() {
 
             {/* Buyers */}
             <div>
-              <h3 className="text-base sm:text-lg font-semibold mb-5 text-blue-300">For Buyers</h3>
-              <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
-                <li><Link href="/products" className="hover:text-blue-300 transition-colors">Browse Products</Link></li>
-                <li><Link href="/suppliers" className="hover:text-blue-300 transition-colors">Find Suppliers</Link></li>
-                <li><Link href="/rfqs" className="hover:text-blue-300 transition-colors">Submit RFQ</Link></li>
-                <li><Link href="/auth/signup?role=buyer" className="hover:text-blue-300 transition-colors">Join as Buyer</Link></li>
-              </ul>
+              <SmoothTransition>
+                <h3 className="text-base sm:text-lg font-semibold mb-5 text-blue-300">{t('forBuyers')}</h3>
+                <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
+                  <li><Link href="/products" className="hover:text-blue-300 transition-colors">{t('browseProducts')}</Link></li>
+                  <li><Link href="/suppliers" className="hover:text-blue-300 transition-colors">{t('findSuppliers')}</Link></li>
+                  <li><Link href="/rfqs" className="hover:text-blue-300 transition-colors">{t('submitRfq')}</Link></li>
+                  <li><Link href="/auth/signup?role=buyer" className="hover:text-blue-300 transition-colors">{t('joinAsBuyer')}</Link></li>
+                </ul>
+              </SmoothTransition>
             </div>
 
             {/* Suppliers */}
             <div>
-              <h3 className="text-base sm:text-lg font-semibold mb-5 text-green-300">For Suppliers</h3>
-              <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
-                <li><Link href="/products/create" className="hover:text-green-300 transition-colors">List Products</Link></li>
-                <li><Link href="/suppliers" className="hover:text-green-300 transition-colors">Supplier Dashboard</Link></li>
-                <li><Link href="/rfqs" className="hover:text-green-300 transition-colors">Respond to RFQs</Link></li>
-                <li><Link href="/auth/signup?role=supplier" className="hover:text-green-300 transition-colors">Join as Supplier</Link></li>
-              </ul>
+              <SmoothTransition>
+                <h3 className="text-base sm:text-lg font-semibold mb-5 text-green-300">{t('forSuppliers')}</h3>
+                <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
+                  <li><Link href="/products/create" className="hover:text-green-300 transition-colors">{t('listProducts')}</Link></li>
+                  <li><Link href="/suppliers" className="hover:text-green-300 transition-colors">{t('supplierDashboard')}</Link></li>
+                  <li><Link href="/rfqs" className="hover:text-green-300 transition-colors">{t('respondToRfqs')}</Link></li>
+                  <li><Link href="/auth/signup?role=supplier" className="hover:text-green-300 transition-colors">{t('joinAsSupplier')}</Link></li>
+                </ul>
+              </SmoothTransition>
             </div>
 
             {/* Support */}
             <div>
-              <h3 className="text-base sm:text-lg font-semibold mb-5 text-purple-300">Support</h3>
-              <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
-                <li><Link href="/help" className="hover:text-purple-300 transition-colors">Help Center</Link></li>
-                <li><Link href="/contact" className="hover:text-purple-300 transition-colors">Contact Us</Link></li>
-                <li><Link href="/privacy" className="hover:text-purple-300 transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-purple-300 transition-colors">Terms of Service</Link></li>
-              </ul>
+              <SmoothTransition>
+                <h3 className="text-base sm:text-lg font-semibold mb-5 text-purple-300">{t('support')}</h3>
+                <ul className="space-y-2 sm:space-y-3 text-gray-400 text-sm sm:text-base">
+                  <li><Link href="/help" className="hover:text-purple-300 transition-colors">{t('helpCenter')}</Link></li>
+                  <li><Link href="/contact" className="hover:text-purple-300 transition-colors">{t('contactUs')}</Link></li>
+                  <li><Link href="/privacy" className="hover:text-purple-300 transition-colors">{t('privacyPolicy')}</Link></li>
+                  <li><Link href="/terms" className="hover:text-purple-300 transition-colors">{t('termsOfService')}</Link></li>
+                </ul>
+              </SmoothTransition>
             </div>
           </div>
 
           {/* Stats Section */}
-          <div className="border-t border-gray-800 mt-14 pt-10">
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-blue-400 mb-1">
-                  {loading ? "..." : stats.totalSuppliers.toLocaleString()}+
+          <SmoothTransition>
+            <div className="border-t border-gray-800 mt-14 pt-10">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-blue-400 mb-1">
+                    {loading ? "..." : stats.totalSuppliers.toLocaleString()}+
+                  </div>
+                  <div className="text-gray-400 text-xs sm:text-sm">{t('verifiedSuppliers')}</div>
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm">Verified Suppliers</div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-green-400 mb-1">
-                  {loading ? "..." : stats.totalProducts.toLocaleString()}+
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-green-400 mb-1">
+                    {loading ? "..." : stats.totalProducts.toLocaleString()}+
+                  </div>
+                  <div className="text-gray-400 text-xs sm:text-sm">{t('productsListed')}</div>
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm">Products Listed</div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-purple-400 mb-1">
-                  {loading ? "..." : stats.totalOrders.toLocaleString()}+
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-purple-400 mb-1">
+                    {loading ? "..." : stats.totalOrders.toLocaleString()}+
+                  </div>
+                  <div className="text-gray-400 text-xs sm:text-sm">{t('ordersCompleted')}</div>
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm">Orders Completed</div>
+                <div>
+                  <div className="text-xl sm:text-2xl font-bold text-amber-400 mb-1">100+</div>
+                  <div className="text-gray-400 text-xs sm:text-sm">{t('countries')}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-amber-400 mb-1">100+</div>
-                <div className="text-gray-400 text-xs sm:text-sm">Countries</div>
-              </div>
-            </div>
 
-            {/* Bottom Bar */}
-            <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500 text-xs sm:text-sm leading-relaxed">
-              <p>
-                &copy; 2024 <span className="text-blue-400 font-semibold">TradeMart</span> — Global B2B Marketplace.
-                All rights reserved.
-              </p>
+              {/* Bottom Bar */}
+              <div className="border-t border-gray-800 mt-10 pt-6 text-center text-gray-500 text-xs sm:text-sm leading-relaxed">
+                <p>
+                  {t('copyright')}
+                </p>
+              </div>
             </div>
-          </div>
+          </SmoothTransition>
         </div>
       </footer>
 

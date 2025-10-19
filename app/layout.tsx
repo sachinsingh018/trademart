@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import "../styles/smooth-transitions.css";
 import { Providers } from "./providers";
 import WhatsAppButton from "@/components/ui/whatsapp-button";
 import { LoanFormProvider } from "@/contexts/LoanFormContext";
@@ -168,7 +169,7 @@ export default function RootLayout({
             gtag('config', 'G-04PLT61V9J');
           `}
         </Script>
-        
+
         <link rel="icon" href="/api/favicon" />
         <link rel="shortcut icon" href="/api/favicon" />
         <link rel="apple-touch-icon" href="/logofinal.png?v=4" />

@@ -10,6 +10,8 @@ import PageTitle from "@/components/ui/page-title";
 import { usePopup } from "@/contexts/PopupContext";
 import { useToast, ToastContainer } from "@/components/ui/toast";
 import { Building2, MapPin, Globe, ExternalLink, Search, Filter, Download } from "lucide-react";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from '@/components/ui/smooth-transition';
 
 interface BusinessLead {
     id: string;
@@ -38,6 +40,25 @@ export default function BusinessLeadsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+
+    // Translation setup
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    // Helper functions for translations
+    const t = (key: string) => messages.businessLeads?.[key as keyof typeof messages.businessLeads] || messages.common?.[key as keyof typeof messages.common] || key;
 
     // Parse CSV data
     useEffect(() => {
@@ -297,21 +318,21 @@ export default function BusinessLeadsPage() {
                             <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                                 <Building2 className="w-6 h-6 text-white" />
                             </div>
-                            <h2 className="text-xl font-bold text-gray-900 mb-2">Sign In Required</h2>
+                            <h2 className="text-xl font-bold text-gray-900 mb-2">{t('signInRequired')}</h2>
                             <p className="text-gray-600 text-sm">
-                                Sign in to view detailed business lead information and contact companies.
+                                {t('signInToViewLeads')}
                             </p>
                         </div>
 
                         <div className="space-y-3">
                             <a href="/auth/signin" className="block">
                                 <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg">
-                                    Sign In
+                                    {t('signIn')}
                                 </Button>
                             </a>
                             <a href="/auth/signup" className="block">
                                 <Button variant="outline" className="w-full border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white py-3 font-semibold transition-all duration-300 rounded-lg">
-                                    Create Account
+                                    {t('createAccount')}
                                 </Button>
                             </a>
                         </div>
@@ -324,22 +345,24 @@ export default function BusinessLeadsPage() {
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
                         <div>
-                            <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-2">
-                                Business Leads Database
-                            </h1>
-                            <p className="text-gray-600">
-                                Discover and connect with verified business opportunities worldwide
-                            </p>
+                            <SmoothTransition>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-green-500 to-blue-700 bg-clip-text text-transparent mb-2">
+                                    {t('businessLeadsDatabase')}
+                                </h1>
+                                <p className="text-gray-600">
+                                    {t('businessLeadsDescription')}
+                                </p>
+                            </SmoothTransition>
                         </div>
 
                         <div className="mt-4 lg:mt-0 flex items-center gap-4">
                             {/* Stats */}
                             <div className="hidden sm:flex items-center gap-4 text-sm text-gray-500">
-                                <span>{filteredLeads.length} leads</span>
+                                <span>{filteredLeads.length} {t('leads')}</span>
                                 <span>•</span>
-                                <span>{uniqueIndustries.length} industries</span>
+                                <span>{uniqueIndustries.length} {t('industries')}</span>
                                 <span>•</span>
-                                <span>{uniqueCountries.length} countries</span>
+                                <span>{uniqueCountries.length} {t('countries')}</span>
                             </div>
 
                             {/* Export Button */}
@@ -385,7 +408,7 @@ export default function BusinessLeadsPage() {
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <Input
-                                    placeholder="Search companies, industries, locations..."
+                                    placeholder={t('searchPlaceholder')}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="pl-10"
@@ -396,10 +419,10 @@ export default function BusinessLeadsPage() {
                             <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
                                 <SelectTrigger className="w-48">
                                     <Filter className="w-4 h-4 mr-2" />
-                                    <SelectValue placeholder="Industry" />
+                                    <SelectValue placeholder={t('industry')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Industries</SelectItem>
+                                    <SelectItem value="all">{t('allIndustries')}</SelectItem>
                                     {uniqueIndustries.map((industry) => (
                                         <SelectItem key={industry} value={industry}>
                                             {industry}
@@ -410,10 +433,10 @@ export default function BusinessLeadsPage() {
 
                             <Select value={selectedCountry} onValueChange={setSelectedCountry}>
                                 <SelectTrigger className="w-48">
-                                    <SelectValue placeholder="Country" />
+                                    <SelectValue placeholder={t('country')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Countries</SelectItem>
+                                    <SelectItem value="all">{t('allCountries')}</SelectItem>
                                     {uniqueCountries.map((country) => (
                                         <SelectItem key={country} value={country}>
                                             {country}
@@ -424,12 +447,12 @@ export default function BusinessLeadsPage() {
 
                             <Select value={sortBy} onValueChange={setSortBy}>
                                 <SelectTrigger className="w-40">
-                                    <SelectValue placeholder="Sort by" />
+                                    <SelectValue placeholder={t('sortBy')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="name">Name A-Z</SelectItem>
-                                    <SelectItem value="country">Country</SelectItem>
-                                    <SelectItem value="industry">Industry</SelectItem>
+                                    <SelectItem value="name">{t('nameAZ')}</SelectItem>
+                                    <SelectItem value="country">{t('country')}</SelectItem>
+                                    <SelectItem value="industry">{t('industry')}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -442,8 +465,8 @@ export default function BusinessLeadsPage() {
                 {filteredLeads.length === 0 ? (
                     <div className="text-center py-12">
                         <div className="text-gray-400 text-6xl mb-4">🔍</div>
-                        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Business Leads Found</h3>
-                        <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noBusinessLeadsFound')}</h3>
+                        <p className="text-gray-600">{t('tryAdjustingSearch')}</p>
                     </div>
                 ) : (
                     <>

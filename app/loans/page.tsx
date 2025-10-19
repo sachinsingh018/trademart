@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -25,6 +25,8 @@ import {
     LogIn,
     UserPlus
 } from "lucide-react";
+import { detectLocale, getMessages, useLanguageChange } from '@/lib/i18n';
+import SmoothTransition from '@/components/ui/smooth-transition';
 
 export default function LoansPage() {
     const { data: session } = useSession();
@@ -34,6 +36,25 @@ export default function LoansPage() {
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [showAllBanks, setShowAllBanks] = useState(false);
+
+    // Translation setup
+    const [locale, setLocale] = useState('en');
+    const [messages, setMessages] = useState(getMessages('en'));
+
+    useEffect(() => {
+        const detectedLocale = detectLocale();
+        setLocale(detectedLocale);
+        setMessages(getMessages(detectedLocale));
+    }, []);
+
+    // Listen for language changes with smooth transition
+    useLanguageChange((newLocale: string) => {
+        setLocale(newLocale);
+        setMessages(getMessages(newLocale));
+    });
+
+    // Helper functions for translations
+    const t = (key: string) => messages.loans?.[key as keyof typeof messages.loans] || messages.common?.[key as keyof typeof messages.common] || key;
 
     const handleInputChange = (field: string, value: string) => {
         updateFormData({ [field]: value });
@@ -182,28 +203,27 @@ export default function LoansPage() {
                     <div className="text-center">
                         <Badge className="bg-white/20 text-white border-white/30 mb-3 sm:mb-4 text-xs sm:text-sm">
                             <Building2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                            Partnered with Leading Banks
+                            {t('partneredWithLeadingBanks')}
                         </Badge>
                         <h1 className="text-3xl sm:text-5xl font-bold mb-4 sm:mb-6">
-                            Get Approved for Business Loans
-                            <span className="block text-green-200">Easily & Quickly</span>
+                            {t('getApprovedForBusinessLoans')}
+                            <span className="block text-green-200">{t('easilyQuickly')}</span>
                         </h1>
                         <p className="text-base sm:text-xl text-blue-100 mb-6 sm:mb-8 max-w-3xl mx-auto">
-                            Access funding for your business growth with our trusted banking partners.
-                            Fast approval, competitive rates, and dedicated support.
+                            {t('loansDescription')}
                         </p>
                         <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
                             <div className="flex items-center bg-white/10 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base">
                                 <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                                <span>Quick Approval</span>
+                                <span>{t('quickApproval')}</span>
                             </div>
                             <div className="flex items-center bg-white/10 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base">
                                 <Shield className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                                <span>Secure Process</span>
+                                <span>{t('secureProcess')}</span>
                             </div>
                             <div className="flex items-center bg-white/10 rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base">
                                 <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                                <span>Expert Support</span>
+                                <span>{t('expertSupport')}</span>
                             </div>
                         </div>
                     </div>
@@ -214,8 +234,8 @@ export default function LoansPage() {
             <div className="py-8 sm:py-16 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-6 sm:mb-12">
-                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Trusted by Leading Financial Partners</h2>
-                        <p className="text-sm sm:text-xl text-gray-600">We&apos;ve partnered with India&apos;s top banks and financial institutions to bring you the best loan options</p>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">{t('trustedByLeadingFinancialPartners')}</h2>
+                        <p className="text-sm sm:text-xl text-gray-600">{t('partneredWithTopBanks')}</p>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-6 items-center">
@@ -392,8 +412,8 @@ export default function LoansPage() {
             <div className="py-8 sm:py-16 bg-white">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-6 sm:mb-12 px-4 sm:px-6 lg:px-8">
-                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Why Choose Our Loan Partners?</h2>
-                        <p className="text-sm sm:text-xl text-gray-600">We&apos;ve partnered with leading financial institutions to bring you the best loan options</p>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">{t('whyChooseOurLoanPartners')}</h2>
+                        <p className="text-sm sm:text-xl text-gray-600">{t('partneredWithLeadingFinancialInstitutions')}</p>
                     </div>
 
                     {/* Horizontal Scrollable on Mobile, Grid on Desktop */}
@@ -446,7 +466,7 @@ export default function LoansPage() {
                                 <div className="bg-green-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                                     <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
                                 </div>
-                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Fast Approval</h3>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t('fastApproval')}</h3>
                                 <p className="text-gray-600 text-sm sm:text-base">Get approved in as little as 24 hours with our streamlined process</p>
                             </CardContent>
                         </Card>
@@ -456,7 +476,7 @@ export default function LoansPage() {
                                 <div className="bg-blue-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                                     <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
                                 </div>
-                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Competitive Rates</h3>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t('competitiveRates')}</h3>
                                 <p className="text-gray-600 text-sm sm:text-base">Access competitive interest rates from our trusted banking partners</p>
                             </CardContent>
                         </Card>
@@ -466,7 +486,7 @@ export default function LoansPage() {
                                 <div className="bg-purple-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                                     <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
                                 </div>
-                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Minimal Documentation</h3>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t('minimalDocumentation')}</h3>
                                 <p className="text-gray-600 text-sm sm:text-base">Simple application process with minimal paperwork required</p>
                             </CardContent>
                         </Card>
@@ -476,7 +496,7 @@ export default function LoansPage() {
                                 <div className="bg-orange-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
                                     <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
                                 </div>
-                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">Business Growth</h3>
+                                <h3 className="text-base sm:text-xl font-semibold mb-1 sm:mb-2">{t('businessGrowth')}</h3>
                                 <p className="text-gray-600 text-sm sm:text-base">Fuel your business expansion with flexible loan terms</p>
                             </CardContent>
                         </Card>
@@ -488,8 +508,8 @@ export default function LoansPage() {
             <div className="py-8 sm:py-16 bg-gray-50">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-6 sm:mb-12">
-                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">Apply for Your Business Loan</h2>
-                        <p className="text-sm sm:text-xl text-gray-600">Fill out the form below and our partners will contact you within 24 hours</p>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-4">{t('applyForYourBusinessLoan')}</h2>
+                        <p className="text-sm sm:text-xl text-gray-600">{t('fillOutFormAndPartnersWillContact')}</p>
                     </div>
 
                     <Card className="border-0 shadow-xl">
