@@ -16,7 +16,7 @@ export default function WhatsAppButton() {
     const t = (key: string) => messages.ui?.[key as keyof typeof messages.ui] || key;
 
     return (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed bottom-24 right-6 z-50 m-0 p-0">
             <a
                 href="https://wa.me/15558591786"
                 target="_blank"

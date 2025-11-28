@@ -266,3 +266,33 @@ html {
   }
 
 }
+
+/* Position chatbot widget at bottom right, with WhatsApp button stacked above it */
+/* Target all possible chatbot widget containers and buttons */
+[class*="botslaab"],
+[id*="botslaab"],
+[class*="chat-widget"],
+[class*="chat-widget"] button,
+[class*="chat-widget"]>*,
+iframe[src*="slaab"],
+iframe[src*="chat"],
+button[class*="chat"],
+button[class*="widget"],
+div[class*="floating"],
+div[class*="floating"] button {
+  bottom: 1.5rem !important;
+  /* bottom-6 = 1.5rem = 24px */
+  right: 1.5rem !important;
+  /* right-6 = 1.5rem = 24px */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Ensure chatbot button itself is aligned */
+[class*="botslaab"] button,
+[id*="botslaab"] button,
+[class*="chat-widget"] button {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  right: 1.5rem !important;
+}

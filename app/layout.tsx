@@ -170,6 +170,68 @@ export default function RootLayout({
           `}
         </Script>
 
+        {/* BotsLaab Chat Widget */}
+        <Script id="botslaab-config" strategy="afterInteractive">
+          {`
+            window.botslaabFloatingChatConfig = {
+              apiUrl: 'https://api.chat.slaab.ai',
+              projectId: 'b6155fca-b579-4e30-a6aa-b61845b7c1e6'
+            };
+          `}
+        </Script>
+        <Script
+          src="https://api.chat.slaab.ai/static/widget/b6155fca-b579-4e30-a6aa-b61845b7c1e6"
+          strategy="afterInteractive"
+        />
+        <Script id="align-chatbot-button" strategy="afterInteractive">
+          {`
+            function alignChatbotButton() {
+              // Find WhatsApp button to get its exact right position
+              const whatsappButton = document.querySelector('a[href*="wa.me"]');
+              if (!whatsappButton) return;
+              
+              const whatsappRect = whatsappButton.getBoundingClientRect();
+              const whatsappRight = window.innerWidth - whatsappRect.right;
+              
+              // Find chatbot button/container
+              const chatbotSelectors = [
+                '[class*="botslaab"]',
+                '[id*="botslaab"]',
+                '[class*="chat-widget"]',
+                'button[class*="chat"]',
+                'div[class*="floating"] button'
+              ];
+              
+              let chatbotElement = null;
+              for (const selector of chatbotSelectors) {
+                chatbotElement = document.querySelector(selector);
+                if (chatbotElement) break;
+              }
+              
+              if (chatbotElement) {
+                chatbotElement.style.right = whatsappRight + 'px';
+                chatbotElement.style.position = 'fixed';
+                chatbotElement.style.bottom = '1.5rem';
+              }
+            }
+            
+            // Run alignment after widget loads
+            setTimeout(alignChatbotButton, 500);
+            setTimeout(alignChatbotButton, 1000);
+            setTimeout(alignChatbotButton, 2000);
+            
+            // Watch for dynamically added elements
+            const observer = new MutationObserver(() => {
+              alignChatbotButton();
+            });
+            
+            observer.observe(document.body, {
+              childList: true,
+              subtree: true
+            });
+          `}
+        </Script>
+
         <link rel="icon" href="/api/favicon" />
         <link rel="shortcut icon" href="/api/favicon" />
         <link rel="apple-touch-icon" href="/logofinal.png?v=4" />
